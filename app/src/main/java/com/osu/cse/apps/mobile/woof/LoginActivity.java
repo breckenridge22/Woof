@@ -1,5 +1,7 @@
 package com.osu.cse.apps.mobile.woof;
 
+// Woof App for dog activity tracking
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
