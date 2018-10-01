@@ -12,4 +12,10 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="dog_information_button">Dog Information</string>
+    <string name="activity_schedule_button">Activity Schedule</string>
+    <string name="activity_history_button">Activity History</string>
+    <string name="owners_caretakers_button">Owners/Caretakers</string>
+    <string name="saved_meals_button">Saved Meals</string>
+    <string name="report_lost_button">Report As Lost</string>
 </resources>
