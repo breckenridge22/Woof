@@ -19,7 +19,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import java.util.UUID;
+
 public class DogManagementFragment extends Fragment {
+
+    private static final String ARG_DOG_ID = "dog_id";
+
+    private Dog mDog;
 
     private Button mDogInfoButton;
     private Button mActivitySchedButton;
@@ -27,10 +33,21 @@ public class DogManagementFragment extends Fragment {
     private Button mOwnersAndCaretakersButton;
     private Button mReportLostButton;
 
+    public static DogManagementFragment newInstance(UUID dogId) {
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_DOG_ID, dogId);
+
+        DogManagementFragment fragment = new DogManagementFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // get info (i.e., Dog object) from intent that was sent to parent activity
+        UUID dogId = (UUID) getArguments().getSerializable(ARG_DOG_ID);
+        // get dog from dog list singleton (or just have array list of
+        // dogs in User class?
     }
 
     @Override

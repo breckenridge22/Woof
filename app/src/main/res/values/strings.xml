@@ -18,4 +18,5 @@
     <string name="owners_caretakers_button">Owners/Caretakers</string>
     <string name="saved_meals_button">Saved Meals</string>
     <string name="report_lost_button">Report As Lost</string>
+    <string name="back_button">Back</string>
 </resources>
