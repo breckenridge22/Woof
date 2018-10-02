@@ -46,8 +46,7 @@ public class DogManagementFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         UUID dogId = (UUID) getArguments().getSerializable(ARG_DOG_ID);
-        // get dog from dog list singleton (or just have array list of
-        // dogs in User class?
+        mDog = CurrentUser.get().getDog(dogId);
     }
 
     @Override
@@ -55,9 +54,34 @@ public class DogManagementFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_dog_management, container, false);
 
-        // set button member variables and button event listeners
+        // onClick listener for below buttons automatically set to (this)
+        mDogInfoButton = v.findViewById(R.id.dog_information_button);
+        mActivitySchedButton = v.findViewById(R.id.activity_schedule_button);
+        mActivityHistButton = v.findViewById(R.id.activity_history_button);
+        mOwnersAndCaretakersButton = v.findViewById(R.id.owners_caretakers_button);
+        mReportLostButton = v.findViewById(R.id.report_lost_button);
 
         return v;
+    }
+
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.dog_information_button:
+                // start dog information screen activity
+                break;
+            case R.id.activity_schedule_button:
+                // open activity schedule screen activity
+                break;
+            case R.id.activity_history_button:
+                // open activity history screen activity
+                break;
+            case R.id.owners_caretakers_button:
+                // open owners and caretakers screen activity
+                break;
+            case R.id.report_lost_button:
+                // open report lost screen activity
+                break;
+        }
     }
 
 

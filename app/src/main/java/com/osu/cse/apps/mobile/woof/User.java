@@ -12,4 +12,8 @@ public class User {
         return mDogList.getDogList();
     }
 
+    public Dog getDog(UUID dogId) {
+        return mDogList.getDog(dogId);
+    }
+
 }

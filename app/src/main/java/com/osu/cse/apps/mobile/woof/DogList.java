@@ -24,13 +24,17 @@ public class DogList {
         // code to fetch dogs associated with a user from a database
     }
 
-    public void addDogToList(Dog dog) {
-        mDogList.put(dog.getDogId(), dog);
-        // code to add user to dog in dog database
-    }
-
     public ArrayList<Dog> getDogList() {
         return (ArrayList) mDogList.values();
+    }
+
+    public void addDogToList(Dog dog) {
+        mDogList.put(dog.getDogId(), dog);
+        // also, need code to add current user to dog in dog database
+    }
+
+    public Dog getDog(UUID dogId) {
+        return mDogList.get(dogId);
     }
 
 }
