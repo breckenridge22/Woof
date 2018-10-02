@@ -25,7 +25,7 @@ public class DogList {
     }
 
     public ArrayList<Dog> getDogList() {
-        return (ArrayList) mDogList.values();
+        return new ArrayList(mDogList.values());
     }
 
     public void addDogToList(Dog dog) {
@@ -35,6 +35,15 @@ public class DogList {
 
     public Dog getDog(UUID dogId) {
         return mDogList.get(dogId);
+    }
+
+    public static DogList getTestDogList() {
+        DogList testDogList = new DogList();
+        Dog[] testDogs = Dog.getTestDogs();
+        for (Dog testDog : testDogs) {
+            testDogList.addDogToList(testDog);
+        }
+        return testDogList;
     }
 
 }

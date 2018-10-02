@@ -16,4 +16,11 @@ public class User {
         return mDogList.getDog(dogId);
     }
 
+    public static User getTestUser() {
+        User testUser = new User();
+        testUser.mUserId = UUID.randomUUID();
+        testUser.mDogList = DogList.getTestDogList();
+        return testUser;
+    }
+
 }

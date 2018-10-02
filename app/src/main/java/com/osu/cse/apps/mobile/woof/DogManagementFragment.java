@@ -12,12 +12,14 @@
 
 package com.osu.cse.apps.mobile.woof;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import java.util.UUID;
 
@@ -27,6 +29,7 @@ public class DogManagementFragment extends Fragment {
 
     private Dog mDog;
 
+    private TextView mDogNameTextView;
     private Button mDogInfoButton;
     private Button mActivitySchedButton;
     private Button mActivityHistButton;
@@ -46,6 +49,13 @@ public class DogManagementFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         UUID dogId = (UUID) getArguments().getSerializable(ARG_DOG_ID);
+
+        //***remove below code after setting up intents***
+        User testUser = CurrentUser.get();
+        Dog testDog = testUser.getDogList().get(0);
+        dogId = testDog.getDogId();
+        //***remove above code after setting up intents***
+
         mDog = CurrentUser.get().getDog(dogId);
     }
 
@@ -53,6 +63,9 @@ public class DogManagementFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_dog_management, container, false);
+
+        mDogNameTextView = v.findViewById(R.id.dog_name);
+        mDogNameTextView.setText(mDog.getName());
 
         // onClick listener for below buttons automatically set to (this)
         mDogInfoButton = v.findViewById(R.id.dog_information_button);
@@ -67,7 +80,8 @@ public class DogManagementFragment extends Fragment {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.dog_information_button:
-                // start dog information screen activity
+                Intent intent = DogInformationActivity.newIntent(getActivity(), mDog.getDogId());
+                startActivity(intent);
                 break;
             case R.id.activity_schedule_button:
                 // open activity schedule screen activity

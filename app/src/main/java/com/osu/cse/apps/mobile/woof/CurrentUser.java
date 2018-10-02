@@ -11,15 +11,12 @@ public class CurrentUser extends User {
 
     public static User get() {
         if (sCurrentUser == null) {
-            throw new NoCurrentUserException("No current user");
+            sCurrentUser = User.getTestUser();
+            // throw new NoCurrentUserException("No current user");
             // better to redirect to login screen if there is no current user than to
             // throw exception?
         }
         return sCurrentUser;
-    }
-
-    public CurrentUser() {
-        sCurrentUser = new User();
     }
 
 
