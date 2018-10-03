@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Woof</string>
+
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password (optional)</string>
@@ -12,6 +13,8 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+
+    <!-- Strings related to Dog Management screen -->
     <string name="dog_information_button">Dog Information</string>
     <string name="activity_schedule_button">Activity Schedule</string>
     <string name="activity_history_button">Activity History</string>
@@ -19,6 +22,19 @@
     <string name="saved_meals_button">Saved Meals</string>
     <string name="report_lost_button">Report As Lost</string>
     <string name="back_button">Back</string>
+
+    <!-- Strings related to Dog Information screen -->
     <string name="dog_id">Dog I.D.</string>
     <string name="dog_name">Dog Name</string>
+
+    <!-- Strings related to home screen -->
+    <string name="map_button">Map</string>
+    <string name="finish_walk_button">Finish Walk</string>
+    <string name="new_activity_button">New Activity</string>
+    <string name="manage_dogs_button">Manage Dogs</string>
+    <string name="add_dog_button">Add Dog</string>
+    <string name="friends_family_button">Friends and Family</string>
+    <string name="settings_button">Settings</string>
+    <string name="log_out_button">Log Out</string>
+
 </resources>

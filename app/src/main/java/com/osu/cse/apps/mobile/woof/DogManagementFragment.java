@@ -24,7 +24,7 @@ import android.widget.TextView;
 
 import java.util.UUID;
 
-public class DogManagementFragment extends Fragment {
+public class DogManagementFragment extends Fragment implements View.OnClickListener {
 
     private static final String ARG_DOG_ID = "dog_id";
     private static final String TAG = "DogManagementFragment";
@@ -32,11 +32,6 @@ public class DogManagementFragment extends Fragment {
     private Dog mDog;
 
     private TextView mDogNameTextView;
-    private Button mDogInfoButton;
-    private Button mActivitySchedButton;
-    private Button mActivityHistButton;
-    private Button mOwnersAndCaretakersButton;
-    private Button mReportLostButton;
 
     public static DogManagementFragment newInstance(UUID dogId) {
         Bundle args = new Bundle();
@@ -51,13 +46,6 @@ public class DogManagementFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         UUID dogId = (UUID) getArguments().getSerializable(ARG_DOG_ID);
-
-        //***remove below code after setting up intents***
-        User testUser = CurrentUser.get();
-        Dog testDog = testUser.getDogList().get(0);
-        dogId = testDog.getDogId();
-        //***remove above code after setting up intents***
-
         mDog = CurrentUser.get().getDog(dogId);
     }
 
@@ -68,27 +56,20 @@ public class DogManagementFragment extends Fragment {
 
         mDogNameTextView = v.findViewById(R.id.dog_name_header);
 
-        // onClick listener for below buttons automatically set to (this)
-        mDogInfoButton = v.findViewById(R.id.dog_information_button);
-        mDogInfoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = DogInformationActivity.newIntent(getActivity(), mDog.getDogId());
-                startActivity(intent);
-            }
-        });
+        Button dogInfoButton = v.findViewById(R.id.dog_information_button);
+        dogInfoButton.setOnClickListener(this);
 
-        mActivitySchedButton = v.findViewById(R.id.activity_schedule_button);
-        // set onClickListener
+        Button activitySchedButton = v.findViewById(R.id.activity_schedule_button);
+        activitySchedButton.setOnClickListener(this);
 
-        mActivityHistButton = v.findViewById(R.id.activity_history_button);
-        // set onClickListener
+        Button activityHistButton = v.findViewById(R.id.activity_history_button);
+        activityHistButton.setOnClickListener(this);
 
-        mOwnersAndCaretakersButton = v.findViewById(R.id.owners_caretakers_button);
-        // set onClickListener
+        Button ownersAndCaretakersButton = v.findViewById(R.id.owners_caretakers_button);
+        ownersAndCaretakersButton.setOnClickListener(this);
 
-        mReportLostButton = v.findViewById(R.id.report_lost_button);
-        // set onClickListener
+        Button reportLostButton = v.findViewById(R.id.report_lost_button);
+        reportLostButton.setOnClickListener(this);
 
         updateUI();
 
@@ -105,7 +86,6 @@ public class DogManagementFragment extends Fragment {
         mDogNameTextView.setText(mDog.getName());
     }
 
-    /*
     public void onClick(View v) {
         Log.d(TAG, "onClick() called");
         switch (v.getId()) {
@@ -127,7 +107,5 @@ public class DogManagementFragment extends Fragment {
                 break;
         }
     }
-    */
-
 
 }
