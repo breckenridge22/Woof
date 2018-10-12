@@ -62,6 +62,7 @@ public class HomeScreenFragment extends Fragment implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
+        Intent intent;
         switch (v.getId()) {
             case R.id.map_button:
                 // TODO
@@ -70,10 +71,18 @@ public class HomeScreenFragment extends Fragment implements View.OnClickListener
                 // TODO
                 break;
             case R.id.new_activity_button:
-                // TODO
+                intent = DogSelectionActivity.newIntent(getActivity());
+                intent.putExtra("activity_type", "new_activity");
+                startActivity(intent);
+                break;
+            case R.id.activity_history_button:
+                intent = DogSelectionActivity.newIntent(getActivity());
+                intent.putExtra("activity_type", "activity_history");
+                startActivity(intent);
                 break;
             case R.id.manage_dogs_button:
-                Intent intent = DogSelectionActivity.newIntent(getActivity());
+                intent = DogSelectionActivity.newIntent(getActivity());
+                intent.putExtra("activity_type", "manage_dogs");
                 startActivity(intent);
                 break;
             case R.id.add_dog_button:

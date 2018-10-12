@@ -25,13 +25,16 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.fragment_container);
 
+        // Pass any values stored in intent to fragment.
+        fragment.setArguments(getIntent().getExtras());
+
+        // Open fragment
         if (fragment == null) {
             fragment = createFragment();
             fm.beginTransaction()
                     .add(R.id.fragment_container, fragment)
                     .commit();
         }
-
 
     }
 }
