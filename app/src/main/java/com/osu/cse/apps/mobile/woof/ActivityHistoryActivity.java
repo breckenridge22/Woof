@@ -2,7 +2,6 @@ package com.osu.cse.apps.mobile.woof;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import java.util.UUID;
@@ -22,7 +21,7 @@ public class ActivityHistoryActivity extends SingleFragmentActivity {
     @Override
     protected Fragment createFragment() {
         UUID dogId = (UUID) getIntent().getSerializableExtra(EXTRA_DOG_ID);
-        return DogManagementFragment.newInstance(dogId);
+        return DogHomeFragment.newInstance(new DogHomeFragment(), dogId);
     }
 
 

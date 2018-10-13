@@ -15,18 +15,26 @@ import android.util.Log;
 public abstract class SingleFragmentActivity extends AppCompatActivity {
 
     protected abstract Fragment createFragment();
-    private final String TAG = "SingleFragementActivity";
+    private final String TAG = "SingleFragmentActivity";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate() called");
         setContentView(R.layout.activity_fragment);
 
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.fragment_container);
 
         // Pass any values stored in intent to fragment.
-        fragment.setArguments(getIntent().getExtras());
+        /*
+         * This segment seems to make the app crash
+         *
+        Bundle args = getIntent().getExtras();
+        if (args != null) {
+            fragment.setArguments(getIntent().getExtras());
+        }
+        */
 
         // Open fragment
         if (fragment == null) {

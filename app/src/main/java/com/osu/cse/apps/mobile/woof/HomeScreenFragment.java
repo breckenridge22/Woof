@@ -3,12 +3,15 @@ package com.osu.cse.apps.mobile.woof;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
 public class HomeScreenFragment extends Fragment implements View.OnClickListener {
+
+    private static final String TAG = "HomeScreenFragment";
 
     public static HomeScreenFragment newInstance() {
         return new HomeScreenFragment();
@@ -17,6 +20,8 @@ public class HomeScreenFragment extends Fragment implements View.OnClickListener
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate() called for " + TAG);
+
 
         //***remove below code after setting up login screen
         // TODO
@@ -27,6 +32,8 @@ public class HomeScreenFragment extends Fragment implements View.OnClickListener
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView() called for " + TAG);
+
         View v = inflater.inflate(R.layout.fragment_home_screen, container, false);
 
         Button mapButton = v.findViewById(R.id.map_button);
