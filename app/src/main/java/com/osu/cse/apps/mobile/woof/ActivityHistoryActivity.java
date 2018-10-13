@@ -21,7 +21,9 @@ public class ActivityHistoryActivity extends SingleFragmentActivity {
     @Override
     protected Fragment createFragment() {
         UUID dogId = (UUID) getIntent().getSerializableExtra(EXTRA_DOG_ID);
-        return DogHomeFragment.newInstance(new DogHomeFragment(), dogId);
+        DogHomeFragment fragment = new DogHomeFragment();
+        fragment.setArgs(dogId);
+        return fragment;
     }
 
 

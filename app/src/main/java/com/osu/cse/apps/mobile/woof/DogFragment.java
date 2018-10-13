@@ -22,11 +22,19 @@ public abstract class DogFragment extends Fragment {
         void onDogNameChanged();
     }
 
+    /*
     public static Fragment newInstance(Fragment fragment, UUID dogId) {
         Bundle args = new Bundle();
         args.putSerializable(ARG_DOG_ID, dogId);
         fragment.setArguments(args);
         return fragment;
+    }
+    */
+
+    public void setArgs(UUID dogId) {
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_DOG_ID, dogId);
+        setArguments(args);
     }
 
     /*

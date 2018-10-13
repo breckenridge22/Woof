@@ -49,8 +49,14 @@ public class DogManagementActivity extends AppCompatActivity
 
         UUID dogId = (UUID) getIntent().getSerializableExtra(EXTRA_DOG_ID);
         mDog = CurrentUser.get().getDog(dogId);
-        loadHeaderFragment(DogHeaderFragment.newInstance(new DogHeaderFragment(), mDog.getDogId()));
-        loadBodyFragment(DogHomeFragment.newInstance(new DogHomeFragment(), mDog.getDogId()));
+
+        DogHeaderFragment headerFragment = new DogHeaderFragment();
+        headerFragment.setArgs(mDog.getDogId());
+        loadHeaderFragment(headerFragment);
+
+        DogHomeFragment bodyFragment = new DogHomeFragment();
+        bodyFragment.setArgs(mDog.getDogId());
+        loadBodyFragment(bodyFragment);
     }
 
     private void loadHeaderFragment(Fragment newFragment) {
@@ -73,19 +79,26 @@ public class DogManagementActivity extends AppCompatActivity
         else {
             fm.beginTransaction()
                     .replace(containerId, newFragment)
+                    .addToBackStack(null) // adds current fragment to back stack, so that when
+                                          // back button pressed after new fragment loaded,
+                                          // new fragment will be destroyed and current fragment
+                                          // will be popped off back stack and loaded in its place
                     .commit();
         }
     }
 
     /*
-     * This method is called by the a fragment being hosted by the activity
-     * when one of its menu buttons is selected
+     * This method is called by the DogHomeFragment (which is hosted by this activity)
+     * when one of its menu buttons is selected.  It loads a new fragment
+     * into the body fragment.
      */
     public void onMenuButtonSelected(Screen screen) {
+        DogFragment fragment = null;
         switch (screen) {
             case DOG_INFORMATION:
-                loadBodyFragment(DogInformationFragment.newInstance(new DogInformationFragment(),
-                        mDog.getDogId()));
+                fragment = new DogInformationFragment();
+                //loadBodyFragment(DogInformationFragment.newInstance(new DogInformationFragment(),
+                //        mDog.getDogId()));
                 break;
             case ACTIVITY_SCHEDULE:
                 // TODO
@@ -99,6 +112,10 @@ public class DogManagementActivity extends AppCompatActivity
             case REPORT_LOST:
                 // TODO
                 break;
+        }
+        if (fragment != null) {
+            fragment.setArgs(mDog.getDogId());
+            loadBodyFragment(fragment);
         }
     }
 
