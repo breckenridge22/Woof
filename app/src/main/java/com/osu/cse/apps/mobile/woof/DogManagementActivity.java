@@ -7,7 +7,6 @@ package com.osu.cse.apps.mobile.woof;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -20,86 +19,86 @@ public class DogManagementActivity extends AppCompatActivity
     private Dog mDog;
     private static final String EXTRA_DOG_ID =
             "com.osu.cse.apps.mobile.woof.dogId.DogManagementActivity";
+    private static final String EXTRA_FRAGMENT_ID =
+            "com.osu.cse.apps.mobile.woof.fragment.DogManagementActivity";
     private static final String TAG = "DogManagementActivity";
 
-    /*
-     * Each of these enums corresponds to a fragment that can be loaded in
-     * fragment_body_container of the activity_dog_management layout
-     */
-    public enum Screen {
-        DOG_HOME,
-        DOG_INFORMATION,
-        ACTIVITY_SCHEDULE,
-        ACTIVITY_HISTORY,
-        OWNERS_CARETAKERS,
-        REPORT_LOST
-    }
+    // fragment codes to use in intent extras
+    public static final int DOG_HOME = 0;
+    public static final int DOG_INFORMATION = 1;
+    public static final int ACTIVITY_SCHEDULE = 2;
+    public static final int ACTIVITY_HISTORY = 3;
+    public static final int OWNERS_CARETAKERS = 4;
+    public static final int REPORT_LOST = 5;
 
-    public static Intent newIntent(Context packageContext, UUID dogId) {
+    public static Intent newIntent(Context packageContext, UUID dogId, int fragmentId) {
         Intent intent = new Intent(packageContext, DogManagementActivity.class);
         intent.putExtra(EXTRA_DOG_ID, dogId);
+        intent.putExtra(EXTRA_FRAGMENT_ID, fragmentId);
         return intent;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate() called");
+        Log.i(TAG, "onCreate() called");
         setContentView(R.layout.activity_dog_management);
 
         UUID dogId = (UUID) getIntent().getSerializableExtra(EXTRA_DOG_ID);
         mDog = CurrentUser.get().getDog(dogId);
 
-        DogHeaderFragment headerFragment = new DogHeaderFragment();
-        headerFragment.setArgs(mDog.getDogId());
-        loadHeaderFragment(headerFragment);
-
-        DogHomeFragment bodyFragment = new DogHomeFragment();
-        bodyFragment.setArgs(mDog.getDogId());
-        loadBodyFragment(bodyFragment);
-    }
-
-    private void loadHeaderFragment(Fragment newFragment) {
-        loadFragment(R.id.fragment_header_container, newFragment);
-
-    }
-
-    private void loadBodyFragment(Fragment newFragment) {
-        loadFragment(R.id.fragment_body_container, newFragment);
-    }
-
-    private void loadFragment(int containerId, Fragment newFragment) {
         FragmentManager fm = getSupportFragmentManager();
-        Fragment fragment = fm.findFragmentById(containerId);
-        if (fragment == null) {
+
+        int headerContainerId = R.id.fragment_header_container;
+        DogHeaderFragment headerFragment =
+                (DogHeaderFragment) fm.findFragmentById(headerContainerId);
+        if (headerFragment == null) {
+            headerFragment = new DogHeaderFragment();
+            headerFragment.setArgs(mDog.getDogId());
             fm.beginTransaction()
-                    .add(containerId, newFragment)
+                    .add(headerContainerId, headerFragment)
                     .commit();
         }
-        else {
+
+        int bodyContainerId = R.id.fragment_body_container;
+        DogFragment bodyFragment = (DogFragment) fm.findFragmentById(bodyContainerId);
+        if (bodyFragment == null) {
+            bodyFragment = newBodyFragmentFromId(getFragmentIdFromIntent());
             fm.beginTransaction()
-                    .replace(containerId, newFragment)
-                    .addToBackStack(null) // adds current fragment to back stack, so that when
-                                          // back button pressed after new fragment loaded,
-                                          // new fragment will be destroyed and current fragment
-                                          // will be popped off back stack and loaded in its place
+                    .add(bodyContainerId, bodyFragment)
                     .commit();
         }
     }
 
-    /*
-     * This method is called by the DogHomeFragment (which is hosted by this activity)
-     * when one of its menu buttons is selected.  It loads a new fragment
-     * into the body fragment.
-     */
-    public void onMenuButtonSelected(Screen screen) {
+    private int getFragmentIdFromIntent() {
+        Intent intent = getIntent();
+        if (intent == null) {
+            return DOG_HOME;
+        }
+        return intent.getIntExtra(EXTRA_FRAGMENT_ID, DOG_HOME);
+    }
+
+    private void replaceBodyFragment(int fragmentId) {
+        FragmentManager fm = getSupportFragmentManager();
+        int containerId = R.id.fragment_body_container;
+        DogFragment fragment = newBodyFragmentFromId(fragmentId);
+        fm.beginTransaction()
+                .replace(containerId, fragment)
+                .addToBackStack(null) // adds current fragment to back stack, so that when
+                                        // back button pressed after new fragment loaded,
+                                        // new fragment will be destroyed and current fragment
+                                        // will be popped off back stack and loaded in its place
+                .commit();
+    }
+
+    private DogFragment newBodyFragmentFromId(int fragmentId) {
         DogFragment fragment = null;
-        switch (screen) {
+        switch (fragmentId) {
+            case DOG_HOME:
+                fragment = new DogHomeFragment();
+                break;
             case DOG_INFORMATION:
                 fragment = new DogInformationFragment();
-                //loadBodyFragment(DogInformationFragment.newInstance(new DogInformationFragment(),
-                //        mDog.getDogId()));
-                break;
             case ACTIVITY_SCHEDULE:
                 // TODO
                 break;
@@ -115,8 +114,17 @@ public class DogManagementActivity extends AppCompatActivity
         }
         if (fragment != null) {
             fragment.setArgs(mDog.getDogId());
-            loadBodyFragment(fragment);
         }
+        return fragment;
+    }
+
+    /*
+     * This method is called by the DogHomeFragment (which is hosted by this activity)
+     * when one of its menu buttons is selected.  It loads a new fragment
+     * into the body fragment.
+     */
+    public void onMenuButtonSelected(int fragmentId) {
+        replaceBodyFragment(fragmentId);
     }
 
     public void onDogNameChanged() {

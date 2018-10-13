@@ -20,7 +20,7 @@ public class HomeScreenFragment extends Fragment implements View.OnClickListener
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate() called for " + TAG);
+        Log.i(TAG, "onCreate() called");
 
 
         //***remove below code after setting up login screen
@@ -32,7 +32,7 @@ public class HomeScreenFragment extends Fragment implements View.OnClickListener
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d(TAG, "onCreateView() called for " + TAG);
+        Log.i(TAG, "onCreateView() called");
 
         View v = inflater.inflate(R.layout.fragment_home_screen, container, false);
 

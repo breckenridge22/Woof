@@ -20,7 +20,7 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate() called");
+        Log.i(TAG, "onCreate() called");
         setContentView(R.layout.activity_fragment);
 
         FragmentManager fm = getSupportFragmentManager();

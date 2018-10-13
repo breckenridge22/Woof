@@ -22,6 +22,7 @@ public class DogInformationFragment extends DogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.i(TAG, "onCreateView() called");
         View v = inflater.inflate(R.layout.fragment_dog_information, container, false);
 
         mDogIdTextView = v.findViewById(R.id.dog_id);
@@ -35,7 +36,7 @@ public class DogInformationFragment extends DogFragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int count, int after) {
-                Log.d(TAG, "onTextChanged() called");
+                Log.i(TAG, "onTextChanged() called");
                 getDog().setName(s.toString());
                 updateUI();
                 getCallbacks().onDogNameChanged();

@@ -28,13 +28,13 @@ public class DogSelectionFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate() called for " + TAG);
+        Log.i(TAG, "onCreate() called");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d(TAG, "onCreateView() called for " + TAG);
+        Log.i(TAG, "onCreateView() called");
         View v = inflater.inflate(R.layout.fragment_dog_selection, container, false);
 
         mDogRecyclerView = v.findViewById(R.id.dog_recycler_view);
@@ -48,6 +48,7 @@ public class DogSelectionFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        Log.i(TAG, "onResume() called");
         updateUI();
     }
 
@@ -86,7 +87,8 @@ public class DogSelectionFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            Intent intent = DogManagementActivity.newIntent(getActivity(), mDog.getDogId());
+            Intent intent = DogManagementActivity.newIntent(getActivity(), mDog.getDogId(),
+                    DogManagementActivity.DOG_HOME);
             startActivity(intent);
         }
     }

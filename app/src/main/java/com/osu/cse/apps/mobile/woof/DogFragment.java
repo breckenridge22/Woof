@@ -18,18 +18,9 @@ public abstract class DogFragment extends Fragment {
      * Hosting activity must extend this interface
      */
     public interface Callbacks {
-        void onMenuButtonSelected(DogManagementActivity.Screen screen);
+        void onMenuButtonSelected(int fragmentId);
         void onDogNameChanged();
     }
-
-    /*
-    public static Fragment newInstance(Fragment fragment, UUID dogId) {
-        Bundle args = new Bundle();
-        args.putSerializable(ARG_DOG_ID, dogId);
-        fragment.setArguments(args);
-        return fragment;
-    }
-    */
 
     public void setArgs(UUID dogId) {
         Bundle args = new Bundle();
@@ -45,14 +36,14 @@ public abstract class DogFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        Log.d(TAG, "onAttach() called");
+        Log.i(TAG, "onAttach() called");
         mCallbacks = (Callbacks) context;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate() called");
+        Log.i(TAG, "onCreate() called");
         UUID dogId = (UUID) getArguments().getSerializable(ARG_DOG_ID);
         mDog = CurrentUser.get().getDog(dogId);
     }
@@ -60,7 +51,7 @@ public abstract class DogFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        Log.d(TAG, "onDetach() called");
+        Log.i(TAG, "onDetach() called");
         mCallbacks = null;
     }
 

@@ -13,14 +13,11 @@
 package com.osu.cse.apps.mobile.woof;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-
-import java.util.UUID;
 
 public class DogHomeFragment extends DogFragment implements View.OnClickListener {
 
@@ -29,8 +26,8 @@ public class DogHomeFragment extends DogFragment implements View.OnClickListener
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d(TAG, "onCreateView() called");
-        View v = inflater.inflate(R.layout.fragment_dog_management, container, false);
+        Log.i(TAG, "onCreateView() called");
+        View v = inflater.inflate(R.layout.fragment_dog_home, container, false);
 
         Button dogInfoButton = v.findViewById(R.id.dog_information_button);
         dogInfoButton.setOnClickListener(this);
@@ -51,10 +48,10 @@ public class DogHomeFragment extends DogFragment implements View.OnClickListener
     }
 
     public void onClick(View v) {
-        Log.d(TAG, "onClick() called");
+        Log.i(TAG, "onClick() called");
         switch (v.getId()) {
             case R.id.dog_information_button:
-                getCallbacks().onMenuButtonSelected(DogManagementActivity.Screen.DOG_INFORMATION);
+                getCallbacks().onMenuButtonSelected(DogManagementActivity.DOG_INFORMATION);
                 break;
             case R.id.activity_schedule_button:
                 // open activity schedule screen activity
