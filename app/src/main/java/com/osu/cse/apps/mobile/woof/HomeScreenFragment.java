@@ -3,12 +3,15 @@ package com.osu.cse.apps.mobile.woof;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
 public class HomeScreenFragment extends Fragment implements View.OnClickListener {
+
+    private static final String TAG = "HomeScreenFragment";
 
     public static HomeScreenFragment newInstance() {
         return new HomeScreenFragment();
@@ -17,6 +20,8 @@ public class HomeScreenFragment extends Fragment implements View.OnClickListener
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i(TAG, "onCreate() called");
+
 
         //***remove below code after setting up login screen
         // TODO
@@ -27,6 +32,8 @@ public class HomeScreenFragment extends Fragment implements View.OnClickListener
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.i(TAG, "onCreateView() called");
+
         View v = inflater.inflate(R.layout.fragment_home_screen, container, false);
 
         Button mapButton = v.findViewById(R.id.map_button);
@@ -62,6 +69,7 @@ public class HomeScreenFragment extends Fragment implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
+        Intent intent;
         switch (v.getId()) {
             case R.id.map_button:
                 // TODO
@@ -70,10 +78,18 @@ public class HomeScreenFragment extends Fragment implements View.OnClickListener
                 // TODO
                 break;
             case R.id.new_activity_button:
-                // TODO
+                intent = DogSelectionActivity.newIntent(getActivity());
+                intent.putExtra("activity_type", "new_activity");
+                startActivity(intent);
+                break;
+            case R.id.activity_history_button:
+                intent = DogSelectionActivity.newIntent(getActivity());
+                intent.putExtra("activity_type", "activity_history");
+                startActivity(intent);
                 break;
             case R.id.manage_dogs_button:
-                Intent intent = DogSelectionActivity.newIntent(getActivity());
+                intent = DogSelectionActivity.newIntent(getActivity());
+                intent.putExtra("activity_type", "manage_dogs");
                 startActivity(intent);
                 break;
             case R.id.add_dog_button:

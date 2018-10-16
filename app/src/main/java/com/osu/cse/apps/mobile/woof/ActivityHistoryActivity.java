@@ -6,13 +6,14 @@ import android.support.v4.app.Fragment;
 
 import java.util.UUID;
 
-public class DogInformationActivity extends SingleFragmentActivity {
+public class ActivityHistoryActivity extends SingleFragmentActivity {
 
     private static final String EXTRA_DOG_ID =
-            "com.osu.cse.apps.mobile.woof.DogInformationActivity";
+            "com.osu.cse.apps.mobile.woof.ActivityHistoryActivity";
+
 
     public static Intent newIntent(Context packageContext, UUID dogId) {
-        Intent intent = new Intent(packageContext, DogInformationActivity.class);
+        Intent intent = new Intent(packageContext, DogManagementActivity.class);
         intent.putExtra(EXTRA_DOG_ID, dogId);
         return intent;
     }
@@ -20,7 +21,10 @@ public class DogInformationActivity extends SingleFragmentActivity {
     @Override
     protected Fragment createFragment() {
         UUID dogId = (UUID) getIntent().getSerializableExtra(EXTRA_DOG_ID);
-        return DogInformationFragment.newInstance(dogId);
+        DogHomeFragment fragment = new DogHomeFragment();
+        fragment.setArgs(dogId);
+        return fragment;
     }
+
 
 }

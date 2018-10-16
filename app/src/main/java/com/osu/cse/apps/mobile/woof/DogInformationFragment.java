@@ -13,39 +13,17 @@ import android.widget.TextView;
 
 import java.util.UUID;
 
-public class DogInformationFragment extends Fragment {
+public class DogInformationFragment extends DogFragment {
 
-    private static final String ARG_DOG_ID = "dog_id";
     private static final String TAG = "DogInformationFragment";
-
-    private Dog mDog;
-
-    private TextView mDogNameTextView;
     private TextView mDogIdTextView;
     private EditText mDogNameEditText;
-
-    public static Fragment newInstance(UUID dogId) {
-        Bundle args = new Bundle();
-        args.putSerializable(ARG_DOG_ID, dogId);
-
-        Fragment fragment = new DogInformationFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        UUID dogId = (UUID) getArguments().getSerializable(ARG_DOG_ID);
-        mDog = CurrentUser.get().getDog(dogId);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.i(TAG, "onCreateView() called");
         View v = inflater.inflate(R.layout.fragment_dog_information, container, false);
-
-        mDogNameTextView = v.findViewById(R.id.dog_name_header);
 
         mDogIdTextView = v.findViewById(R.id.dog_id);
 
@@ -58,9 +36,10 @@ public class DogInformationFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int count, int after) {
-                mDog.setName(s.toString());
-                Log.d(TAG, "onTextChanged() called");
+                Log.i(TAG, "onTextChanged() called");
+                getDog().setName(s.toString());
                 updateUI();
+                getCallbacks().onDogNameChanged();
             }
 
             @Override
@@ -69,18 +48,14 @@ public class DogInformationFragment extends Fragment {
             }
         });
 
-        mDogNameEditText.setText(mDog.getName());
+        mDogNameEditText.setText(getDog().getName());
         updateUI();
 
         return v;
     }
 
     public void updateUI() {
-        Log.d(TAG, "updateUI() called");
-        mDogNameTextView.setText(mDog.getName());
-        mDogIdTextView.setText(mDog.getDogId().toString());
-        //mDogNameEditText.setText(mDog.getName());
-        Log.d(TAG, "updateUI() finished");
+        mDogIdTextView.setText(getDog().getDogId().toString());
     }
 
 }
