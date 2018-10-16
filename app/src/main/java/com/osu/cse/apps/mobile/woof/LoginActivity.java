@@ -4,11 +4,18 @@ package com.osu.cse.apps.mobile.woof;
 
 import android.support.v4.app.Fragment;
 
-public class LoginActivity extends SingleFragmentActivity {
+import com.google.firebase.FirebaseApp;
+
+public class LoginActivity extends SingleFragmentActivity implements LoginFragment.Callbacks {
     @Override
     protected Fragment createFragment() {
         return new LoginFragment();
     }
+
+    public void initFireBase(){
+        FirebaseApp.initializeApp(this);
+    }
+
 }
 
 
