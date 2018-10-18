@@ -115,13 +115,16 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             Toast.makeText(getActivity(),"Account Created",Toast.LENGTH_SHORT).show();
-                            FirebaseUser user = mAuth.getCurrentUser();
                             logged = true;
+                            FirebaseUser user = mAuth.getCurrentUser();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
                             Toast.makeText(getActivity(),"Invalid Account Creation",Toast.LENGTH_SHORT).show();
                             logged = false;
+                        }
+                        if(logged){
+                            signIn(mUsernameEditText.getText().toString(), mPasswordEditText.getText().toString());
                         }
                     }
                 });
@@ -139,17 +142,22 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
                             Toast.makeText(getActivity(),"Signed in",Toast.LENGTH_SHORT).show();
                             logged = true;
+                            FirebaseUser user = mAuth.getCurrentUser();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
                             Toast.makeText(getActivity(),"Wrong Email or Password",Toast.LENGTH_SHORT).show();
                             logged = false;
                         }
+                        if(logged){
+                            Intent intent = HomeScreenActivity.newIntent(getActivity());
+                            startActivity(intent);
+                        }
                     }
                 });
+
         // [END sign_in_with_email]
     }
 
@@ -157,16 +165,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         int i = v.getId();
         if (i == R.id.new_user_button) {
             createAccount(mUsernameEditText.getText().toString(), mPasswordEditText.getText().toString());
-            if(logged){
-                Intent intent = HomeScreenActivity.newIntent(getActivity());
-                startActivity(intent);
-            }
         } else if (i == R.id.login_button) {
             signIn(mUsernameEditText.getText().toString(), mPasswordEditText.getText().toString());
-            if(logged){
-                Intent intent = HomeScreenActivity.newIntent(getActivity());
-                startActivity(intent);
-            }
         }
     }
 
