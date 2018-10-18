@@ -28,11 +28,14 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.Arrays;
 import java.util.List;
 
-public class LoginFragment extends Fragment {
+public class LoginFragment extends Fragment implements View.OnClickListener {
 
     private EditText mUsernameEditText;
     private EditText mPasswordEditText;
+    private Button mLoginButton;
+    private Button mNewUserButton;
     private static final String TAG = "LoginFragment";
+    private boolean logged = false;
 
     // Choose an arbitrary request code value
     private FirebaseAuth mAuth;
@@ -66,20 +69,19 @@ public class LoginFragment extends Fragment {
 
         mUsernameEditText = v.findViewById(R.id.username_text);
         mPasswordEditText = v.findViewById(R.id.password_text);
-
+        mLoginButton = v.findViewById(R.id.login_button);
+        mNewUserButton = v.findViewById(R.id.new_user_button);
         // [START initialize_auth]
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
         // [END initialize_auth]
 
-            /*Button loginButton = v.findViewById(R.id.login_button);
-            if (loginButton != null) {
-                loginButton.setOnClickListener(this);
+            if (mLoginButton != null) {
+                mLoginButton.setOnClickListener(this);
             }
-            Button newUserButton = v.findViewById(R.id.new_user_button);
-            if (newUserButton != null) {
-                newUserButton.setOnClickListener(this);
-            }*/
+            if (mNewUserButton != null) {
+                mNewUserButton.setOnClickListener(this);
+            }
 
         return v;
     }
@@ -101,6 +103,31 @@ public class LoginFragment extends Fragment {
     }
     // [END on_start_check_user]
 
+    private void createAccount(String email, String password) {
+        Log.d(TAG, "createAccount:" + email);
+
+        // [START create_user_with_email]
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "createUserWithEmail:success");
+                            Toast.makeText(getActivity(),"Account Created",Toast.LENGTH_SHORT).show();
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            logged = true;
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                            Toast.makeText(getActivity(),"Invalid Account Creation",Toast.LENGTH_SHORT).show();
+                            logged = false;
+                        }
+                    }
+                });
+        // [END create_user_with_email]
+    }
+
     private void signIn(String email, String password) {
         Log.d(TAG, "signIn:" + email);
 
@@ -113,14 +140,34 @@ public class LoginFragment extends Fragment {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            //updateUI(user);
+                            Toast.makeText(getActivity(),"Signed in",Toast.LENGTH_SHORT).show();
+                            logged = true;
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
+                            Toast.makeText(getActivity(),"Wrong Email or Password",Toast.LENGTH_SHORT).show();
+                            logged = false;
                         }
                     }
                 });
         // [END sign_in_with_email]
+    }
+
+    public void onClick(View v) {
+        int i = v.getId();
+        if (i == R.id.new_user_button) {
+            createAccount(mUsernameEditText.getText().toString(), mPasswordEditText.getText().toString());
+            if(logged){
+                Intent intent = HomeScreenActivity.newIntent(getActivity());
+                startActivity(intent);
+            }
+        } else if (i == R.id.login_button) {
+            signIn(mUsernameEditText.getText().toString(), mPasswordEditText.getText().toString());
+            if(logged){
+                Intent intent = HomeScreenActivity.newIntent(getActivity());
+                startActivity(intent);
+            }
+        }
     }
 
 }
