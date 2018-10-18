@@ -9,9 +9,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 public class HomeScreenFragment extends Fragment implements View.OnClickListener {
 
     private static final String TAG = "HomeScreenFragment";
+    private FirebaseAuth mAuth;
 
     public static HomeScreenFragment newInstance() {
         return new HomeScreenFragment();
@@ -25,7 +29,8 @@ public class HomeScreenFragment extends Fragment implements View.OnClickListener
 
         //***remove below code after setting up login screen
         // TODO
-        CurrentUser.get();
+        mAuth = FirebaseAuth.getInstance();
+        //CurrentUser.get();
         //***remove above code after setting up login screen
     }
 
@@ -102,7 +107,9 @@ public class HomeScreenFragment extends Fragment implements View.OnClickListener
                 // TODO
                 break;
             case R.id.log_out_button:
-                // TODO
+                LoginFragment.signOut();
+                intent = LoginActivity.newIntent(getActivity());
+                startActivity(intent);
                 break;
         }
     }

@@ -25,9 +25,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class LoginFragment extends Fragment implements View.OnClickListener {
 
     private EditText mUsernameEditText;
@@ -35,10 +32,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private Button mLoginButton;
     private Button mNewUserButton;
     private static final String TAG = "LoginFragment";
-    private boolean logged = false;
 
     // Choose an arbitrary request code value
-    private FirebaseAuth mAuth;
+    public static FirebaseAuth mAuth;
 
     private final static String OPT_NAME = "name";
 
@@ -55,17 +51,10 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v;
         Activity activity = getActivity();
+        mCallbacks.initFireBase();
 
-        //if (activity != null) {
             int rotation = getActivity().getWindowManager().getDefaultDisplay().getRotation();
-            //if (rotation == Surface.ROTATION_90 || rotation == Surface.ROTATION_270) {
-            //  v = inflater.inflate(R.layout.fragment_login_land, container, false);
-            //} else {
-            //gv = inflater.inflate(R.layout.fragment_login, container, false);
-            //}
-        //} else {
             v = inflater.inflate(R.layout.fragment_login, container, false);
-        //}
 
         mUsernameEditText = v.findViewById(R.id.username_text);
         mPasswordEditText = v.findViewById(R.id.password_text);
@@ -96,39 +85,36 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onStart() {
         super.onStart();
-        mCallbacks.initFireBase();
-        // Check if user is signed in (non-null) and update UI accordingly.
+        //mCallbacks.initFireBase();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        //updateUI(currentUser);
+
+        if (currentUser != null){
+            Log.d(TAG, "OnStart Login");
+            Toast.makeText(getActivity(),"Signed in",Toast.LENGTH_SHORT).show();
+            Intent intent = HomeScreenActivity.newIntent(getActivity());
+            startActivity(intent);
+        }
     }
-    // [END on_start_check_user]
 
     private void createAccount(String email, String password) {
         Log.d(TAG, "createAccount:" + email);
 
-        // [START create_user_with_email]
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
+                            // Sign up success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             Toast.makeText(getActivity(),"Account Created",Toast.LENGTH_SHORT).show();
-                            logged = true;
-                            FirebaseUser user = mAuth.getCurrentUser();
+                            signIn(mUsernameEditText.getText().toString(), mPasswordEditText.getText().toString());
                         } else {
-                            // If sign in fails, display a message to the user.
+                            // If sign up fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
                             Toast.makeText(getActivity(),"Invalid Account Creation",Toast.LENGTH_SHORT).show();
-                            logged = false;
-                        }
-                        if(logged){
-                            signIn(mUsernameEditText.getText().toString(), mPasswordEditText.getText().toString());
                         }
                     }
                 });
-        // [END create_user_with_email]
     }
 
     private void signIn(String email, String password) {
@@ -143,17 +129,14 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
                             Toast.makeText(getActivity(),"Signed in",Toast.LENGTH_SHORT).show();
-                            logged = true;
                             FirebaseUser user = mAuth.getCurrentUser();
+                            Intent intent = HomeScreenActivity.newIntent(getActivity());
+                            startActivity(intent);
+                            getActivity().finish();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
                             Toast.makeText(getActivity(),"Wrong Email or Password",Toast.LENGTH_SHORT).show();
-                            logged = false;
-                        }
-                        if(logged){
-                            Intent intent = HomeScreenActivity.newIntent(getActivity());
-                            startActivity(intent);
                         }
                     }
                 });
@@ -169,6 +152,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             signIn(mUsernameEditText.getText().toString(), mPasswordEditText.getText().toString());
         }
     }
+
+    public static void signOut() {
+        mAuth.signOut();
+        Log.d(TAG, "Current User:" + mAuth.getCurrentUser());
+    }
+
 
 }
 
