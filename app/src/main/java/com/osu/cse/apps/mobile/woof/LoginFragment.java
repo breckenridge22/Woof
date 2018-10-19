@@ -24,6 +24,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class LoginFragment extends Fragment implements View.OnClickListener {
 
@@ -33,8 +35,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private Button mNewUserButton;
     private static final String TAG = "LoginFragment";
 
-    // Choose an arbitrary request code value
     public static FirebaseAuth mAuth;
+    DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
 
     private final static String OPT_NAME = "name";
 
@@ -107,6 +109,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                             // Sign up success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             Toast.makeText(getActivity(),"Account Created",Toast.LENGTH_SHORT).show();
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            Log.d(TAG, "Created User ID: " + user.getUid());
+                            writeNewUser(user.getUid(), "Bob", "Thomas");
                             signIn(mUsernameEditText.getText().toString(), mPasswordEditText.getText().toString());
                         } else {
                             // If sign up fails, display a message to the user.
@@ -156,6 +161,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     public static void signOut() {
         mAuth.signOut();
         Log.d(TAG, "Current User:" + mAuth.getCurrentUser());
+    }
+
+    private void writeNewUser(String userId, String fName, String lName) {
+        User user = new User(userId, fName, lName);
+
+        mDatabase.child("users").child(userId).setValue(user);
     }
 
 

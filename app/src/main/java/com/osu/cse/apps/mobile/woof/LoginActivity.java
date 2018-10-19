@@ -20,7 +20,7 @@ public class LoginActivity extends SingleFragmentActivity implements LoginFragme
         return new LoginFragment();
     }
 
-    public void initFireBase(){
+    public void initFireBase() {
         FirebaseApp.initializeApp(this);
     }
 
