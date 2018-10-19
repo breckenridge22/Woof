@@ -21,6 +21,8 @@ public class DogSelectionFragment extends Fragment {
     private RecyclerView mDogRecyclerView;
     private DogAdapter mAdapter;
 
+    private String activity_type;
+
     public static DogSelectionFragment newInstance() {
         return new DogSelectionFragment();
     }
@@ -29,6 +31,12 @@ public class DogSelectionFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(TAG, "onCreate() called");
+
+        // Retrieve values stored in intent
+        Bundle bundle = this.getArguments();
+        if(bundle != null){
+            activity_type = bundle.getString("activity_type");
+        }
     }
 
     @Override
@@ -72,7 +80,7 @@ public class DogSelectionFragment extends Fragment {
         private TextView mDogNameTextView;
 
         public DogHolder(LayoutInflater inflater, ViewGroup parent) {
-            super (inflater.inflate(R.layout.list_item_dog, parent, false));
+            super(inflater.inflate(R.layout.list_item_dog, parent, false));
             itemView.setOnClickListener(this);
 
             mDogPictureImageView = itemView.findViewById(R.id.dog_picture);
@@ -87,9 +95,14 @@ public class DogSelectionFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            Intent intent = DogManagementActivity.newIntent(getActivity(), mDog.getDogId(),
-                    DogManagementActivity.DOG_HOME);
-            startActivity(intent);
+            if (activity_type.equals("manage_dogs")) {
+                Intent intent = DogManagementActivity.newIntent(getActivity(), mDog.getDogId(),
+                        DogManagementActivity.DOG_HOME);
+                startActivity(intent);
+            } else if (activity_type.equals("activity_history")) {
+                Intent intent = ActivityHistoryActivity.newIntent(getActivity(), mDog.getDogId());
+                startActivity(intent);
+            }
         }
     }
 

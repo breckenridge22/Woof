@@ -26,19 +26,20 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.fragment_container);
 
-        // Pass any values stored in intent to fragment.
-        /*
-         * This segment seems to make the app crash
-         *
+        // Retrieve stored values in intent.
         Bundle args = getIntent().getExtras();
-        if (args != null) {
-            fragment.setArguments(getIntent().getExtras());
-        }
-        */
+        Log.d(TAG, "GetIntent().getExtras()");
 
         // Open fragment
         if (fragment == null) {
             fragment = createFragment();
+
+            // Pass the stored values to fragment
+            if (args != null) {
+                Log.d(TAG, "inserting extras into fragment");
+                fragment.setArguments(args);
+            }
+
             fm.beginTransaction()
                     .add(R.id.fragment_container, fragment)
                     .commit();
