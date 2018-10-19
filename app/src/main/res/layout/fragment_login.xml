@@ -63,6 +63,54 @@
             android:singleLine="true"
             />
 
+        <TextView
+            android:visibility = "gone"
+            android:id="@+id/fName_textV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="8dp"
+            android:labelFor="@+id/fName_text"
+            android:text="@string/prompt_fName"/>
+
+        <EditText
+            android:visibility = "gone"
+            android:id="@+id/fName_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:inputType="text"
+            android:singleLine="true"
+            />
+
+        <TextView
+            android:id="@+id/lName_textV"
+            android:visibility = "gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="8dp"
+            android:labelFor="@+id/lName_text"
+            android:text="@string/prompt_lName"/>
+
+        <EditText
+            android:visibility = "gone"
+            android:id="@+id/lName_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:inputType="text"
+            android:singleLine="true"
+            />
+
         <Button
             android:id="@+id/login_button"
             android:layout_width="match_parent"
