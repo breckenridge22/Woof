@@ -3,6 +3,8 @@
 
     <!-- Strings related to login -->
     <string name="login_title">Welcome to Woof!</string>
+    <string name="prompt_fName">First Name</string>
+    <string name="prompt_lName">Last Name</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_up">Sign up</string>

@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
@@ -24,17 +25,25 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class LoginFragment extends Fragment implements View.OnClickListener {
 
     private EditText mUsernameEditText;
     private EditText mPasswordEditText;
+    private EditText mFNameEditText;
+    private EditText mLNameEditText;
+    private TextView mFNameTextView;
+    private TextView mLNameTextView;
     private Button mLoginButton;
     private Button mNewUserButton;
     private static final String TAG = "LoginFragment";
 
-    // Choose an arbitrary request code value
+    private boolean newU = true;
+
     public static FirebaseAuth mAuth;
+    DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
 
     private final static String OPT_NAME = "name";
 
@@ -53,17 +62,20 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         Activity activity = getActivity();
         mCallbacks.initFireBase();
 
-            int rotation = getActivity().getWindowManager().getDefaultDisplay().getRotation();
-            v = inflater.inflate(R.layout.fragment_login, container, false);
+        int rotation = getActivity().getWindowManager().getDefaultDisplay().getRotation();
+        v = inflater.inflate(R.layout.fragment_login, container, false);
 
         mUsernameEditText = v.findViewById(R.id.username_text);
         mPasswordEditText = v.findViewById(R.id.password_text);
+        mFNameEditText = v.findViewById(R.id.fName_text);
+        mLNameEditText = v.findViewById(R.id.lName_text);
+        mFNameTextView = v.findViewById(R.id.fName_textV);
+        mLNameTextView = v.findViewById(R.id.lName_textV);
         mLoginButton = v.findViewById(R.id.login_button);
         mNewUserButton = v.findViewById(R.id.new_user_button);
-        // [START initialize_auth]
+
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
-        // [END initialize_auth]
 
             if (mLoginButton != null) {
                 mLoginButton.setOnClickListener(this);
@@ -107,6 +119,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                             // Sign up success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             Toast.makeText(getActivity(),"Account Created",Toast.LENGTH_SHORT).show();
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            Log.d(TAG, "Created User ID: " + user.getUid());
+                            writeNewUser(user.getUid(), mFNameEditText.getText().toString(), mLNameEditText.getText().toString());
                             signIn(mUsernameEditText.getText().toString(), mPasswordEditText.getText().toString());
                         } else {
                             // If sign up fails, display a message to the user.
@@ -147,7 +162,16 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         int i = v.getId();
         if (i == R.id.new_user_button) {
-            createAccount(mUsernameEditText.getText().toString(), mPasswordEditText.getText().toString());
+            if(newU){
+                mFNameTextView.setVisibility(View.VISIBLE);
+                mLNameTextView.setVisibility(View.VISIBLE);
+                mFNameEditText.setVisibility(View.VISIBLE);
+                mLNameEditText.setVisibility(View.VISIBLE);
+                mLoginButton.setVisibility(View.GONE);
+                newU = false;
+            } else {
+                createAccount(mUsernameEditText.getText().toString(), mPasswordEditText.getText().toString());
+            }
         } else if (i == R.id.login_button) {
             signIn(mUsernameEditText.getText().toString(), mPasswordEditText.getText().toString());
         }
@@ -156,6 +180,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     public static void signOut() {
         mAuth.signOut();
         Log.d(TAG, "Current User:" + mAuth.getCurrentUser());
+    }
+
+    private void writeNewUser(String userId, String fName, String lName) {
+        User user = new User(userId, fName, lName);
+
+        mDatabase.child("users").child(userId).setValue(user);
     }
 
 
