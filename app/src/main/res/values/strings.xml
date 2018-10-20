@@ -40,4 +40,8 @@
     <string name="settings_button">Settings</string>
     <string name="log_out_button">Log Out</string>
 
+    <!-- Strings related to NewDogFragment -->
+    <string name="new_dog_prompt">Enter Information For New Dog"</string>
+    <string name="family">Family</string>
+
 </resources>

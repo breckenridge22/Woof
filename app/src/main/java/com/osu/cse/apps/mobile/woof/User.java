@@ -37,10 +37,11 @@ public class User {
         return mDogList.getDogList();
     }
 
-    public Dog getDog(UUID dogId) {
+    public Dog getDog(String dogId) {
         return mDogList.getDog(dogId);
     }
 
+    /*
     public static User getTestUser() {
         User testUser = new User();
         testUser.mUserId = "";
@@ -48,5 +49,6 @@ public class User {
         testUser.mDogList = DogList.getTestDogList();
         return testUser;
     }
+    */
 
 }

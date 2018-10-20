@@ -48,7 +48,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private final static String OPT_NAME = "name";
 
     /*
-     * Hosting activity must extend this interface
+     * Hosting activity must implement this interface
      */
     public interface Callbacks {
         void initFireBase();
@@ -59,7 +59,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v;
-        Activity activity = getActivity();
         mCallbacks.initFireBase();
 
         int rotation = getActivity().getWindowManager().getDefaultDisplay().getRotation();
@@ -77,20 +76,26 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
-            if (mLoginButton != null) {
-                mLoginButton.setOnClickListener(this);
-            }
-            if (mNewUserButton != null) {
-                mNewUserButton.setOnClickListener(this);
-            }
+        if (mLoginButton != null) {
+            mLoginButton.setOnClickListener(this);
+        }
+        if (mNewUserButton != null) {
+            mNewUserButton.setOnClickListener(this);
+        }
 
         return v;
     }
 
     @Override
-    public void onAttach(Context context){
+    public void onAttach(Context context) {
         super.onAttach(context);
-        mCallbacks = (Callbacks) context ;
+        mCallbacks = (Callbacks) context;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallbacks = null;
     }
 
     // [START on_start_check_user]
@@ -100,16 +105,16 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         //mCallbacks.initFireBase();
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
-        if (currentUser != null){
+        if (currentUser != null) {
             Log.d(TAG, "OnStart Login");
-            Toast.makeText(getActivity(),"Signed in",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Signed in", Toast.LENGTH_SHORT).show();
             Intent intent = HomeScreenActivity.newIntent(getActivity());
             startActivity(intent);
         }
     }
 
     private void createAccount(String email, String password) {
-        Log.d(TAG, "createAccount:" + email);
+        Log.d(TAG, "createAccount: " + email);
 
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -118,7 +123,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                         if (task.isSuccessful()) {
                             // Sign up success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
-                            Toast.makeText(getActivity(),"Account Created",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "Account Created", Toast.LENGTH_SHORT).show();
                             FirebaseUser user = mAuth.getCurrentUser();
                             Log.d(TAG, "Created User ID: " + user.getUid());
                             writeNewUser(user.getUid(), mFNameEditText.getText().toString(), mLNameEditText.getText().toString());
@@ -126,7 +131,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                         } else {
                             // If sign up fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(getActivity(),"Invalid Account Creation",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "Invalid Account Creation", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -143,7 +148,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
-                            Toast.makeText(getActivity(),"Signed in",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "Signed in", Toast.LENGTH_SHORT).show();
                             FirebaseUser user = mAuth.getCurrentUser();
                             Intent intent = HomeScreenActivity.newIntent(getActivity());
                             startActivity(intent);
@@ -151,7 +156,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(getActivity(),"Wrong Email or Password",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "Wrong Email or Password", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -162,7 +167,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         int i = v.getId();
         if (i == R.id.new_user_button) {
-            if(newU){
+            if (newU) {
                 mFNameTextView.setVisibility(View.VISIBLE);
                 mLNameTextView.setVisibility(View.VISIBLE);
                 mFNameEditText.setVisibility(View.VISIBLE);

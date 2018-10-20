@@ -4,14 +4,21 @@ import java.util.UUID;
 
 public class Dog {
 
-    private UUID mDogId;
+    private String mDogId;
     private String mName;
+    private String mFamilyId;
 
-    public Dog(UUID dogId) {
-        mDogId = dogId;
+    public Dog() {
+        // default constructor for Firebase
     }
 
-    public UUID getDogId() {
+    public Dog(String dogUUID, String dogName, String familyUUID) {
+        mDogId = dogUUID;
+        mName = dogName;
+        mFamilyId = familyUUID;
+    }
+
+    public String getDogId() {
         return mDogId;
     }
 
@@ -23,6 +30,9 @@ public class Dog {
         mName = name;
     }
 
+    public String getFamilyId() { return mFamilyId; }
+
+    /*
     public static Dog[] getTestDogs() {
         Dog testDog1 = new Dog(UUID.randomUUID());
         testDog1.setName("Sparky");
@@ -72,4 +82,5 @@ public class Dog {
         return new Dog[] {testDog1, testDog2, testDog3, testDog4, testDog5, testDog6, testDog7,
             testDog8, testDog9, testDog10, testDog11, testDog12, testDog13, testDog14, testDog15};
     }
+    */
 }

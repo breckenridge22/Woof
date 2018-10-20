@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
-import java.util.UUID;
-
 public abstract class ActivityFragment extends Fragment {
 
     private static final String ARG_DOG_ID = "dog_id";
@@ -25,9 +23,9 @@ public abstract class ActivityFragment extends Fragment {
         void onDogNameChanged();
     }
 
-    public void setArgs(UUID dogId) {
+    public void setArgs(String dogId) {
         Bundle args = new Bundle();
-        args.putSerializable(ARG_DOG_ID, dogId);
+        args.putString(ARG_DOG_ID, dogId);
         setArguments(args);
     }
 
@@ -47,7 +45,7 @@ public abstract class ActivityFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(TAG, "onCreate() called");
-        UUID dogId = (UUID) getArguments().getSerializable(ARG_DOG_ID);
+        String dogId = getArguments().getString(ARG_DOG_ID);
         mDog = CurrentUser.get().getDog(dogId);
     }
 

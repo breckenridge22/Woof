@@ -99,10 +99,13 @@ public class DogSelectionFragment extends Fragment {
                 Intent intent = DogManagementActivity.newIntent(getActivity(), mDog.getDogId(),
                         DogManagementActivity.DOG_HOME);
                 startActivity(intent);
-            } else if (activity_type.equals("activity_history")) {
+            }
+            /*
+            else if (activity_type.equals("activity_history")) {
                 Intent intent = ActivityHistoryActivity.newIntent(getActivity(), mDog.getDogId());
                 startActivity(intent);
             }
+            */
         }
     }
 

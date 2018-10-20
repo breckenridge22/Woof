@@ -14,13 +14,13 @@ import java.util.UUID;
 
 public class DogList {
 
-    private Map<UUID, Dog> mDogList;
+    private Map<String, Dog> mDogList;
 
     public DogList() {
         mDogList = new HashMap<>();
     }
 
-    private void setDogList(UUID userId) {
+    private void setDogList(String userId) {
         // code to fetch dogs associated with a user from a database
     }
 
@@ -33,10 +33,11 @@ public class DogList {
         // also, need code to add current user to dog in dog database
     }
 
-    public Dog getDog(UUID dogId) {
+    public Dog getDog(String dogId) {
         return mDogList.get(dogId);
     }
 
+    /*
     public static DogList getTestDogList() {
         DogList testDogList = new DogList();
         Dog[] testDogs = Dog.getTestDogs();
@@ -45,5 +46,6 @@ public class DogList {
         }
         return testDogList;
     }
+    */
 
 }
