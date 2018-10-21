@@ -24,7 +24,7 @@ public class DogHeaderFragment extends DogFragment {
     }
 
     public void updateUI() {
-        mDogNameTextView.setText(getDog().getName());
+        mDogNameTextView.setText(getDog().getdogName());
     }
 
 }

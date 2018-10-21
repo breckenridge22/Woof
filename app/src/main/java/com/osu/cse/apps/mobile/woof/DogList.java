@@ -9,43 +9,33 @@ package com.osu.cse.apps.mobile.woof;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 public class DogList {
 
-    private Map<String, Dog> mDogList;
+    private Map<String, Dog> mDogList = new HashMap();
 
     public DogList() {
-        mDogList = new HashMap<>();
+        // default constructor
     }
 
     private void setDogList(String userId) {
         // code to fetch dogs associated with a user from a database
     }
 
-    public ArrayList<Dog> getDogList() {
+    public List<Dog> getDogList() {
         return new ArrayList(mDogList.values());
-    }
-
-    public void addDogToList(Dog dog) {
-        mDogList.put(dog.getDogId(), dog);
-        // also, need code to add current user to dog in dog database
     }
 
     public Dog getDog(String dogId) {
         return mDogList.get(dogId);
     }
 
-    /*
-    public static DogList getTestDogList() {
-        DogList testDogList = new DogList();
-        Dog[] testDogs = Dog.getTestDogs();
-        for (Dog testDog : testDogs) {
-            testDogList.addDogToList(testDog);
-        }
-        return testDogList;
+    public void updateDog(Dog dog) {
+        String dogId = dog.getdogId();
+        mDogList.put(dogId, dog);
     }
-    */
 
 }

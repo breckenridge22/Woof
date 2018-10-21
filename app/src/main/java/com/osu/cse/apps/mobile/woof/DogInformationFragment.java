@@ -18,6 +18,7 @@ public class DogInformationFragment extends DogFragment {
     private static final String TAG = "DogInformationFragment";
     private TextView mDogIdTextView;
     private EditText mDogNameEditText;
+    private TextView mFamilyNameTextView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -31,31 +32,34 @@ public class DogInformationFragment extends DogFragment {
         mDogNameEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // Took this from CrimeFragment.java in BNRG.  Code should go here?
+                // required
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int count, int after) {
                 Log.i(TAG, "onTextChanged() called");
-                getDog().setName(s.toString());
-                updateUI();
+                getDog().changedogName(s.toString());
                 getCallbacks().onDogNameChanged();
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                // Took this from CrimeFragment.java in BNRG.  Code should go here?
+                // required
             }
         });
+        mDogNameEditText.setText(getDog().getdogName());
 
-        mDogNameEditText.setText(getDog().getName());
+        mFamilyNameTextView = v.findViewById(R.id.family);
+
         updateUI();
 
         return v;
     }
 
     public void updateUI() {
-        mDogIdTextView.setText(getDog().getDogId().toString());
+        mDogIdTextView.setText(getDog().getdogId());
+        mFamilyNameTextView.setText(getDog().getFamilyName(CurrentUser.get(),
+                getDog().getfamilyId()));
     }
 
 }

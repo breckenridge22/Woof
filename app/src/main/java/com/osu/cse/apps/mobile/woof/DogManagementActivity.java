@@ -52,7 +52,7 @@ public class DogManagementActivity extends AppCompatActivity
                 (DogHeaderFragment) fm.findFragmentById(headerContainerId);
         if (headerFragment == null) {
             headerFragment = new DogHeaderFragment();
-            headerFragment.setArgs(mDog.getDogId());
+            headerFragment.setArgs(mDog.getdogId());
             fm.beginTransaction()
                     .add(headerContainerId, headerFragment)
                     .commit();
@@ -111,7 +111,7 @@ public class DogManagementActivity extends AppCompatActivity
                 break;
         }
         if (fragment != null) {
-            fragment.setArgs(mDog.getDogId());
+            fragment.setArgs(mDog.getdogId());
         }
         return fragment;
     }

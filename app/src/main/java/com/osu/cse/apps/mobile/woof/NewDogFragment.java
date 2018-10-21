@@ -1,6 +1,7 @@
 package com.osu.cse.apps.mobile.woof;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,23 +16,37 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class NewDogFragment extends Fragment implements View.OnClickListener {
 
     private EditText mDogNameEditText;
     private String mDogName = "";
     private Spinner mFamilySpinner;
-    private String mFamilyName = "";
+    private String mFamilyId = "";
+    private Map<String, Family> mFamilyMap;
+    private List<String> mFamilyIdList = new ArrayList();
+    private List<String> mFamilyNameList = new ArrayList();
     private static final String TAG = "NewDogFragment";
 
     DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
 
     public static NewDogFragment newInstance() {
         return new NewDogFragment();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getFamilyInformation();
     }
 
     @Override
@@ -60,15 +75,19 @@ public class NewDogFragment extends Fragment implements View.OnClickListener {
         });
 
         mFamilySpinner = v.findViewById(R.id.family_spinner);
+
+        // Set dropdown menu to choose family
         // Source: https://developer.android.com/guide/topics/ui/controls/spinner#java
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
-                R.array.family_array, android.R.layout.simple_spinner_item);
+        //ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+        //        R.array.family_array, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapter = new ArrayAdapter(getActivity(),
+                android.R.layout.simple_spinner_item, mFamilyNameList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mFamilySpinner.setAdapter(adapter);
         mFamilySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                mFamilyName = parent.getItemAtPosition(pos).toString();
+                mFamilyId = mFamilyIdList.get(pos);
             }
 
             @Override
@@ -87,12 +106,37 @@ public class NewDogFragment extends Fragment implements View.OnClickListener {
         Log.i(TAG, "onClick() called");
         switch (v.getId()) {
             case R.id.add_dog_button:
-                if (!mDogName.equals("") && !mFamilyName.equals("")) {
-                    String dogId = mDatabase.child("dogs").push().getKey();
-                    String familyId = getFamilyId();
-                    Dog dog = new Dog(dogId, mDogName, familyId);
-                    mDatabase.child("dogs").child(dogId).setValue(dog);
-                    mDatabase.child("families/" + familyId + "/dogs").child(dogId).setValue(true);
+
+                if (!mDogName.equals("") && !mFamilyId.equals("")) {
+
+                    // add dog to database and add dog ID under family ID corresponding to
+                    // selected family name
+                    String dogId = mDatabase.child("dogs").push().getKey(); // get new unique ID
+                                                                            // from Firebase
+                    Dog dog = new Dog(dogId, mDogName, mFamilyId);
+                    Family family = mFamilyMap.get(mFamilyId);
+                    family.addDogId(dogId);
+
+                    Map<String, Object> childUpdates = new HashMap();
+                    childUpdates.put("/families/"+ mFamilyId, family.toMap());
+                    childUpdates.put("/dogs/" + dogId, dog.toMap());
+                    mDatabase.updateChildren(childUpdates) // update database atomically
+                            // print toast and finish activity if database successfully updated
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(getActivity(), "Successfully added new dog!",
+                                        Toast.LENGTH_SHORT);
+                                getActivity().finish();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(getActivity(), "Database update failed",
+                                        Toast.LENGTH_SHORT);
+                            }
+                        });
+
                 }
                 else {
                     Log.d(TAG, "test");
@@ -102,15 +146,15 @@ public class NewDogFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    public String getFamilyId() {
-        // TODO: get family UUID from list of families that user belongs
-        // TODO: to based on selected family name
-        return mFamilyName; // placeholder
-    }
-
-    public String createDogUUID(String familyUUID) {
-        UUID tmpUUID = UUID.randomUUID();
-        return familyUUID + "." + tmpUUID.toString();
+    /*
+     * Populate mFamilyIdList and mFamilyNameList for dropdown
+     */
+    public void getFamilyInformation() {
+        mFamilyMap = CurrentUser.get().getfamilyMap();
+        for (Map.Entry<String, Family> entry : mFamilyMap.entrySet()) {
+            mFamilyIdList.add(entry.getKey());
+            mFamilyNameList.add(entry.getValue().getfamilyName());
+        }
     }
 
 }
