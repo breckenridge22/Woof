@@ -30,6 +30,7 @@ public class HomeScreenFragment extends Fragment implements View.OnClickListener
         //***remove below code after setting up login screen
         // TODO
         mAuth = FirebaseAuth.getInstance();
+        Log.d(TAG, "current user: " + mAuth.getCurrentUser().getEmail());
         //CurrentUser.get();
         //***remove above code after setting up login screen
     }
@@ -104,7 +105,8 @@ public class HomeScreenFragment extends Fragment implements View.OnClickListener
                 // TODO
                 break;
             case R.id.settings_button:
-                // TODO
+                intent = SettingsActivity.newIntent(getActivity());
+                startActivity(intent);
                 break;
             case R.id.log_out_button:
                 LoginFragment.signOut();

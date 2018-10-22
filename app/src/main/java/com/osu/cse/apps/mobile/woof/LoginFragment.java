@@ -77,12 +77,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
-            if (mLoginButton != null) {
-                mLoginButton.setOnClickListener(this);
-            }
-            if (mNewUserButton != null) {
-                mNewUserButton.setOnClickListener(this);
-            }
+        if (mLoginButton != null) {
+            mLoginButton.setOnClickListener(this);
+        }
+        if (mNewUserButton != null) {
+            mNewUserButton.setOnClickListener(this);
+        }
 
         return v;
     }
