@@ -32,6 +32,8 @@
         <activity android:name=".DogSelectionActivity"></activity>
         <activity android:name=".DogManagementActivity"></activity>
         <activity android:name=".ActivityHistoryActivity"></activity>
+        <activity android:name=".NewDogActivity"></activity>
+
     </application>
 
 </manifest>
