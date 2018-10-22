@@ -79,7 +79,7 @@ public class DogSelectionFragment extends Fragment {
         private ImageView mDogPictureImageView;
         private TextView mDogNameTextView;
 
-        public DogHolder(LayoutInflater inflater, ViewGroup parent) {
+        public DogHolder(LayoutInflater inflater, ViewGroup parent)                                                                                                                                                                 {
             super(inflater.inflate(R.layout.list_item_dog, parent, false));
             itemView.setOnClickListener(this);
 
@@ -100,7 +100,8 @@ public class DogSelectionFragment extends Fragment {
                         DogManagementActivity.DOG_HOME);
                 startActivity(intent);
             } else if (activity_type.equals("activity_history")) {
-                Intent intent = ActivityHistoryActivity.newIntent(getActivity(), mDog.getDogId());
+                Log.d(TAG, "Starting ActivityHistoryActivity.");
+                Intent intent = ActivityHistoryActivity.newIntent(getActivity());
                 startActivity(intent);
             }
         }
