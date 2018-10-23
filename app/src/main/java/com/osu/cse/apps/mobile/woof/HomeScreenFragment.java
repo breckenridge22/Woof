@@ -26,13 +26,10 @@ public class HomeScreenFragment extends Fragment implements View.OnClickListener
         super.onCreate(savedInstanceState);
         Log.i(TAG, "onCreate() called");
 
+        if (CurrentUser.get() == null) {
+            // TODO: throw new NoCurrentUserException("Current user ID not found in database");
+        }
 
-        //***remove below code after setting up login screen
-        // TODO
-        mAuth = FirebaseAuth.getInstance();
-        Log.d(TAG, "current user: " + mAuth.getCurrentUser().getEmail());
-        //CurrentUser.get();
-        //***remove above code after setting up login screen
     }
 
     @Override
@@ -99,16 +96,17 @@ public class HomeScreenFragment extends Fragment implements View.OnClickListener
                 startActivity(intent);
                 break;
             case R.id.add_dog_button:
-                // TODO
+                intent = NewDogActivity.newIntent(getActivity());
+                startActivity(intent);
                 break;
             case R.id.friends_family_button:
                 // TODO
                 break;
             case R.id.settings_button:
-                intent = SettingsActivity.newIntent(getActivity());
-                startActivity(intent);
+                // TODO
                 break;
             case R.id.log_out_button:
+                CurrentUser.setNull();
                 LoginFragment.signOut();
                 intent = LoginActivity.newIntent(getActivity());
                 startActivity(intent);

@@ -1,6 +1,8 @@
 package com.osu.cse.apps.mobile.woof;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 import android.util.Log;
 
@@ -12,17 +14,20 @@ public class ActivityRecord {
     private final static int BATHROOM = 4;
     private final static int VETVISIT = 5;
 
+    private final static int CUPS = 0;
+    private final static int OUNCES = 1;
+
     private final static String TAG = "ActivityRecord";
 
     private UUID mActivity_ID;
-    private int mActivity_Type; // Walk/Exercise, Food, Water, Bathroom, Vet Visit
+    private int mActivity_Type = 0; // Walk/Exercise, Food, Water, Bathroom, Vet Visit
     private Date mStart_Time;
     private Date mEnd_Time;
-    private int mBathroom_Type; // 1 or 2
+    private int mBathroom_Type = 0; // 1 or 2
     private String mFood_Brand;
-    private int mFood_Amount;
-    private String mFood_Metric; // Ounces or Cups
-    private int mCalories;
+    private int mFood_Amount = -1;
+    private int mFood_Metric = -1; // cups or ounces
+    private int mCalories = 0;
     private String mVet_Location;
     private String mVet_Visit_Reason;
     private UUID mDogID;
@@ -37,10 +42,6 @@ public class ActivityRecord {
 
     public int getActivity_Type() {
         return mActivity_Type;
-    }
-
-    public void setActivity_Type(int activity_Type) {
-        mActivity_Type = activity_Type;
     }
 
     public Date getStart_Time() {
@@ -83,11 +84,11 @@ public class ActivityRecord {
         mFood_Amount = food_Amount;
     }
 
-    public String getFood_Metric() {
+    public int getFood_Metric() {
         return mFood_Metric;
     }
 
-    public void setFood_Metric(String food_Metric) {
+    public void setFood_Metric(int food_Metric) {
         mFood_Metric = food_Metric;
     }
 
@@ -133,10 +134,13 @@ public class ActivityRecord {
     // TODO - GPS Paths
 
 
-    public static ActivityRecord[] getTestActivityRecords(UUID dog_id){
+    public static List<ActivityRecord> getTestActivityRecords(){
+
+        UUID dog_id = UUID.randomUUID();
+        List<ActivityRecord> activityRecordList = new ArrayList<>();
 
         // Walk
-        ActivityRecord a1 = new ActivityRecord(UUID.randomUUID(), 1);
+        ActivityRecord a1 = new ActivityRecord(UUID.randomUUID(), WALK);
         a1.setStart_Time(new Date());
         a1.setEnd_Time(new Date());
         a1.setEnd_Time(new Date());
@@ -144,33 +148,40 @@ public class ActivityRecord {
         a1.setDogID(dog_id);
 
         // Food
-        ActivityRecord a2 = new ActivityRecord(UUID.randomUUID(), 2);
+        ActivityRecord a2 = new ActivityRecord(UUID.randomUUID(), FOOD);
         a2.setStart_Time(new Date());
         a2.setFood_Amount(5);
         a2.setFood_Brand("McNuggets");
-        a2.setFood_Metric("Oz");
+        a2.setFood_Metric(OUNCES);
         a1.setCalories(1000);
         a2.setDogID(dog_id);
 
         // Water
-        ActivityRecord a3 = new ActivityRecord(UUID.randomUUID(), 3);
+        ActivityRecord a3 = new ActivityRecord(UUID.randomUUID(), WATER);
         a3.setStart_Time(new Date());
         a3.setDogID(dog_id);
 
         // Bathroom
-        ActivityRecord a4 = new ActivityRecord(UUID.randomUUID(), 4);
+        ActivityRecord a4 = new ActivityRecord(UUID.randomUUID(), BATHROOM);
         a4.setStart_Time(new Date());
         a4.setBathroom_Type(2);
         a4.setDogID(dog_id);
 
         // Vet visit
-        ActivityRecord a5 = new ActivityRecord(UUID.randomUUID(), 5);
+        ActivityRecord a5 = new ActivityRecord(UUID.randomUUID(), VETVISIT);
         a5.setStart_Time(new Date());
         a5.setVet_Location("250 W. High St. Columbus, OH 43210");
         a5.setVet_Visit_Reason("Child fed him McNuggets");
         a5.setDogID(dog_id);
 
-        return new ActivityRecord[] {a1, a2, a3, a4, a5};
+        activityRecordList.add(a1);
+        activityRecordList.add(a2);
+        activityRecordList.add(a3);
+        activityRecordList.add(a4);
+        activityRecordList.add(a5);
+
+
+        return activityRecordList;
     }
 
 

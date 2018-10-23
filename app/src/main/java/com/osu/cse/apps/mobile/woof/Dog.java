@@ -1,75 +1,57 @@
 package com.osu.cse.apps.mobile.woof;
 
-import java.util.UUID;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Dog {
 
-    private UUID mDogId;
-    private String mName;
+    private String dogId;
+    private String dogName;
+    private String familyId;
 
-    public Dog(UUID dogId) {
-        mDogId = dogId;
+    public Dog() {
+        // default constructor for Firebase
     }
 
-    public UUID getDogId() {
-        return mDogId;
+    public Dog(String dogId, String dogName, String familyId) {
+        this.dogId = dogId;
+        this.dogName = dogName;
+        this.familyId = familyId;
     }
 
-    public String getName() {
-        return mName;
+    public String getdogId() {
+        return dogId;
     }
 
-    public void setName(String name) {
-        mName = name;
+    public String getdogName() {
+        return dogName;
     }
 
-    public static Dog[] getTestDogs() {
-        Dog testDog1 = new Dog(UUID.randomUUID());
-        testDog1.setName("Sparky");
-
-        Dog testDog2 = new Dog(UUID.randomUUID());
-        testDog2.setName("Hazel");
-
-        Dog testDog3 = new Dog(UUID.randomUUID());
-        testDog3.setName("Woofy");
-
-        Dog testDog4 = new Dog(UUID.randomUUID());
-        testDog4.setName("Chubs");
-
-        Dog testDog5 = new Dog(UUID.randomUUID());
-        testDog5.setName("Gus");
-
-        Dog testDog6 = new Dog(UUID.randomUUID());
-        testDog6.setName("Fluffy");
-
-        Dog testDog7 = new Dog(UUID.randomUUID());
-        testDog7.setName("Fido");
-
-        Dog testDog8 = new Dog(UUID.randomUUID());
-        testDog8.setName("Ivy");
-
-        Dog testDog9 = new Dog(UUID.randomUUID());
-        testDog9.setName("Mr. Jingles");
-
-        Dog testDog10 = new Dog(UUID.randomUUID());
-        testDog10.setName("Rascal");
-
-        Dog testDog11 = new Dog(UUID.randomUUID());
-        testDog11.setName("Guinness");
-
-        Dog testDog12 = new Dog(UUID.randomUUID());
-        testDog12.setName("Beth");
-
-        Dog testDog13 = new Dog(UUID.randomUUID());
-        testDog13.setName("Doug the Pug");
-
-        Dog testDog14 = new Dog(UUID.randomUUID());
-        testDog14.setName("Porkchop");
-
-        Dog testDog15 = new Dog(UUID.randomUUID());
-        testDog15.setName("Ren");
-
-        return new Dog[] {testDog1, testDog2, testDog3, testDog4, testDog5, testDog6, testDog7,
-            testDog8, testDog9, testDog10, testDog11, testDog12, testDog13, testDog14, testDog15};
+    // Note: If the name of this method is changed to "setdogName", it screws something
+    // up with Firebase when the app is launched
+    public void changedogName(String dogName) {
+        this.dogName = dogName;
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        ref.child("dogs").child(dogId).setValue(toMap());
     }
+
+    public String getfamilyId() {
+        return familyId;
+    }
+
+    public String getFamilyName(User user, String familyId) {
+        return user.getFamilyNameById(familyId);
+    }
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> result = new HashMap();
+        result.put("dogId", dogId);
+        result.put("dogName", dogName);
+        result.put("familyId", familyId);
+        return result;
+    }
+
 }

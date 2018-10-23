@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="family_array">
+        <item>family1</item>
+        <item>family2</item>
+        <item>family3</item>
+    </string-array>
+</resources>

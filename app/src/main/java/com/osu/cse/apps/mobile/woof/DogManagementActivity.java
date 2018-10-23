@@ -11,8 +11,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import java.util.UUID;
-
 public class DogManagementActivity extends AppCompatActivity
     implements DogFragment.Callbacks {
 
@@ -31,7 +29,7 @@ public class DogManagementActivity extends AppCompatActivity
     public static final int OWNERS_CARETAKERS = 4;
     public static final int REPORT_LOST = 5;
 
-    public static Intent newIntent(Context packageContext, UUID dogId, int fragmentId) {
+    public static Intent newIntent(Context packageContext, String dogId, int fragmentId) {
         Intent intent = new Intent(packageContext, DogManagementActivity.class);
         intent.putExtra(EXTRA_DOG_ID, dogId);
         intent.putExtra(EXTRA_FRAGMENT_ID, fragmentId);
@@ -44,7 +42,7 @@ public class DogManagementActivity extends AppCompatActivity
         Log.i(TAG, "onCreate() called");
         setContentView(R.layout.activity_dog_management);
 
-        UUID dogId = (UUID) getIntent().getSerializableExtra(EXTRA_DOG_ID);
+        String dogId = getIntent().getStringExtra(EXTRA_DOG_ID);
         mDog = CurrentUser.get().getDog(dogId);
 
         FragmentManager fm = getSupportFragmentManager();
@@ -54,7 +52,7 @@ public class DogManagementActivity extends AppCompatActivity
                 (DogHeaderFragment) fm.findFragmentById(headerContainerId);
         if (headerFragment == null) {
             headerFragment = new DogHeaderFragment();
-            headerFragment.setArgs(mDog.getDogId());
+            headerFragment.setArgs(mDog.getdogId());
             fm.beginTransaction()
                     .add(headerContainerId, headerFragment)
                     .commit();
@@ -113,7 +111,7 @@ public class DogManagementActivity extends AppCompatActivity
                 break;
         }
         if (fragment != null) {
-            fragment.setArgs(mDog.getDogId());
+            fragment.setArgs(mDog.getdogId());
         }
         return fragment;
     }

@@ -61,7 +61,7 @@ public class DogSelectionFragment extends Fragment {
     }
 
     private void updateUI() {
-        List<Dog> dogs = CurrentUser.get().getDogList();
+        List<Dog> dogs = CurrentUser.get().getdogList();
 
         if (mAdapter == null) {
             mAdapter = new DogAdapter(dogs);
@@ -79,7 +79,7 @@ public class DogSelectionFragment extends Fragment {
         private ImageView mDogPictureImageView;
         private TextView mDogNameTextView;
 
-        public DogHolder(LayoutInflater inflater, ViewGroup parent) {
+        public DogHolder(LayoutInflater inflater, ViewGroup parent)                                                                                                                                                                 {
             super(inflater.inflate(R.layout.list_item_dog, parent, false));
             itemView.setOnClickListener(this);
 
@@ -90,18 +90,19 @@ public class DogSelectionFragment extends Fragment {
         public void bind(Dog dog) {
             mDog = dog;
             // TODO - set dog picture on bind
-            mDogNameTextView.setText(dog.getName());
+            mDogNameTextView.setText(dog.getdogName());
         }
 
         @Override
         public void onClick(View v) {
             if (activity_type.equals("manage_dogs")) {
-                Intent intent = DogManagementActivity.newIntent(getActivity(), mDog.getDogId(),
+                Intent intent = DogManagementActivity.newIntent(getActivity(), mDog.getdogId(),
                         DogManagementActivity.DOG_HOME);
                 startActivity(intent);
+
             } else if (activity_type.equals("activity_history")) {
-                Intent intent = ActivityHistoryActivity.newIntent(getActivity(), mDog.getDogId());
-                startActivity(intent);
+                Log.d(TAG, "Starting ActivityHistoryActivity.");
+                Intent intent = ActivityHistoryActivity.newIntent(getActivity());
             }
         }
     }
