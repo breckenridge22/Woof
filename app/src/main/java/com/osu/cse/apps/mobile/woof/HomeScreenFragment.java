@@ -2,6 +2,7 @@ package com.osu.cse.apps.mobile.woof;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,7 +16,6 @@ import com.google.firebase.auth.FirebaseUser;
 public class HomeScreenFragment extends Fragment implements View.OnClickListener {
 
     private static final String TAG = "HomeScreenFragment";
-    private FirebaseAuth mAuth;
 
     public static HomeScreenFragment newInstance() {
         return new HomeScreenFragment();
@@ -103,7 +103,8 @@ public class HomeScreenFragment extends Fragment implements View.OnClickListener
                 // TODO
                 break;
             case R.id.settings_button:
-                // TODO
+                intent = SettingsActivity.newIntent(getActivity());
+                startActivity(intent);
                 break;
             case R.id.log_out_button:
                 CurrentUser.setNull();

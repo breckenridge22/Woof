@@ -1,5 +1,8 @@
 package com.osu.cse.apps.mobile.woof;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -69,6 +72,19 @@ public class User {
 
     public String getFamilyNameById(String familyId) {
         return familyMap.get(familyId).getfamilyName();
+    }
+
+
+    public void changeFirstName(String firstName) {
+        this.fName = firstName;
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        ref.child("users").child(userId).setValue(toMap());
+    }
+
+    public void changeLastName(String lastName) {
+        this.lName = lastName;
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        ref.child("users").child(userId).setValue(toMap());
     }
 
     // Use this method to generate map of key value pairs that can be stored for user in

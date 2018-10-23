@@ -23,8 +23,10 @@
     <string name="prompt_new_email">New Email</string>
 
     <!-- Strings related to profile -->
+    <string name="update_profile">Edit Profile Information:</string>
     <string name="update_email">Update Email</string>
-    <string name="update_name">Update Name</string>
+    <string name="update_fName">Update First Name</string>>
+    <string name="update_lName">Update Last Name</string>
     <string name="update_password">Update Password</string>
     <string name="update_dName">Update Username</string>
 
