@@ -39,7 +39,7 @@ public class DogInformationFragment extends DogFragment {
             public void onTextChanged(CharSequence s, int start, int count, int after) {
                 Log.i(TAG, "onTextChanged() called");
                 getDog().changedogName(s.toString());
-                getCallbacks().onDogNameChanged();
+                getCallbacks().onDogNameChanged(); // update header
             }
 
             @Override

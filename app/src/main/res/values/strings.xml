@@ -33,7 +33,7 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
 
-    <!-- Strings related to Dog Management screen -->
+    <!-- Strings related to Dog Home screen -->
     <string name="dog_information_button">Dog Information</string>
     <string name="activity_schedule_button">Activity Schedule</string>
     <string name="activity_history_button">Activity History</string>
@@ -41,6 +41,7 @@
     <string name="saved_meals_button">Saved Meals</string>
     <string name="report_lost_button">Report As Lost</string>
     <string name="back_button">Back</string>
+    <string name="delete_dog_button">Delete Dog</string>
 
     <!-- Strings related to Dog Information screen -->
     <string name="dog_information_prompt">Update dog information</string>

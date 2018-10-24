@@ -21,6 +21,8 @@ import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -196,6 +198,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
         // TODO: Get family name from user during user registration and/or ask to join existing family on login
         // Temporarily using this line to generate a random 5-character String for the family name
+        Log.d(TAG, "writeNewUser() called");
         String familyName = UUID.randomUUID().toString().substring(0, 5);
 
         Family family = new Family(familyName, userId);
@@ -209,7 +212,23 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         Map<String, Object> childUpdates = new HashMap();
         childUpdates.put("/users/" + userId, user.toMap());
         childUpdates.put("/families/" + familyId, family.toMap());
-        mDatabase.updateChildren(childUpdates); // update database atomically
+        mDatabase.updateChildren(childUpdates) // update database atomically
+                // print toast and finish activity if database successfully updated
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(getActivity(), "Successfully added new user!",
+                                Toast.LENGTH_SHORT);
+                        Log.d(TAG, "Successfully added new user to database");
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getActivity(), "Database update failed",
+                            Toast.LENGTH_SHORT);
+                        Log.d(TAG, "Failed to add new user to database");
+            }
+        });
 
     }
 

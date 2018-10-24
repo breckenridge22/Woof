@@ -44,6 +44,9 @@ public class DogHomeFragment extends DogFragment implements View.OnClickListener
         Button reportLostButton = v.findViewById(R.id.report_lost_button);
         reportLostButton.setOnClickListener(this);
 
+        Button deleteDogButton = v.findViewById(R.id.delete_dog_button);
+        deleteDogButton.setOnClickListener(this);
+
         return v;
     }
 
@@ -65,6 +68,9 @@ public class DogHomeFragment extends DogFragment implements View.OnClickListener
             case R.id.report_lost_button:
                 // open report lost screen activity
                 break;
+            case R.id.delete_dog_button:
+                getDog().deleteDog();
+                getActivity().finish();
         }
     }
 
