@@ -1,7 +1,5 @@
 package com.osu.cse.apps.mobile.woof;
 
-import android.util.Log;
-
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -77,16 +75,16 @@ public class Dog {
         // step 2
         Family family = CurrentUser.get().getfamilyMap().get(familyId);
         List<String> dogIdList = family.getdogIdList();
+        boolean foundDogId = false;
         int dogListIndex = 0;
-        Log.d(TAG, "Looking for dog ID" + dogId);
         for (int i = 0; i < dogIdList.size(); i++) {
             if (dogId.equals(dogIdList.get(i))) {
-                Log.d(TAG, "Found dog ID" + dogId);
+                foundDogId = true;
                 dogListIndex = i;
                 break;
             }
         }
-        if (dogListIndex != 0) {
+        if (foundDogId) {
             dogIdList.remove(dogListIndex);
         }
 
@@ -98,7 +96,7 @@ public class Dog {
         ref.updateChildren(childUpdates);
 
         // step 4
-        CurrentUser.get().getdogList().remove(dogId);
+        CurrentUser.get().deleteDogFromList(dogId);
 
     }
 

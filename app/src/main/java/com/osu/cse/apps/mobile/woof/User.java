@@ -62,6 +62,10 @@ public class User {
         return dogList.getDogList();
     }
 
+    public void deleteDogFromList(String dogId) {
+        dogList.deleteDog(dogId);
+    }
+
     public void updateDog(Dog dog) {
         dogList.updateDog(dog);
     }

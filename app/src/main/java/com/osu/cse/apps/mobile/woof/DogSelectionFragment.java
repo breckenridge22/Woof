@@ -61,8 +61,17 @@ public class DogSelectionFragment extends Fragment {
     }
 
     private void updateUI() {
+        Log.i(TAG, "on updateUI() called");
         List<Dog> dogs = CurrentUser.get().getdogList();
 
+        /*
+         * Below code segment doesn't work properly because the data set does doesn't actually change
+         * when the user removes a dog from the map in the dogList class.  The user's getdogList() method used above returns
+         * an array list that points to all of the dogs.  The elements in the array list still
+         * point to a dog object after it is removed from the map in the dogList class.
+         *
+         * // TODO: use below code segement after refactoring dogList class into user object and removing dogList class altogether
+         *
         if (mAdapter == null) {
             mAdapter = new DogAdapter(dogs);
             mDogRecyclerView.setAdapter(mAdapter);
@@ -70,6 +79,11 @@ public class DogSelectionFragment extends Fragment {
         else {
             mAdapter.notifyDataSetChanged();
         }
+        */
+
+        mAdapter = new DogAdapter(dogs);
+        mDogRecyclerView.setAdapter(mAdapter);
+
     }
 
     private class DogHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

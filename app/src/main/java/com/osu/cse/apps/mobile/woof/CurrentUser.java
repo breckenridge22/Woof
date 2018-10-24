@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class CurrentUser extends User {
 
@@ -55,6 +54,7 @@ public class CurrentUser extends User {
             class DogValueEventListener implements ValueEventListener {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
+                    Log.d(TAG, "DogValueEventListener.onDataChange() called");
                     Dog dog = dataSnapshot.getValue(Dog.class);
                     sCurrentUser.updateDog(dog);
                 }
@@ -72,10 +72,7 @@ public class CurrentUser extends User {
                     sCurrentUser.updateFamily(family);
 
                     // add value event listener for each dog that belongs to the family
-                    Log.d(TAG, "Starting to add listeners for dogs associated " +
-                            "with family ID " + family.getfamilyId());
                     List<String> dogIdList = family.getdogIdList();
-                    Log.d(TAG, "length of dogIdList = " + dogIdList.size());
                     dogIdList.removeAll(Collections.singleton(null));
                     for (String dogId : dogIdList) {
                         if (sDogValueEventListenerMap.get(dogId) != null) {
@@ -83,7 +80,6 @@ public class CurrentUser extends User {
                         }
                         DogValueEventListener listener = new DogValueEventListener();
                         sDogValueEventListenerMap.put(dogId, listener);
-                        Log.d(TAG, "Adding listener for dog ID " + dogId + " to database");
                         ref.child("dogs").child(dogId)
                                 .addValueEventListener(listener);
                     }

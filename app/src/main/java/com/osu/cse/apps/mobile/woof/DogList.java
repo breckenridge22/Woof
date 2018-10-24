@@ -38,4 +38,8 @@ public class DogList {
         mDogList.put(dogId, dog);
     }
 
+    public void deleteDog(String dogId) {
+        mDogList.remove(dogId);
+    }
+
 }
