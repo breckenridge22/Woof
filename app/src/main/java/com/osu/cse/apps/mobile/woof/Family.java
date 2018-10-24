@@ -54,4 +54,15 @@ public class Family {
         result.put("dogIdList", dogIdList);
         return result;
     }
+
+    public void deleteFamily(){
+        // step 1
+        CurrentUser.removeFamilyValueEventListener(familyId);
+
+        // step 2
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        Map<String, Object> childUpdates = new HashMap();
+        childUpdates.put("/families/" + familyId, null);
+        ref.updateChildren(childUpdates);
+    }
 }

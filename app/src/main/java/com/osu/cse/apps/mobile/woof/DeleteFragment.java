@@ -57,7 +57,6 @@ public class DeleteFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         int i = v.getId();
         Intent intent;
-        User dbUser = CurrentUser.get();
         FirebaseUser aUser = mAuth.getCurrentUser();
         switch(i){
             case R.id.yes_button:
@@ -67,6 +66,9 @@ public class DeleteFragment extends Fragment implements View.OnClickListener {
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
                                 Log.d(TAG, "User account deleted.");
+                                User dbUser = CurrentUser.get();
+                                dbUser.deleteUser();
+                                CurrentUser.setNull();
                                 Intent intent = LoginActivity.newIntent(getActivity());
                                 startActivity(intent);
                                 Toast.makeText(getActivity(), "Deleted Account", Toast.LENGTH_SHORT).show();

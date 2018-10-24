@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.osu.cse.apps.mobile.woof.CurrentUser.removeUserValueEventListener;
+
 public class User {
 
     private String userId;
@@ -89,6 +91,30 @@ public class User {
         this.lName = lastName;
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         ref.child("users").child(userId).setValue(toMap());
+    }
+
+    public void deleteUser(){
+
+        // step 1 remove value event listener
+        CurrentUser.removeUserValueEventListener(userId);
+
+        // step 2 delete dogs
+        List<Dog> dogs = dogList.getDogList();
+        for (int i=0; i < dogs.size(); i++){
+            dogs.get(i).deleteDog();
+        }
+
+        // step 3 delete family - right now only get the first family because its the only, later
+        // this will loop through all families in the family id list.
+        Family family = CurrentUser.get().getfamilyMap().get(familyIdList.get(0));
+        family.deleteFamily();
+
+        // step 4 delete user from database
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        Map<String, Object> childUpdates = new HashMap();
+        childUpdates.put("/users/" + userId, null);
+        ref.updateChildren(childUpdates);
+
     }
 
     // Use this method to generate map of key value pairs that can be stored for user in
