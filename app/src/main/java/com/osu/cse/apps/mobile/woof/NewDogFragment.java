@@ -118,8 +118,8 @@ public class NewDogFragment extends Fragment implements View.OnClickListener {
                     family.addDogId(dogId);
 
                     Map<String, Object> childUpdates = new HashMap();
-                    childUpdates.put("/families/"+ mFamilyId, family.toMap());
                     childUpdates.put("/dogs/" + dogId, dog.toMap());
+                    childUpdates.put("/families/"+ mFamilyId, family.toMap());
                     mDatabase.updateChildren(childUpdates) // update database atomically
                             // print toast and finish activity if database successfully updated
                         .addOnSuccessListener(new OnSuccessListener<Void>() {

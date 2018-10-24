@@ -54,9 +54,10 @@ public class CurrentUser extends User {
             class DogValueEventListener implements ValueEventListener {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    Log.d(TAG, "DogValueEventListener.onDataChange() called");
                     Dog dog = dataSnapshot.getValue(Dog.class);
                     sCurrentUser.updateDog(dog);
+                    Log.d(TAG, "Value event listener called for dog " + dog.getdogName() +
+                        " triggered");
                 }
 
                 @Override
@@ -70,18 +71,14 @@ public class CurrentUser extends User {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     Family family = dataSnapshot.getValue(Family.class);
                     sCurrentUser.updateFamily(family);
+                    Log.d(TAG, "Value event listener for family " + family.getfamilyName() +
+                        " triggered");
 
                     // add value event listener for each dog that belongs to the family
                     List<String> dogIdList = family.getdogIdList();
                     dogIdList.removeAll(Collections.singleton(null));
                     for (String dogId : dogIdList) {
-                        if (sDogValueEventListenerMap.get(dogId) != null) {
-                            removeDogValueEventListener(dogId);
-                        }
-                        DogValueEventListener listener = new DogValueEventListener();
-                        sDogValueEventListenerMap.put(dogId, listener);
-                        ref.child("dogs").child(dogId)
-                                .addValueEventListener(listener);
+                        addDogValueEventListener(dogId, new DogValueEventListener());
                     }
                 }
 
@@ -95,18 +92,14 @@ public class CurrentUser extends User {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     sCurrentUser = dataSnapshot.getValue(User.class);
+                    Log.d(TAG, "Value event listener for family " +
+                            sCurrentUser.getfName() + " " + sCurrentUser.getlName() + " triggered");
 
                     // add value event listener for each family of which the user is a member
                     List<String> familyIdList = sCurrentUser.getfamilyIdList();
                     familyIdList.removeAll(Collections.singleton(null));
                     for (String familyId : familyIdList) {
-                        if (sFamilyValueEventListenerMap.get(familyId) != null) {
-                            removeFamilyValueEventListener(familyId);
-                        }
-                        FamilyValueEventListener listener = new FamilyValueEventListener();
-                        sFamilyValueEventListenerMap.put(familyId, listener);
-                        ref.child("families").child(familyId)
-                                .addValueEventListener(listener);
+                        addFamilyValueEventListener(familyId, new FamilyValueEventListener());
                     }
                 }
 
@@ -118,14 +111,7 @@ public class CurrentUser extends User {
 
             // start cascade of adding value event listeners in database for all information
             // pertinent to current user
-            Log.d(TAG, "userId = " + userId);
-
-            if (sUserValueEventListenerMap.get(userId) != null) {
-                removeUserValueEventListener(userId);
-            }
-            UserValueEventListener listener = new UserValueEventListener();
-            sUserValueEventListenerMap.put(userId, listener);
-            ref.child("users").child(userId).addValueEventListener(listener);
+            addUserValueEventListener(userId, new UserValueEventListener());
 
         }
 
@@ -191,7 +177,7 @@ public class CurrentUser extends User {
     }
 
     /*
-     * Removes value event listener from data object in database, then removes entry
+     * Removes value event listener from data object in database, then removes entry from
      * specified map in this singleton.  Should be called BEFORE deleting a data object in the
      * database (e.g., User, Family, Dog).
      */
@@ -201,6 +187,36 @@ public class CurrentUser extends User {
         ref.removeEventListener(listener);
         listenerMap.remove(id);
     }
+
+    private static void addUserValueEventListener(String userId, ValueEventListener newListener) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users")
+                .child(userId);
+        addValueEventListener(sUserValueEventListenerMap, userId, ref, newListener);
+    }
+
+    private static void addFamilyValueEventListener(String familyId, ValueEventListener newListener) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("families")
+                .child(familyId);
+        addValueEventListener(sFamilyValueEventListenerMap, familyId, ref, newListener);
+
+    }
+
+    private static void addDogValueEventListener(String dogId, ValueEventListener newListener) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("dogs")
+                .child(dogId);
+        addValueEventListener(sDogValueEventListenerMap, dogId, ref, newListener);
+    }
+
+    private static void addValueEventListener(Map<String, ValueEventListener> listenerMap, String id,
+                                             DatabaseReference ref,
+                                             ValueEventListener newListener) {
+        if (listenerMap.get(id) != null) {
+            removeValueEventListener(listenerMap, id, ref);
+        }
+        listenerMap.put(id, newListener);
+        ref.addValueEventListener(newListener);
+    }
+
 
 
 }
