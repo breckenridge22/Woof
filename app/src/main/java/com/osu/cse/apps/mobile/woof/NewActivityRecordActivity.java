@@ -5,28 +5,22 @@ import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
+public class NewActivityRecordActivity {
 
-public class ActivityHistoryActivity extends SingleFragmentActivity {
-
+    private static final String TAG = "NewActivityRecordActivity";
     private static final String EXTRA_DOG_ID = "DOG_ID";
-    private static final String TAG = "ActivityHistoryActivity";
-
-
 
     public static Intent newIntent(Context packageContext, String dogID) {
-        Log.d(TAG, "newIntent called");
-        Intent intent = new Intent(packageContext, ActivityHistoryActivity.class);
+        Log.d(TAG, "newIntent() called.");
+        Intent intent = new Intent(packageContext, NewActivityRecordActivity.class);
         intent.putExtra(EXTRA_DOG_ID, dogID);
         return intent;
     }
 
-
-    @Override
     protected Fragment createFragment() {
         Log.d(TAG, "createFragment() called");
-        return ActivityHistoryFragment.newInstance();
+        return NewActivityRecordFragment.newInstance();
     }
-
 
 
 }
