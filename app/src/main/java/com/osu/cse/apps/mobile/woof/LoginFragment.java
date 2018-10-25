@@ -69,8 +69,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v;
         mCallbacks.initFireBase();
-
-        int rotation = getActivity().getWindowManager().getDefaultDisplay().getRotation();
         v = inflater.inflate(R.layout.fragment_login, container, false);
 
         mUsernameEditText = v.findViewById(R.id.username_text);
@@ -126,7 +124,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    // From https://github.com/firebase/quickstart-android/blob/master/auth/app/src/main/java/com/google/firebase/quickstart/auth/java/EmailPasswordActivity.java
+    // Skeleton from https://github.com/firebase/quickstart-android/blob/master/auth/app/src/main/java/com/google/firebase/quickstart/auth/java/EmailPasswordActivity.java
     private void createAccount(String email, String password) {
         Log.d(TAG, "createAccount: " + email);
 
@@ -151,7 +149,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 });
     }
 
-    // From https://github.com/firebase/quickstart-android/blob/master/auth/app/src/main/java/com/google/firebase/quickstart/auth/java/EmailPasswordActivity.java
+    // Skeleton from https://github.com/firebase/quickstart-android/blob/master/auth/app/src/main/java/com/google/firebase/quickstart/auth/java/EmailPasswordActivity.java
     private void signIn(String email, String password) {
         Log.d(TAG, "signIn:" + email);
 
@@ -219,12 +217,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         Log.d(TAG, "Current User:" + mAuth.getCurrentUser());
     }
 
-    // From https://github.com/firebase/quickstart-android/blob/master/auth/app/src/main/java/com/google/firebase/quickstart/auth/java/EmailPasswordActivity.java
+    // Skeleton from https://github.com/firebase/quickstart-android/blob/master/auth/app/src/main/java/com/google/firebase/quickstart/auth/java/EmailPasswordActivity.java
     private boolean validateSignInForm() {
         boolean valid = true;
 
-        String email = mUsernameEditText.getText().toString();
-        if (TextUtils.isEmpty(email)) {
+        String userName = mUsernameEditText.getText().toString();
+        if (TextUtils.isEmpty(userName)) {
             mUsernameEditText.setError("Required.");
             valid = false;
         } else {
@@ -242,7 +240,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         return valid;
     }
 
-    // From https://github.com/firebase/quickstart-android/blob/master/auth/app/src/main/java/com/google/firebase/quickstart/auth/java/EmailPasswordActivity.java
+    // Skeleton from https://github.com/firebase/quickstart-android/blob/master/auth/app/src/main/java/com/google/firebase/quickstart/auth/java/EmailPasswordActivity.java
     private boolean validateSignUpForm() {
         boolean valid = validateSignInForm();
         if(valid) {

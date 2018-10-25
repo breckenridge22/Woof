@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -94,39 +95,69 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         switch(i){
             case R.id.update_email_button:
                 Log.d(TAG, "Email Update button pressed.");
-                mUser.updateEmail(mEmailEditText.getText().toString())
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    Toast.makeText(getActivity(), "Updated Email", Toast.LENGTH_SHORT).show();
-                                    Log.d(TAG, "User email address updated.");
+                String email = mEmailEditText.getText().toString();
+                if (TextUtils.isEmpty(email)) {
+                    mEmailEditText.setError("Required.");
+                } else {
+                    mEmailEditText.setError(null);
+                    mUser.updateEmail(mEmailEditText.getText().toString())
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(getActivity(), "Updated Email", Toast.LENGTH_SHORT).show();
+                                        Log.d(TAG, "User email address updated.");
+                                    } else {
+                                        Toast.makeText(getActivity(), "Invalid new email", Toast.LENGTH_SHORT).show();
+                                        Log.d(TAG, "User email address not updated.");
+                                    }
                                 }
-                            }
-                        });
+                            });
+                }
                 break;
             case R.id.update_password_button:
                 Log.d(TAG, "Password Update button pressed.");
-                mUser.updatePassword(mPasswordEditText.getText().toString())
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    Toast.makeText(getActivity(), "Updated Password", Toast.LENGTH_SHORT).show();
-                                    Log.d(TAG, "User password address updated.");
+                String pass = mPasswordEditText.getText().toString();
+                if (TextUtils.isEmpty(pass)) {
+                    mPasswordEditText.setError("Required.");
+                } else {
+                    mPasswordEditText.setError(null);
+                    mUser.updatePassword(mPasswordEditText.getText().toString())
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(getActivity(), "Updated Password", Toast.LENGTH_SHORT).show();
+                                        Log.d(TAG, "User password address updated.");
+                                    } else {
+                                        Toast.makeText(getActivity(), "Invalid new password", Toast.LENGTH_SHORT).show();
+                                        Log.d(TAG, "User password not updated.");
+                                    }
                                 }
-                            }
-                        });
+                            });
+                }
                 break;
             case R.id.update_fName_button:
                 Log.d(TAG, "First name Update button pressed.");
-                user.changeFirstName(mFNameEditText.getText().toString());
-                Toast.makeText(getActivity(), "Updated First Name", Toast.LENGTH_SHORT).show();
+                String fName = mFNameEditText.getText().toString();
+                if (TextUtils.isEmpty(fName)) {
+                    mFNameEditText.setError("Required.");
+                } else {
+                    mFNameEditText.setError(null);
+                    user.changeFirstName(mFNameEditText.getText().toString());
+                    Toast.makeText(getActivity(), "Updated First Name", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.update_lName_button:
                 Log.d(TAG, "Last name Update button pressed.");
-                user.changeLastName(mLNameEditText.getText().toString());
-                Toast.makeText(getActivity(), "Updated Last Name", Toast.LENGTH_SHORT).show();
+                String lName = mLNameEditText.getText().toString();
+                if (TextUtils.isEmpty(lName)) {
+                    mLNameEditText.setError("Required.");
+                } else {
+                    mLNameEditText.setError(null);
+                    user.changeLastName(mLNameEditText.getText().toString());
+                    Toast.makeText(getActivity(), "Updated Last Name", Toast.LENGTH_SHORT).show();
+                }
                 break;
         }
     }
