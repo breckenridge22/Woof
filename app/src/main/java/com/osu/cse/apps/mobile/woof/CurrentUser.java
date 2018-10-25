@@ -92,7 +92,7 @@ public class CurrentUser extends User {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     sCurrentUser = dataSnapshot.getValue(User.class);
-                    Log.d(TAG, "Value event listener for family " +
+                    Log.d(TAG, "Value event listener for user " +
                             sCurrentUser.getfName() + " " + sCurrentUser.getlName() + " triggered");
 
                     // add value event listener for each family of which the user is a member
