@@ -70,6 +70,7 @@ public class DeleteFragment extends Fragment implements View.OnClickListener {
                                 dbUser.deleteUser();
                                 CurrentUser.setNull();
                                 Intent intent = LoginActivity.newIntent(getActivity());
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
                                 Toast.makeText(getActivity(), "Deleted Account", Toast.LENGTH_SHORT).show();
                             }
