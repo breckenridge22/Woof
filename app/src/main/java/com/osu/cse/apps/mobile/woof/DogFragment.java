@@ -43,7 +43,7 @@ public abstract class DogFragment extends Fragment {
         super.onCreate(savedInstanceState);
         Log.i(TAG, "onCreate() called");
         String dogId = getArguments().getString(ARG_DOG_ID);
-        mDog = CurrentUser.get().getDog(dogId);
+        mDog = CurrentUser.getDogMap().get(dogId);
     }
 
     @Override

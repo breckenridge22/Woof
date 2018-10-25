@@ -90,7 +90,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
     public void onClick(View v) {
         int i = v.getId();
-        User user = CurrentUser.get();
+        User user = CurrentUser.getCurrentUser();
         switch(i){
             case R.id.update_email_button:
                 Log.d(TAG, "Email Update button pressed.");

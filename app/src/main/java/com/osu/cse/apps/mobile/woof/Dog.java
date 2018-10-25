@@ -1,5 +1,10 @@
 package com.osu.cse.apps.mobile.woof;
 
+import android.support.annotation.NonNull;
+import android.util.Log;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -44,10 +49,6 @@ public class Dog {
         return familyId;
     }
 
-    public String getFamilyName(User user, String familyId) {
-        return user.getFamilyNameById(familyId);
-    }
-
     public Map<String, Object> toMap() {
         Map<String, Object> result = new HashMap();
         result.put("dogId", dogId);
@@ -59,44 +60,52 @@ public class Dog {
     /*
      * This method carries out the following steps:
      *
-     * 1. Removes the value event listener for the dog object in the database (may not be necessary
-     *    given step 2) and deletes record of event listener in CurrentUser singleton.
-     * 2. Removes dog ID from associated family's dogIdList object
+     * 1. Detaches the value event listener for the dog object in the database (may not be necessary
+     *    given step 2).
+     * 2. Locally removes dog ID from associated family's dogIdList object (no effect on database)
      * 3. ATOMICALLY removes the dog object from the database AND updates associated family object
      *    in database (effectively removing the dogId from family's dogIdList in database)
      *    (ATOMIC = either both changes will be made or neither will be made.)
-     * 4. Removes dog from current user's dogList object
+     * 4. Locally removes dog from CurrentUser.sDogMap (no effect on database)
      */
     public void deleteDog() {
 
         // step 1
+        // TODO: Add checking for completion of listener removal--how?
         CurrentUser.removeDogValueEventListener(dogId);
 
         // step 2
-        Family family = CurrentUser.get().getfamilyMap().get(familyId);
+        Family family = CurrentUser.getFamilyMap().get(familyId);
         List<String> dogIdList = family.getdogIdList();
-        boolean foundDogId = false;
-        int dogListIndex = 0;
         for (int i = 0; i < dogIdList.size(); i++) {
             if (dogId.equals(dogIdList.get(i))) {
-                foundDogId = true;
-                dogListIndex = i;
+                dogIdList.remove(i);
                 break;
             }
         }
-        if (foundDogId) {
-            dogIdList.remove(dogListIndex);
-        }
+
+        Log.d(TAG, "About to delete dog and dogId in database");
 
         // step 3
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         Map<String, Object> childUpdates = new HashMap();
         childUpdates.put("/dogs/" + dogId, null); // pass null to delete object from database
         childUpdates.put("/families/" + familyId, family.toMap());
-        ref.updateChildren(childUpdates);
+        ref.updateChildren(childUpdates)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "Successfully deleted dog and dogId in database");
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "Database update failed");
+                    }
+                });
 
         // step 4
-        CurrentUser.get().deleteDogFromList(dogId);
+        CurrentUser.getDogMap().remove(dogId);
 
     }
 

@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DogSelectionFragment extends Fragment {
@@ -62,7 +63,7 @@ public class DogSelectionFragment extends Fragment {
 
     private void updateUI() {
         Log.i(TAG, "on updateUI() called");
-        List<Dog> dogs = CurrentUser.get().getdogList();
+        List<Dog> dogs = new ArrayList(CurrentUser.getDogMap().values());
 
         /*
          * Below code segment doesn't work properly because the data set does doesn't actually change

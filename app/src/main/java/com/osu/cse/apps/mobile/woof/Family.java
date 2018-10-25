@@ -42,10 +42,6 @@ public class Family {
         return dogIdList;
     }
 
-    public void addDogId(String dogId) {
-        dogIdList.add(dogId);
-    }
-
     public Map<String, Object> toMap() {
         Map<String, Object> result = new HashMap();
         result.put("familyId", familyId);
@@ -65,4 +61,5 @@ public class Family {
         childUpdates.put("/families/" + familyId, null);
         ref.updateChildren(childUpdates);
     }
+
 }

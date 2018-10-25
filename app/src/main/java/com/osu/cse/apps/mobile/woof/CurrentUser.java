@@ -1,10 +1,8 @@
 package com.osu.cse.apps.mobile.woof;
 
 /*
- * Singleton class for storing all information pertinent to current user.  sCurrentUser is instantiated
- * on user login or user account creation.  When sCurrentUser is instantiated, valueEventListeners
- * are created for all relevant data objects in database (i.e., families and dogs).
- * sCurrentUser is nullified on user logout.
+ * Singleton class for storing all information pertinent to current user.  Static members are
+ * instantiated on user login or user account creation.
  */
 
 import android.util.Log;
@@ -21,186 +19,195 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CurrentUser extends User {
+public class CurrentUser {
 
     private static User sCurrentUser;
-    private static Map<String, ValueEventListener> sUserValueEventListenerMap;
-    private static Map<String, ValueEventListener> sFamilyValueEventListenerMap;
-    private static Map<String, ValueEventListener> sDogValueEventListenerMap;
+    private static Map<String, Family> sFamilyMap;
+    private static Map<String, Dog> sDogMap;
+    private static UserValueEventListener sUserValueEventListener;
+    private static FamilyValueEventListener sFamilyValueEventListener;
+    private static DogValueEventListener sDogValueEventListener;
+
     private static final String TAG = "CurrentUser";
 
-    public static User get() {
+    // source: https://firebase.google.com/docs/database/admin/retrieve-data
+    // source: https://firebase.google.com/docs/database/android/read-and-write
+    static class UserValueEventListener implements ValueEventListener {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            User user = dataSnapshot.getValue(User.class);
+            sCurrentUser = user;
+            Log.d(TAG, "Value event listener for user " +
+                    user.getfName() + " " + user.getlName() + " triggered");
 
-        if (sCurrentUser == null) {
-
-            // Get data from database by adding value event listeners.  This is done in a
-            // cascading fashion by first adding a value event listener to the child of
-            // "users" corresponding to the user's ID.  Then, value event listeners are added to
-            // the children of "families" corresponding to the family IDs for each of the families
-            // of which the user is a member.  Then, value event listeners are added to the children
-            // of "dogs" corresponding to the dog IDs for each of the dogs associated with the
-            // user's families.
-
-            sUserValueEventListenerMap = new HashMap();
-            sFamilyValueEventListenerMap = new HashMap();
-            sDogValueEventListenerMap = new HashMap();
-
-            FirebaseAuth auth = FirebaseAuth.getInstance();
-            String userId = auth.getCurrentUser().getUid();
-            final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-
-            // source: https://firebase.google.com/docs/database/admin/retrieve-data
-            // source: https://firebase.google.com/docs/database/android/read-and-write
-            class DogValueEventListener implements ValueEventListener {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    Log.d(TAG, "DogValueEventListener.onDataChange() called");
-                    Dog dog = dataSnapshot.getValue(Dog.class);
-                    sCurrentUser.updateDog(dog);
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-                }
+            // add value event listener for each family of which the user is a member
+            List<String> familyIdList = user.getfamilyIdList();
+            familyIdList.removeAll(Collections.singleton(null));
+            for (String familyId : familyIdList) {
+                addFamilyValueEventListener(familyId);
             }
-
-            class FamilyValueEventListener implements ValueEventListener {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    Family family = dataSnapshot.getValue(Family.class);
-                    sCurrentUser.updateFamily(family);
-
-                    // add value event listener for each dog that belongs to the family
-                    List<String> dogIdList = family.getdogIdList();
-                    dogIdList.removeAll(Collections.singleton(null));
-                    for (String dogId : dogIdList) {
-                        if (sDogValueEventListenerMap.get(dogId) != null) {
-                            removeDogValueEventListener(dogId);
-                        }
-                        DogValueEventListener listener = new DogValueEventListener();
-                        sDogValueEventListenerMap.put(dogId, listener);
-                        ref.child("dogs").child(dogId)
-                                .addValueEventListener(listener);
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-                }
-            }
-
-            class UserValueEventListener implements ValueEventListener {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    sCurrentUser = dataSnapshot.getValue(User.class);
-
-                    // add value event listener for each family of which the user is a member
-                    List<String> familyIdList = sCurrentUser.getfamilyIdList();
-                    familyIdList.removeAll(Collections.singleton(null));
-                    for (String familyId : familyIdList) {
-                        if (sFamilyValueEventListenerMap.get(familyId) != null) {
-                            removeFamilyValueEventListener(familyId);
-                        }
-                        FamilyValueEventListener listener = new FamilyValueEventListener();
-                        sFamilyValueEventListenerMap.put(familyId, listener);
-                        ref.child("families").child(familyId)
-                                .addValueEventListener(listener);
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-                }
-            }
-
-            // start cascade of adding value event listeners in database for all information
-            // pertinent to current user
-            Log.d(TAG, "userId = " + userId);
-
-            if (sUserValueEventListenerMap.get(userId) != null) {
-                removeUserValueEventListener(userId);
-            }
-            UserValueEventListener listener = new UserValueEventListener();
-            sUserValueEventListenerMap.put(userId, listener);
-            ref.child("users").child(userId).addValueEventListener(listener);
-
         }
 
-        return sCurrentUser;
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+            Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+        }
+    }
+
+    static class FamilyValueEventListener implements ValueEventListener {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            Family family = dataSnapshot.getValue(Family.class);
+            sFamilyMap.put(family.getfamilyId(), family);
+            Log.d(TAG, "Value event listener for family " + family.getfamilyName() +
+                    " triggered");
+
+            // add value event listener for each dog that belongs to the family
+            List<String> dogIdList = family.getdogIdList();
+            dogIdList.removeAll(Collections.singleton(null));
+            for (String dogId : dogIdList) {
+                addDogValueEventListener(dogId);
+            }
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+            Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+        }
+    }
+
+    static class DogValueEventListener implements ValueEventListener {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            Dog dog = dataSnapshot.getValue(Dog.class);
+            sDogMap.put(dog.getdogId(), dog);
+            Log.d(TAG, "Value event listener for dog " + dog.getdogName() +
+                    " triggered");
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+            Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+        }
     }
 
     /*
-     * Removes all value event listeners associated with CurrentUser in the database and nullifies
-     * all static member variables of CurrentUser class
+     * Get data from database by adding value event listeners.  This is done in a cascading fashion.
+     * (First, user value event listener is created.  Then, family listeners.  Then, dog listeners.)
      */
-    public static void setNull() {
+    public static void start() {
 
-        Map<String, ValueEventListener>[] listenerMaps = new Map[]{sUserValueEventListenerMap,
-            sFamilyValueEventListenerMap, sDogValueEventListenerMap};
-        String[] mapTypes = new String[]{"users", "families", "dogs"};
+        if (sCurrentUser == null) {
 
-        // remove event listeners in each of the maps associated with CurrentUser and set map
-        // to null
-        for (int i = 0; i < listenerMaps.length; i++) {
-            Map<String, ValueEventListener> listenerMap = listenerMaps[i];
-            String mapType = mapTypes[i];
+            sFamilyMap = new HashMap();
+            sDogMap = new HashMap();
+            sUserValueEventListener = new UserValueEventListener();
+            sFamilyValueEventListener = new FamilyValueEventListener();
+            sDogValueEventListener = new DogValueEventListener();
 
-            // remove value event listeners for current map
-            for (Map.Entry<String, ValueEventListener> mapEntry : listenerMap.entrySet()) {
-                String id = mapEntry.getKey();
-                switch (mapType) {
-                    case "users":
-                        removeUserValueEventListener(id);
-                        break;
-                    case "families":
-                        removeFamilyValueEventListener(id);
-                        break;
-                    case "dog":
-                        removeDogValueEventListener(id);
-                    default:
-                        Log.d(TAG, "Requesting to remove invalid listener type");
-                }
-            }
 
-            listenerMap = null;
+            FirebaseAuth auth = FirebaseAuth.getInstance();
+            String userId = auth.getCurrentUser().getUid();
+
+            // start cascade of adding value event listeners in database for all information
+            // pertinent to current user
+            addUserValueEventListener(userId);
+
         }
 
-        sCurrentUser = null;
+    }
 
+    public static User getCurrentUser() {
+        if (sCurrentUser == null) {
+            start();
+        }
+        return sCurrentUser;
+    }
+
+    public static Map<String, Family> getFamilyMap() {
+        if (sFamilyMap == null) {
+            start();
+        }
+        return sFamilyMap;
+    }
+
+    public static Map<String, Dog> getDogMap() {
+        if (sDogMap == null) {
+            start();
+        }
+        return sDogMap;
+    }
+
+
+    /*
+     * Nullifies all static members of CurrentUser class
+     */
+    public static void setNull() {
+        sCurrentUser = null;
+        sFamilyMap = null;
+        sDogMap = null;
+        sUserValueEventListener = null;
+        sFamilyValueEventListener = null;
+        sDogValueEventListener = null;
     }
 
     public static void removeUserValueEventListener(String userId) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users")
                 .child(userId);
-        removeValueEventListener(sUserValueEventListenerMap, userId, ref);
+        removeValueEventListener(sUserValueEventListener, ref);
     }
 
     public static void removeFamilyValueEventListener(String familyId) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("families")
                 .child(familyId);
-        removeValueEventListener(sFamilyValueEventListenerMap, familyId, ref);
+        removeValueEventListener(sFamilyValueEventListener, ref);
     }
 
     public static void removeDogValueEventListener(String dogId) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("dogs")
                 .child(dogId);
-        CurrentUser.removeValueEventListener(sDogValueEventListenerMap, dogId, ref);
+        CurrentUser.removeValueEventListener(sDogValueEventListener, ref);
     }
 
     /*
-     * Removes value event listener from data object in database, then removes entry
-     * specified map in this singleton.  Should be called BEFORE deleting a data object in the
-     * database (e.g., User, Family, Dog).
+     * Detaches value event listener from database reference.  Should be called BEFORE deleting
+     * a data object in the database (e.g., User, Family, Dog).
      */
-    private static void removeValueEventListener(Map<String, ValueEventListener> listenerMap,
-                                                String id, DatabaseReference ref) {
-        ValueEventListener listener = listenerMap.get(id);
+    private static void removeValueEventListener(ValueEventListener listener,
+                                                DatabaseReference ref) {
         ref.removeEventListener(listener);
-        listenerMap.remove(id);
+        Log.d(TAG, "removeEventListener() called for " + ref.toString());
     }
 
+    private static void addUserValueEventListener(String userId) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users")
+                .child(userId);
+        addValueEventListener(sUserValueEventListener, ref);
+    }
+
+    private static void addFamilyValueEventListener(String familyId) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("families")
+                .child(familyId);
+        addValueEventListener(sFamilyValueEventListener, ref);
+
+    }
+
+    private static void addDogValueEventListener(String dogId) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("dogs")
+                .child(dogId);
+        addValueEventListener(sDogValueEventListener, ref);
+    }
+
+    private static void addValueEventListener(ValueEventListener listener, DatabaseReference ref) {
+
+        // Detaches value event listener from database reference for safety before adding.
+        // Per Firebase documentation: "If a listener has been added multiple times to a data
+        // location, it is called multiple times for each event, and you must detach it the same
+        // number of times to remove it completely."
+        // source: https://firebase.google.com/docs/database/android/read-and-write?authuser=0#detach_listeners
+        removeValueEventListener(listener, ref);
+
+        ref.addValueEventListener(listener);
+    }
 
 }
