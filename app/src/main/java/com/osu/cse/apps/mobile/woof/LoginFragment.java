@@ -9,6 +9,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Surface;
@@ -45,9 +46,10 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private TextView mLNameTextView;
     private Button mLoginButton;
     private Button mNewUserButton;
+    private Button mCancelButton;
     private static final String TAG = "LoginFragment";
 
-    private boolean newU = true;
+    private boolean mNewU = true;
 
     public static FirebaseAuth mAuth;
     DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -79,6 +81,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         mLNameTextView = v.findViewById(R.id.lName_textV);
         mLoginButton = v.findViewById(R.id.login_button);
         mNewUserButton = v.findViewById(R.id.new_user_button);
+        mCancelButton = v.findViewById(R.id.cancel_button);
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
@@ -88,6 +91,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         }
         if (mNewUserButton != null) {
             mNewUserButton.setOnClickListener(this);
+        }
+        if (mCancelButton != null) {
+            mCancelButton.setOnClickListener(this);
         }
 
         return v;
@@ -120,6 +126,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    // From https://github.com/firebase/quickstart-android/blob/master/auth/app/src/main/java/com/google/firebase/quickstart/auth/java/EmailPasswordActivity.java
     private void createAccount(String email, String password) {
         Log.d(TAG, "createAccount: " + email);
 
@@ -144,6 +151,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 });
     }
 
+    // From https://github.com/firebase/quickstart-android/blob/master/auth/app/src/main/java/com/google/firebase/quickstart/auth/java/EmailPasswordActivity.java
     private void signIn(String email, String password) {
         Log.d(TAG, "signIn:" + email);
 
@@ -174,24 +182,87 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         int i = v.getId();
         if (i == R.id.new_user_button) {
-            if (newU) {
+            if (mNewU) {
                 mFNameTextView.setVisibility(View.VISIBLE);
                 mLNameTextView.setVisibility(View.VISIBLE);
                 mFNameEditText.setVisibility(View.VISIBLE);
                 mLNameEditText.setVisibility(View.VISIBLE);
                 mLoginButton.setVisibility(View.GONE);
-                newU = false;
+                mCancelButton.setVisibility(View.VISIBLE);
+                mNewU = false;
             } else {
-                createAccount(mUsernameEditText.getText().toString(), mPasswordEditText.getText().toString());
+                if(validateSignUpForm()) {
+                    createAccount(mUsernameEditText.getText().toString(), mPasswordEditText.getText().toString());
+                } else {
+                    Toast.makeText(getActivity(), "Please fill in all details.", Toast.LENGTH_LONG).show();
+                }
             }
         } else if (i == R.id.login_button) {
-            signIn(mUsernameEditText.getText().toString(), mPasswordEditText.getText().toString());
+            if(validateSignInForm()) {
+                signIn(mUsernameEditText.getText().toString(), mPasswordEditText.getText().toString());
+            } else {
+                Toast.makeText(getActivity(), "Please Enter an email and password.", Toast.LENGTH_LONG).show();
+            }
+        } else if (i == R.id.cancel_button){
+            mFNameTextView.setVisibility(View.GONE);
+            mLNameTextView.setVisibility(View.GONE);
+            mFNameEditText.setVisibility(View.GONE);
+            mLNameEditText.setVisibility(View.GONE);
+            mLoginButton.setVisibility(View.VISIBLE);
+            mCancelButton.setVisibility(View.GONE);
+            mNewU = true;
         }
     }
 
     public static void signOut() {
         mAuth.signOut();
         Log.d(TAG, "Current User:" + mAuth.getCurrentUser());
+    }
+
+    // From https://github.com/firebase/quickstart-android/blob/master/auth/app/src/main/java/com/google/firebase/quickstart/auth/java/EmailPasswordActivity.java
+    private boolean validateSignInForm() {
+        boolean valid = true;
+
+        String email = mUsernameEditText.getText().toString();
+        if (TextUtils.isEmpty(email)) {
+            mUsernameEditText.setError("Required.");
+            valid = false;
+        } else {
+            mUsernameEditText.setError(null);
+        }
+
+        String password = mPasswordEditText.getText().toString();
+        if (TextUtils.isEmpty(password)) {
+            mPasswordEditText.setError("Required.");
+            valid = false;
+        } else {
+            mPasswordEditText.setError(null);
+        }
+
+        return valid;
+    }
+
+    // From https://github.com/firebase/quickstart-android/blob/master/auth/app/src/main/java/com/google/firebase/quickstart/auth/java/EmailPasswordActivity.java
+    private boolean validateSignUpForm() {
+        boolean valid = validateSignInForm();
+        if(valid) {
+            String email = mFNameEditText.getText().toString();
+            if (TextUtils.isEmpty(email)) {
+                mFNameEditText.setError("Required.");
+                valid = false;
+            } else {
+                mFNameEditText.setError(null);
+            }
+
+            String password = mLNameEditText.getText().toString();
+            if (TextUtils.isEmpty(password)) {
+                mLNameEditText.setError("Required.");
+                valid = false;
+            } else {
+                mLNameEditText.setError(null);
+            }
+        }
+        return valid;
     }
 
     private void writeNewUser(String userId, String fName, String lName) {

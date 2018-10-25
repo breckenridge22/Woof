@@ -129,6 +129,16 @@
             android:layout_marginRight="16dp"
             android:text="@string/action_sign_up"/>
 
+        <Button
+            android:visibility ="gone"
+            android:id="@+id/cancel_button"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:text="@string/cancel_sign_up"/>
+
     </LinearLayout>
 
 </ScrollView>
