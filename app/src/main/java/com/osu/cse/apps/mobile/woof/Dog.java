@@ -65,8 +65,8 @@ public class Dog {
     /*
      * This method carries out the following steps:
      *
-     * 1. Removes the value event listener for the dog object in the database (may not be necessary
-     *    given step 2) and deletes record of event listener in CurrentUser singleton.
+     * 1. Detaches the value event listener for the dog object in the database (may not be necessary
+     *    given step 2).
      * 2. Locally removes dog ID from associated family's dogIdList object (no effect on database)
      * 3. ATOMICALLY removes the dog object from the database AND updates associated family object
      *    in database (effectively removing the dogId from family's dogIdList in database)
