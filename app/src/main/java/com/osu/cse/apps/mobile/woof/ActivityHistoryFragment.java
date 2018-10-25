@@ -17,9 +17,12 @@ import java.util.UUID;
 public class ActivityHistoryFragment extends Fragment {
 
     private final String TAG = "ActivityHistoryFragment";
+    private final String EXTRA_DOG_ID = "DOG_ID";
 
     private RecyclerView mActivityRecyclerView;
     private ActivityAdapter mAdapter;
+
+    private Dog mDog = null;
 
     public static ActivityHistoryFragment newInstance() {
         return new ActivityHistoryFragment();
@@ -34,6 +37,25 @@ public class ActivityHistoryFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         Log.d(TAG, "onCreateView called");
+
+        String dogID = null;
+
+        // Get dogID
+        Bundle bundle = getArguments();
+        if(bundle == null){
+            Log.d(TAG, "Error: Expected DOG_ID but received null");
+        } else {
+            if(bundle.containsKey(EXTRA_DOG_ID)){
+                dogID = bundle.getString(EXTRA_DOG_ID);
+            } else{
+                Log.d(TAG, "Error: Expected key DOG_ID not found.");
+            }
+        }
+        if(dogID != null){
+            mDog = CurrentUser.getDogMap().get(dogID);
+        }
+
+
         View view = inflater.inflate(R.layout.fragment_activity_list, container, false);
         mActivityRecyclerView = (RecyclerView) view.findViewById(R.id.activity_recycler_view);
         mActivityRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));

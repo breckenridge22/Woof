@@ -117,7 +117,14 @@ public class DogSelectionFragment extends Fragment {
 
             } else if (activity_type.equals("activity_history")) {
                 Log.d(TAG, "Starting ActivityHistoryActivity.");
-                Intent intent = ActivityHistoryActivity.newIntent(getActivity());
+                Intent intent = ActivityHistoryActivity.newIntent(getActivity(), mDog.getdogId());
+                startActivity(intent);
+
+            } else if (activity_type.equals("new_activity")){
+                Log.d(TAG, "Starting NewActivityRecordActivity.");
+                Intent intent = NewActivityRecordActivity.newIntent(getActivity(), mDog.getdogId());
+                startActivity(intent);
+
             }
         }
     }
