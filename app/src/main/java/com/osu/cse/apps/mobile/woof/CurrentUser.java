@@ -144,7 +144,7 @@ public class CurrentUser extends User {
                     case "families":
                         removeFamilyValueEventListener(id);
                         break;
-                    case "dog":
+                    case "dogs":
                         removeDogValueEventListener(id);
                     default:
                         Log.d(TAG, "Requesting to remove invalid listener type");
@@ -185,6 +185,7 @@ public class CurrentUser extends User {
                                                 String id, DatabaseReference ref) {
         ValueEventListener listener = listenerMap.get(id);
         ref.removeEventListener(listener);
+        Log.d(TAG, "removeEventListener() called for " + id);
         listenerMap.remove(id);
     }
 
