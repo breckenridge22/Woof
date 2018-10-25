@@ -115,7 +115,7 @@ public class NewDogFragment extends Fragment implements View.OnClickListener {
                                                                             // from Firebase
                     Dog dog = new Dog(dogId, mDogName, mFamilyId);
                     Family family = mFamilyMap.get(mFamilyId);
-                    family.addDogId(dogId);
+                    family.getdogIdList().add(dogId);
 
                     Map<String, Object> childUpdates = new HashMap();
                     childUpdates.put("/dogs/" + dogId, dog.toMap());
@@ -150,7 +150,7 @@ public class NewDogFragment extends Fragment implements View.OnClickListener {
      * Populate mFamilyIdList and mFamilyNameList for dropdown
      */
     public void getFamilyInformation() {
-        mFamilyMap = CurrentUser.get().getfamilyMap();
+        mFamilyMap = CurrentUser.getFamilyMap();
         for (Map.Entry<String, Family> entry : mFamilyMap.entrySet()) {
             mFamilyIdList.add(entry.getKey());
             mFamilyNameList.add(entry.getValue().getfamilyName());

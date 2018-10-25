@@ -2,7 +2,6 @@ package com.osu.cse.apps.mobile.woof;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -50,10 +49,6 @@ public class Dog {
         return familyId;
     }
 
-    public String getFamilyName(User user, String familyId) {
-        return user.getFamilyNameById(familyId);
-    }
-
     public Map<String, Object> toMap() {
         Map<String, Object> result = new HashMap();
         result.put("dogId", dogId);
@@ -71,7 +66,7 @@ public class Dog {
      * 3. ATOMICALLY removes the dog object from the database AND updates associated family object
      *    in database (effectively removing the dogId from family's dogIdList in database)
      *    (ATOMIC = either both changes will be made or neither will be made.)
-     * 4. Locally removes dog from current user's dogList object (no effect on database)
+     * 4. Locally removes dog from CurrentUser.sDogMap (no effect on database)
      */
     public void deleteDog() {
 
@@ -80,7 +75,7 @@ public class Dog {
         CurrentUser.removeDogValueEventListener(dogId);
 
         // step 2
-        Family family = CurrentUser.get().getfamilyMap().get(familyId);
+        Family family = CurrentUser.getFamilyMap().get(familyId);
         List<String> dogIdList = family.getdogIdList();
         for (int i = 0; i < dogIdList.size(); i++) {
             if (dogId.equals(dogIdList.get(i))) {
@@ -110,7 +105,7 @@ public class Dog {
                 });
 
         // step 4
-        CurrentUser.get().deleteDogFromList(dogId);
+        CurrentUser.getDogMap().remove(dogId);
 
     }
 

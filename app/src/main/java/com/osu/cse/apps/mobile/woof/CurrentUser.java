@@ -15,14 +15,19 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class CurrentUser extends User {
+public class CurrentUser {
 
     private static User sCurrentUser;
+    private static Map<String, Family> sFamilyMap;
+    private static Map<String, Dog> sDogMap;
     private static UserValueEventListener sUserValueEventListener;
     private static FamilyValueEventListener sFamilyValueEventListener;
     private static DogValueEventListener sDogValueEventListener;
+
     private static final String TAG = "CurrentUser";
 
     // source: https://firebase.google.com/docs/database/admin/retrieve-data
@@ -30,12 +35,13 @@ public class CurrentUser extends User {
     static class UserValueEventListener implements ValueEventListener {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
-            sCurrentUser = dataSnapshot.getValue(User.class);
+            User user = dataSnapshot.getValue(User.class);
+            sCurrentUser = user;
             Log.d(TAG, "Value event listener for user " +
-                    sCurrentUser.getfName() + " " + sCurrentUser.getlName() + " triggered");
+                    user.getfName() + " " + user.getlName() + " triggered");
 
             // add value event listener for each family of which the user is a member
-            List<String> familyIdList = sCurrentUser.getfamilyIdList();
+            List<String> familyIdList = user.getfamilyIdList();
             familyIdList.removeAll(Collections.singleton(null));
             for (String familyId : familyIdList) {
                 addFamilyValueEventListener(familyId);
@@ -52,7 +58,7 @@ public class CurrentUser extends User {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
             Family family = dataSnapshot.getValue(Family.class);
-            sCurrentUser.updateFamily(family);
+            sFamilyMap.put(family.getfamilyId(), family);
             Log.d(TAG, "Value event listener for family " + family.getfamilyName() +
                     " triggered");
 
@@ -74,7 +80,7 @@ public class CurrentUser extends User {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
             Dog dog = dataSnapshot.getValue(Dog.class);
-            sCurrentUser.updateDog(dog);
+            sDogMap.put(dog.getdogId(), dog);
             Log.d(TAG, "Value event listener for dog " + dog.getdogName() +
                     " triggered");
         }
@@ -89,13 +95,16 @@ public class CurrentUser extends User {
      * Get data from database by adding value event listeners.  This is done in a cascading fashion.
      * (First, user value event listener is created.  Then, family listeners.  Then, dog listeners.)
      */
-    public static User get() {
+    public static void start() {
 
         if (sCurrentUser == null) {
 
+            sFamilyMap = new HashMap();
+            sDogMap = new HashMap();
             sUserValueEventListener = new UserValueEventListener();
             sFamilyValueEventListener = new FamilyValueEventListener();
             sDogValueEventListener = new DogValueEventListener();
+
 
             FirebaseAuth auth = FirebaseAuth.getInstance();
             String userId = auth.getCurrentUser().getUid();
@@ -106,17 +115,40 @@ public class CurrentUser extends User {
 
         }
 
+    }
+
+    public static User getCurrentUser() {
+        if (sCurrentUser == null) {
+            start();
+        }
         return sCurrentUser;
     }
+
+    public static Map<String, Family> getFamilyMap() {
+        if (sFamilyMap == null) {
+            start();
+        }
+        return sFamilyMap;
+    }
+
+    public static Map<String, Dog> getDogMap() {
+        if (sDogMap == null) {
+            start();
+        }
+        return sDogMap;
+    }
+
 
     /*
      * Nullifies all static members of CurrentUser class
      */
     public static void setNull() {
+        sCurrentUser = null;
+        sFamilyMap = null;
+        sDogMap = null;
         sUserValueEventListener = null;
         sFamilyValueEventListener = null;
         sDogValueEventListener = null;
-        sCurrentUser = null;
     }
 
     public static void removeUserValueEventListener(String userId) {

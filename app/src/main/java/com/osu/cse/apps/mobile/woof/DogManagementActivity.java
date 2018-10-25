@@ -43,7 +43,7 @@ public class DogManagementActivity extends AppCompatActivity
         setContentView(R.layout.activity_dog_management);
 
         String dogId = getIntent().getStringExtra(EXTRA_DOG_ID);
-        mDog = CurrentUser.get().getDog(dogId);
+        mDog = CurrentUser.getDogMap().get(dogId);
 
         FragmentManager fm = getSupportFragmentManager();
 

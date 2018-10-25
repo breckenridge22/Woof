@@ -66,7 +66,7 @@ public class DeleteFragment extends Fragment implements View.OnClickListener {
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
                                 Log.d(TAG, "User account deleted.");
-                                User dbUser = CurrentUser.get();
+                                User dbUser = CurrentUser.getCurrentUser();
                                 dbUser.deleteUser();
                                 CurrentUser.setNull();
                                 Intent intent = LoginActivity.newIntent(getActivity());

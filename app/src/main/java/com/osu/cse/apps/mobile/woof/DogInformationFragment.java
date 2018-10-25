@@ -58,8 +58,9 @@ public class DogInformationFragment extends DogFragment {
 
     public void updateUI() {
         mDogIdTextView.setText(getDog().getdogId());
-        mFamilyNameTextView.setText(getDog().getFamilyName(CurrentUser.get(),
-                getDog().getfamilyId()));
+        String familyId = getDog().getfamilyId();
+        String familyName = CurrentUser.getFamilyMap().get(familyId).getfamilyName();
+        mFamilyNameTextView.setText(familyName);
     }
 
 }

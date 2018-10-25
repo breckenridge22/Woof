@@ -25,11 +25,7 @@ public class HomeScreenFragment extends Fragment implements View.OnClickListener
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(TAG, "onCreate() called");
-
-        if (CurrentUser.get() == null) {
-            // TODO: throw new NoCurrentUserException("Current user ID not found in database");
-        }
-
+        CurrentUser.start();
     }
 
     @Override
