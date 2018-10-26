@@ -10,6 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -17,22 +20,37 @@ import java.util.UUID;
 public class ActivityHistoryFragment extends DogFragment {
 
     private final String TAG = "ActivityHistoryFragment";
+    private final String EXTRA_DOG_ID = "DOG_ID";
 
     private RecyclerView mActivityRecyclerView;
     private ActivityAdapter mAdapter;
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-        Log.d(TAG, "onCreateView called");
+    private Dog mDog = null;
 
-        View view = inflater.inflate(R.layout.fragment_activity_list, container, false);
-        mActivityRecyclerView = (RecyclerView) view.findViewById(R.id.activity_recycler_view);
-        mActivityRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-        updateUI();
-
-        return view;
+    public static ActivityHistoryFragment newInstance() {
+        return new ActivityHistoryFragment();
     }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.i(TAG, "onCreate() called");
+
+        String dogID = null;
+
+        // Get dogID
+        Bundle bundle = getArguments();
+        if (bundle == null) {
+            Log.d(TAG, "Error: Expected DOG_ID but received null");
+        } else {
+            if (bundle.containsKey(EXTRA_DOG_ID)) {
+                dogID = bundle.getString(EXTRA_DOG_ID);
+            } else {
+                Log.d(TAG, "Error: Expected key DOG_ID not found.");
+            }
+        }
+    }
+
 
     private void updateUI() {
         Log.d(TAG, "updateUI() called");
