@@ -13,11 +13,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -27,21 +30,28 @@ import com.google.firebase.database.FirebaseDatabase;
 public class ProfileFragment extends Fragment implements View.OnClickListener {
 
 
+    private Button mReauthenticateButton;
     private Button mEmailUpdateButton;
     private Button mPasswordUpdateButton;
     private Button mFNameUpdateButton;
     private Button mLNameUpdateButton;
+    private EditText mEmailText;
+    private EditText mPasswordText;
     private EditText mEmailEditText;
     private EditText mPasswordEditText;
     private EditText mFNameEditText;
     private EditText mLNameEditText;
+    private LinearLayout mReauthLayout;
+    private LinearLayout mUpdateLayout;
     private FirebaseUser mUser;
     private static final String TAG = "ProfileFragment";
 
 
     DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
 
-    public static ProfileFragment newInstance() { return new ProfileFragment(); }
+    public static ProfileFragment newInstance() {
+        return new ProfileFragment();
+    }
 
     /*
      * Hosting activity must extend this interface
@@ -57,15 +67,23 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         View v;
         v = inflater.inflate(R.layout.fragment_profile, container, false);
 
+        mReauthenticateButton = v.findViewById(R.id.reauthenticate);
         mEmailUpdateButton = v.findViewById(R.id.update_email_button);
         mPasswordUpdateButton = v.findViewById(R.id.update_password_button);
         mFNameUpdateButton = v.findViewById(R.id.update_fName_button);
         mLNameUpdateButton = v.findViewById(R.id.update_lName_button);
+        mEmailText = v.findViewById(R.id.re_email);
+        mPasswordText = v.findViewById(R.id.re_password);
         mEmailEditText = v.findViewById(R.id.update_email_edit);
         mPasswordEditText = v.findViewById(R.id.update_pass_edit);
         mFNameEditText = v.findViewById(R.id.update_fName_edit);
         mLNameEditText = v.findViewById(R.id.update_lName_edit);
+        mReauthLayout = v.findViewById(R.id.reauth_layout);
+        mUpdateLayout = v.findViewById(R.id.update_layout);
 
+        if (mReauthenticateButton != null) {
+            mReauthenticateButton.setOnClickListener(this);
+        }
         if (mEmailUpdateButton != null) {
             mEmailUpdateButton.setOnClickListener(this);
         }
@@ -78,21 +96,76 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         if (mLNameUpdateButton != null) {
             mLNameUpdateButton.setOnClickListener(this);
         }
+
         mUser = FirebaseAuth.getInstance().getCurrentUser();
         return v;
     }
 
     @Override
-    public void onAttach(Context context){
+    public void onAttach(Context context) {
         super.onAttach(context);
-        mCallbacks = (ProfileFragment.Callbacks) context ;
+        mCallbacks = (ProfileFragment.Callbacks) context;
+    }
+
+    // Skeleton from https://firebase.google.com/docs/auth/android/manage-users
+    public void reauthenticate() {
+        if(validateSignInForm()) {
+            AuthCredential credential = EmailAuthProvider
+                    .getCredential(mEmailText.getText().toString(), mPasswordText.getText().toString());
+
+            // Prompt the user to re-provide their sign-in credentials
+            mUser.reauthenticate(credential)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Log.d(TAG, "User re-authenticated.");
+                                mReauthLayout.setVisibility(View.GONE);
+                                mUpdateLayout.setVisibility(View.VISIBLE);
+                                Toast.makeText(getActivity(), "Successfully re-authenticated", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Log.d(TAG, "Re-authentication failed.");
+                                Toast.makeText(getActivity(), "Re-authentication failed.", Toast.LENGTH_SHORT).show();
+                            }
+
+                        }
+                    });
+        } else {
+            Toast.makeText(getActivity(), "Please fill in the form.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // Skeleton from https://github.com/firebase/quickstart-android/blob/master/auth/app/src/main/java/com/google/firebase/quickstart/auth/java/EmailPasswordActivity.java
+    private boolean validateSignInForm() {
+        boolean valid = true;
+
+        String userName = mEmailText.getText().toString();
+        if (TextUtils.isEmpty(userName)) {
+            mEmailText.setError("Required.");
+            valid = false;
+        } else {
+            mEmailText.setError(null);
+        }
+
+        String password = mPasswordText.getText().toString();
+        if (TextUtils.isEmpty(password)) {
+            mPasswordText.setError("Required.");
+            valid = false;
+        } else {
+            mPasswordText.setError(null);
+        }
+
+        return valid;
     }
 
 
     public void onClick(View v) {
         int i = v.getId();
         User user = CurrentUser.getCurrentUser();
-        switch(i){
+        switch (i) {
+            case R.id.reauthenticate:
+                reauthenticate();
+                break;
             case R.id.update_email_button:
                 Log.d(TAG, "Email Update button pressed.");
                 String email = mEmailEditText.getText().toString();

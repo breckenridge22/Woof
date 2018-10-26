@@ -33,6 +33,8 @@
     <string name="delete_confirm">Are you sure you want to delete your account?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="reauth_text">Please re-authenticate your log in before updating your profile</string>
+    <string name="reauthenticate">Re-authenticate</string>
 
     <!-- Strings related to Dog Home screen -->
     <string name="dog_information_button">Dog Information</string>

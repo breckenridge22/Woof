@@ -10,109 +10,178 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:text="@string/update_profile" />
-
         <LinearLayout
+            android:id="@+id/reauth_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-            <Button
-                android:id="@+id/update_email_button"
-                android:layout_width="100dp"
+            <TextView
+                android:id="@+id/reauth_text"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="8dp"
-                android:text="@string/update_email" />
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/reauth_text" />
+
+            <TextView
+                android:id="@+id/prompt_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="20dp"
+                android:text="@string/prompt_email" />
 
             <EditText
-                android:id="@+id/update_email_edit"
-                android:layout_width="213dp"
+                android:id="@+id/re_email"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
                 android:layout_marginTop="20dp"
-                android:layout_weight="1"
+                android:layout_marginRight="20dp"
                 android:textAlignment="textEnd" />
-        </LinearLayout>
 
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/update_password_button"
-                android:layout_width="100dp"
+            <TextView
+                android:id="@+id/prompt_password"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="16dp"
-                android:text="@string/update_password" />
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="20dp"
+                android:text="@string/prompt_password" />
 
             <EditText
-                android:id="@+id/update_pass_edit"
-                android:layout_width="213dp"
+                android:id="@+id/re_password"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
                 android:layout_marginTop="20dp"
-                android:layout_weight="1"
+                android:layout_marginRight="20dp"
+                android:inputType="textPassword"
                 android:textAlignment="textEnd" />
 
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
             <Button
-                android:id="@+id/update_fName_button"
-                android:layout_width="100dp"
+                android:id="@+id/reauthenticate"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginBottom="16dp"
-                android:text="@string/update_fName" />
-
-            <EditText
-                android:id="@+id/update_fName_edit"
-                android:layout_width="213dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_weight="1"
-                android:textAlignment="textEnd" />
-
+                android:text="@string/reauthenticate" />
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/update_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical"
+            android:visibility="gone">
 
-            <Button
-                android:id="@+id/update_lName_button"
-                android:layout_width="100dp"
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="16dp"
-                android:text="@string/update_lName" />
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/update_profile" />
 
-            <EditText
-                android:id="@+id/update_lName_edit"
-                android:layout_width="213dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_weight="1"
-                android:textAlignment="textEnd" />
+                android:orientation="horizontal">
 
+                <Button
+                    android:id="@+id/update_email_button"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="@string/update_email" />
+
+                <EditText
+                    android:id="@+id/update_email_edit"
+                    android:layout_width="213dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_weight="1"
+                    android:textAlignment="textEnd" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/update_password_button"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:text="@string/update_password" />
+
+                <EditText
+                    android:id="@+id/update_pass_edit"
+                    android:layout_width="213dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_weight="1"
+                    android:inputType="textPassword"
+                    android:textAlignment="textEnd" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/update_fName_button"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:text="@string/update_fName" />
+
+                <EditText
+                    android:id="@+id/update_fName_edit"
+                    android:layout_width="213dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_weight="1"
+                    android:textAlignment="textEnd" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/update_lName_button"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:text="@string/update_lName" />
+
+                <EditText
+                    android:id="@+id/update_lName_edit"
+                    android:layout_width="213dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_weight="1"
+                    android:textAlignment="textEnd" />
+
+            </LinearLayout>
         </LinearLayout>
 
     </LinearLayout>
