@@ -29,7 +29,6 @@
         <activity android:name=".DogManagementActivity"></activity>
         <activity android:name=".SettingsActivity"></activity>
         <activity android:name=".ProfileActivity"></activity>
-        <activity android:name=".ActivityHistoryActivity"></activity>
         <activity android:name=".NewDogActivity"></activity>
         <activity android:name=".DeleteActivity"></activity>
 

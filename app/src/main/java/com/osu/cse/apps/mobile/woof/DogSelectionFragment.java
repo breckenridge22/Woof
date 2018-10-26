@@ -111,13 +111,15 @@ public class DogSelectionFragment extends Fragment {
         @Override
         public void onClick(View v) {
             if (activity_type.equals("manage_dogs")) {
+                Log.d(TAG, "Starting DogHomeFragment via DogManagementActivity.");
                 Intent intent = DogManagementActivity.newIntent(getActivity(), mDog.getdogId(),
                         DogManagementActivity.DOG_HOME);
                 startActivity(intent);
 
             } else if (activity_type.equals("activity_history")) {
-                Log.d(TAG, "Starting ActivityHistoryActivity.");
-                Intent intent = ActivityHistoryActivity.newIntent(getActivity(), mDog.getdogId());
+                Log.d(TAG, "Starting ActivityHistoryFragment via DogManagementActivity.");
+                Intent intent = DogManagementActivity.newIntent(getActivity(), mDog.getdogId(),
+                        DogManagementActivity.ACTIVITY_HISTORY);
                 startActivity(intent);
 
             } else if (activity_type.equals("new_activity")){

@@ -14,69 +14,33 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-public class ActivityHistoryFragment extends Fragment {
+public class ActivityHistoryFragment extends DogFragment {
 
     private final String TAG = "ActivityHistoryFragment";
-    private final String EXTRA_DOG_ID = "DOG_ID";
 
     private RecyclerView mActivityRecyclerView;
     private ActivityAdapter mAdapter;
-
-    private Dog mDog = null;
-
-    public static ActivityHistoryFragment newInstance() {
-        return new ActivityHistoryFragment();
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Log.i(TAG, "onCreate() called");
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         Log.d(TAG, "onCreateView called");
 
-        String dogID = null;
-
-        // Get dogID
-        Bundle bundle = getArguments();
-        if(bundle == null){
-            Log.d(TAG, "Error: Expected DOG_ID but received null");
-        } else {
-            if(bundle.containsKey(EXTRA_DOG_ID)){
-                dogID = bundle.getString(EXTRA_DOG_ID);
-            } else{
-                Log.d(TAG, "Error: Expected key DOG_ID not found.");
-            }
-        }
-        if(dogID != null){
-            mDog = CurrentUser.getDogMap().get(dogID);
-        }
-
-
         View view = inflater.inflate(R.layout.fragment_activity_list, container, false);
         mActivityRecyclerView = (RecyclerView) view.findViewById(R.id.activity_recycler_view);
         mActivityRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-
-        UUID dog_id = UUID.randomUUID();
-        // Need to get it passed from DogSelection
-        updateUI(dog_id);
+        updateUI();
 
         return view;
     }
 
-    private void updateUI(UUID dog_id) {
+    private void updateUI() {
         Log.d(TAG, "updateUI() called");
-        // Need Dog UUID
 
-        // Using test activities for now
-
+        // TODO: Fetch actual activity records from the database
         List<ActivityRecord> activityRecordsList = ActivityRecord.getTestActivityRecords();
-        mAdapter = new ActivityAdapter(activityRecordsList);
 
+        mAdapter = new ActivityAdapter(activityRecordsList);
         mActivityRecyclerView.setAdapter(mAdapter);
     }
 

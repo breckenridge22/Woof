@@ -60,7 +60,7 @@ public class DogHomeFragment extends DogFragment implements View.OnClickListener
                 // open activity schedule screen activity
                 break;
             case R.id.activity_history_button:
-                // open activity history screen activity
+                getCallbacks().onMenuButtonSelected(DogManagementActivity.ACTIVITY_HISTORY);
                 break;
             case R.id.owners_caretakers_button:
                 // open owners and caretakers screen activity

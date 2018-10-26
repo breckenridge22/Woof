@@ -14,7 +14,7 @@ import android.util.Log;
 public class DogManagementActivity extends AppCompatActivity
     implements DogFragment.Callbacks {
 
-    private Dog mDog;
+    private String mDogId;
     private static final String EXTRA_DOG_ID =
             "com.osu.cse.apps.mobile.woof.dogId.DogManagementActivity";
     private static final String EXTRA_FRAGMENT_ID =
@@ -42,17 +42,18 @@ public class DogManagementActivity extends AppCompatActivity
         Log.i(TAG, "onCreate() called");
         setContentView(R.layout.activity_dog_management);
 
-        String dogId = getIntent().getStringExtra(EXTRA_DOG_ID);
-        mDog = CurrentUser.getDogMap().get(dogId);
+        mDogId = getIntent().getStringExtra(EXTRA_DOG_ID);
 
         FragmentManager fm = getSupportFragmentManager();
+
+
 
         int headerContainerId = R.id.fragment_header_container;
         DogHeaderFragment headerFragment =
                 (DogHeaderFragment) fm.findFragmentById(headerContainerId);
         if (headerFragment == null) {
             headerFragment = new DogHeaderFragment();
-            headerFragment.setArgs(mDog.getdogId());
+            headerFragment.setArgs(mDogId);
             fm.beginTransaction()
                     .add(headerContainerId, headerFragment)
                     .commit();
@@ -70,10 +71,14 @@ public class DogManagementActivity extends AppCompatActivity
 
     private int getFragmentIdFromIntent() {
         Intent intent = getIntent();
+        int FRAGMENT_ID;
         if (intent == null) {
-            return DOG_HOME;
+            FRAGMENT_ID = DOG_HOME;
         }
-        return intent.getIntExtra(EXTRA_FRAGMENT_ID, DOG_HOME);
+        else {
+            FRAGMENT_ID = intent.getIntExtra(EXTRA_FRAGMENT_ID, DOG_HOME);
+        }
+        return FRAGMENT_ID;
     }
 
     private void replaceBodyFragment(int fragmentId) {
@@ -101,7 +106,7 @@ public class DogManagementActivity extends AppCompatActivity
                 // TODO
                 break;
             case ACTIVITY_HISTORY:
-                // TODO
+                fragment = new ActivityHistoryFragment();
                 break;
             case OWNERS_CARETAKERS:
                 // TODO
@@ -111,7 +116,7 @@ public class DogManagementActivity extends AppCompatActivity
                 break;
         }
         if (fragment != null) {
-            fragment.setArgs(mDog.getdogId());
+            fragment.setArgs(mDogId);
         }
         return fragment;
     }

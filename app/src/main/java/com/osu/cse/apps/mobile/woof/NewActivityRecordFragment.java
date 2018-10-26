@@ -11,7 +11,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class NewActivityRecordFragment extends Fragment implements View.OnClickListener {
 
-
+        private static final String TAG = "NewActivityRecordFragment";
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
 
 

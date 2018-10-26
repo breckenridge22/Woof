@@ -42,8 +42,18 @@ public abstract class DogFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(TAG, "onCreate() called");
-        String dogId = getArguments().getString(ARG_DOG_ID);
-        mDog = CurrentUser.getDogMap().get(dogId);
+        Bundle args = getArguments();
+        if (args == null) {
+            Log.d(TAG, "Error: Expected dog_id but received null");
+        }
+        else if (args.containsKey(ARG_DOG_ID)) {
+            String dogId = args.getString(ARG_DOG_ID);
+            mDog = CurrentUser.getDogMap().get(dogId);
+        }
+        else {
+            Log.d(TAG, "Error: Expected key dog_id not found.");
+        }
+
     }
 
     @Override
