@@ -64,5 +64,6 @@
     <!-- Strings related to NewDogFragment -->
     <string name="new_dog_prompt">Enter Information For New Dog"</string>
     <string name="family">Family</string>
+    <string name="title_activity_maps">Map</string>
 
 </resources>

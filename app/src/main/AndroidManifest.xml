@@ -7,8 +7,14 @@
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
+    <!--
+         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
+         Google Maps Android API v2, but you must specify either coarse or fine
+         location permissions for the 'MyLocation' functionality. 
+    -->7
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <application
-        android:debuggable="true"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -20,19 +26,26 @@
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".HomeScreenActivity">
-        </activity>
-        <activity android:name=".DogSelectionActivity"></activity>
-        <activity android:name=".DogManagementActivity"></activity>
-        <activity android:name=".SettingsActivity"></activity>
-        <activity android:name=".ProfileActivity"></activity>
-        <activity android:name=".ActivityHistoryActivity"></activity>
-        <activity android:name=".NewDogActivity"></activity>
-        <activity android:name=".DeleteActivity"></activity>
+        <activity android:name=".HomeScreenActivity"></activity>
+        <activity android:name=".DogSelectionActivity" />
+        <activity android:name=".DogManagementActivity" />
+        <activity android:name=".SettingsActivity" />
+        <activity android:name=".ProfileActivity" />
+        <activity android:name=".ActivityHistoryActivity" />
+        <activity android:name=".NewDogActivity" />
+        <activity android:name=".DeleteActivity" />
 
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBRCOW8JZBNhtez4rOgPGsAcFFlEQhn3P4" />
+
+        <activity
+            android:name=".MapsActivity"
+            android:label="@string/title_activity_maps"></activity>
     </application>
 
 </manifest>

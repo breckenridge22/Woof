@@ -71,7 +71,8 @@ public class HomeScreenFragment extends Fragment implements View.OnClickListener
         Intent intent;
         switch (v.getId()) {
             case R.id.map_button:
-                // TODO
+                intent = MapsActivity.newIntent(getActivity());
+                startActivity(intent);
                 break;
             case R.id.finish_walk_button:
                 // TODO
