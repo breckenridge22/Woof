@@ -14,11 +14,14 @@ import android.util.Log;
 public class DogManagementActivity extends AppCompatActivity
     implements DogFragment.Callbacks {
 
-    private Dog mDog;
+    private String mDogId;
+    private String mFamilyId;
     private static final String EXTRA_DOG_ID =
-            "com.osu.cse.apps.mobile.woof.dogId.DogManagementActivity";
+            "com.osu.cse.apps.mobile.woof.DogManagementActivity.dog_id";
     private static final String EXTRA_FRAGMENT_ID =
-            "com.osu.cse.apps.mobile.woof.fragment.DogManagementActivity";
+            "com.osu.cse.apps.mobile.woof.DogManagementActivity.fragment_id";
+    private static final String EXTRA_FAMILY_ID =
+            "com.osu.cse.apps.mobile.woof.DogManagementActivity.family_id";
     private static final String TAG = "DogManagementActivity";
 
     // fragment codes to use in intent extras
@@ -29,9 +32,10 @@ public class DogManagementActivity extends AppCompatActivity
     public static final int OWNERS_CARETAKERS = 4;
     public static final int REPORT_LOST = 5;
 
-    public static Intent newIntent(Context packageContext, String dogId, int fragmentId) {
+    public static Intent newIntent(Context packageContext, String dogId, String familyId, int fragmentId) {
         Intent intent = new Intent(packageContext, DogManagementActivity.class);
         intent.putExtra(EXTRA_DOG_ID, dogId);
+        intent.putExtra(EXTRA_FAMILY_ID, familyId);
         intent.putExtra(EXTRA_FRAGMENT_ID, fragmentId);
         return intent;
     }
@@ -42,17 +46,19 @@ public class DogManagementActivity extends AppCompatActivity
         Log.i(TAG, "onCreate() called");
         setContentView(R.layout.activity_dog_management);
 
-        String dogId = getIntent().getStringExtra(EXTRA_DOG_ID);
-        mDog = CurrentUser.getDogMap().get(dogId);
+        mDogId = getIntent().getStringExtra(EXTRA_DOG_ID);
+        mFamilyId = getIntent().getStringExtra(EXTRA_FAMILY_ID);
 
         FragmentManager fm = getSupportFragmentManager();
+
+
 
         int headerContainerId = R.id.fragment_header_container;
         DogHeaderFragment headerFragment =
                 (DogHeaderFragment) fm.findFragmentById(headerContainerId);
         if (headerFragment == null) {
             headerFragment = new DogHeaderFragment();
-            headerFragment.setArgs(mDog.getdogId());
+            headerFragment.setArgs(mDogId, mFamilyId);
             fm.beginTransaction()
                     .add(headerContainerId, headerFragment)
                     .commit();
@@ -70,10 +76,14 @@ public class DogManagementActivity extends AppCompatActivity
 
     private int getFragmentIdFromIntent() {
         Intent intent = getIntent();
+        int FRAGMENT_ID;
         if (intent == null) {
-            return DOG_HOME;
+            FRAGMENT_ID = DOG_HOME;
         }
-        return intent.getIntExtra(EXTRA_FRAGMENT_ID, DOG_HOME);
+        else {
+            FRAGMENT_ID = intent.getIntExtra(EXTRA_FRAGMENT_ID, DOG_HOME);
+        }
+        return FRAGMENT_ID;
     }
 
     private void replaceBodyFragment(int fragmentId) {
@@ -101,7 +111,7 @@ public class DogManagementActivity extends AppCompatActivity
                 // TODO
                 break;
             case ACTIVITY_HISTORY:
-                // TODO
+                fragment = new ActivityHistoryFragment();
                 break;
             case OWNERS_CARETAKERS:
                 // TODO
@@ -111,7 +121,7 @@ public class DogManagementActivity extends AppCompatActivity
                 break;
         }
         if (fragment != null) {
-            fragment.setArgs(mDog.getdogId());
+            fragment.setArgs(mDogId, mFamilyId);
         }
         return fragment;
     }
@@ -125,12 +135,18 @@ public class DogManagementActivity extends AppCompatActivity
         replaceBodyFragment(fragmentId);
     }
 
-    public void onDogNameChanged() {
+    public void onDogInfoChanged() {
         FragmentManager fm = getSupportFragmentManager();
-        DogHeaderFragment fragment = (DogHeaderFragment)
+
+        DogHeaderFragment headerFragment = (DogHeaderFragment)
                 fm.findFragmentById(R.id.fragment_header_container);
-        if (fragment != null) {
-            fragment.updateUI();
+        if (headerFragment != null) {
+            headerFragment.updateUI();
+        }
+
+        DogFragment bodyFragment = (DogFragment) fm.findFragmentById(R.id.fragment_body_container);
+        if (bodyFragment != null) {
+            bodyFragment.updateUI();
         }
     }
 

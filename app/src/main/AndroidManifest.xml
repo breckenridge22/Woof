@@ -30,14 +30,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".HomeScreenActivity"></activity>
-        <activity android:name=".DogSelectionActivity" />
-        <activity android:name=".DogManagementActivity" />
-        <activity android:name=".SettingsActivity" />
-        <activity android:name=".ProfileActivity" />
-        <activity android:name=".ActivityHistoryActivity" />
-        <activity android:name=".NewDogActivity" />
-        <activity android:name=".DeleteActivity" />
+        <activity android:name=".HomeScreenActivity">
+        </activity>
+        <activity android:name=".DogSelectionActivity"></activity>
+        <activity android:name=".DogManagementActivity"></activity>
+        <activity android:name=".SettingsActivity"></activity>
+        <activity android:name=".ProfileActivity"></activity>
+        <activity android:name=".NewDogActivity"></activity>
+        <activity android:name=".DeleteActivity"></activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

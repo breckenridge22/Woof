@@ -44,6 +44,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private LinearLayout mReauthLayout;
     private LinearLayout mUpdateLayout;
     private FirebaseUser mUser;
+    private User mCurrentUser;
     private static final String TAG = "ProfileFragment";
 
 
@@ -61,6 +62,22 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
     private Callbacks mCallbacks;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        CurrentUser.getCurrentUserFromDatabase(new UserCallback() {
+            @Override
+            public void onUserRetrieved(User user) {
+                mCurrentUser = user;
+            }
+
+            @Override
+            public void onFailure(String error) {
+                Log.d(TAG, "Failed to retrieve current user object from database");
+            }
+        });
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -158,10 +175,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         return valid;
     }
 
-
     public void onClick(View v) {
         int i = v.getId();
-        User user = CurrentUser.getCurrentUser();
         switch (i) {
             case R.id.reauthenticate:
                 reauthenticate();
@@ -217,7 +232,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                     mFNameEditText.setError("Required.");
                 } else {
                     mFNameEditText.setError(null);
-                    user.changeFirstName(mFNameEditText.getText().toString());
+                    mCurrentUser.changeFirstName(mFNameEditText.getText().toString());
                     Toast.makeText(getActivity(), "Updated First Name", Toast.LENGTH_SHORT).show();
                 }
                 break;
@@ -228,7 +243,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                     mLNameEditText.setError("Required.");
                 } else {
                     mLNameEditText.setError(null);
-                    user.changeLastName(mLNameEditText.getText().toString());
+                    mCurrentUser.changeLastName(mLNameEditText.getText().toString());
                     Toast.makeText(getActivity(), "Updated Last Name", Toast.LENGTH_SHORT).show();
                 }
                 break;

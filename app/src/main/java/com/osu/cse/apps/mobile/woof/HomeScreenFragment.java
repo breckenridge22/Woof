@@ -78,7 +78,7 @@ public class HomeScreenFragment extends Fragment implements View.OnClickListener
                 // TODO
                 break;
             case R.id.new_activity_button:
-                intent = DogSelectionActivity.newIntent(getActivity());
+                intent = MultiDogSelectionActivity.newIntent(getActivity());
                 intent.putExtra("activity_type", "new_activity");
                 startActivity(intent);
                 break;

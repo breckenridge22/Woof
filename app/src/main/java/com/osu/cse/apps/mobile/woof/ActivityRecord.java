@@ -33,11 +33,12 @@ public class ActivityRecord {
     private UUID mDogID;
 
     public ActivityRecord(UUID id, int activity_Type){
-        mActivity_ID = id;
-        mActivity_Type = activity_Type;
-        if (mActivity_Type > 5 || mActivity_Type < 0){
+        this.mActivity_ID = id;
+        this.mActivity_Type= activity_Type;
+        if (this.mActivity_Type > 5 || this.mActivity_Type < 0){
             Log.d(TAG, "ERROR :: INVALID Activity Type");
         }
+
     }
 
     public int getActivity_Type() {

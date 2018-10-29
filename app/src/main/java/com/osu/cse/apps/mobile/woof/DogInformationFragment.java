@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -19,6 +20,8 @@ public class DogInformationFragment extends DogFragment {
     private TextView mDogIdTextView;
     private EditText mDogNameEditText;
     private TextView mFamilyNameTextView;
+    private Button mSaveChangesButton;
+    private String mDogName;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -38,8 +41,7 @@ public class DogInformationFragment extends DogFragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int count, int after) {
                 Log.i(TAG, "onTextChanged() called");
-                getDog().changedogName(s.toString());
-                getCallbacks().onDogNameChanged(); // update header
+                mDogName = s.toString();
             }
 
             @Override
@@ -47,20 +49,26 @@ public class DogInformationFragment extends DogFragment {
                 // required
             }
         });
-        mDogNameEditText.setText(getDog().getdogName());
 
         mFamilyNameTextView = v.findViewById(R.id.family);
 
-        updateUI();
+        mSaveChangesButton = v.findViewById(R.id.save_changes_button);
+        mSaveChangesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CurrentUser.changeDogName(getFamilyId(), getDogId(), mDogName);
+            }
+        });
 
         return v;
     }
 
+    @Override
     public void updateUI() {
-        mDogIdTextView.setText(getDog().getdogId());
-        String familyId = getDog().getfamilyId();
-        String familyName = CurrentUser.getFamilyMap().get(familyId).getfamilyName();
-        mFamilyNameTextView.setText(familyName);
+        Dog dog = getDog();
+        mDogIdTextView.setText(getDogId());
+        mDogNameEditText.setText(dog.getdogName());
+        mFamilyNameTextView.setText(getFamilyId());
     }
 
 }

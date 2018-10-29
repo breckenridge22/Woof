@@ -18,11 +18,11 @@ public class DogHeaderFragment extends DogFragment {
         Log.i(TAG, "onCreateView() called");
         View v = inflater.inflate(R.layout.fragment_dog_header, container, false);
         mDogNameTextView = v.findViewById(R.id.dog_name_header);
-        updateUI();
 
         return v;
     }
 
+    @Override
     public void updateUI() {
         mDogNameTextView.setText(getDog().getdogName());
     }

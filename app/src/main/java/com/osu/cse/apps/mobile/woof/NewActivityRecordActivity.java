@@ -13,6 +13,8 @@ public class NewActivityRecordActivity {
     public static Intent newIntent(Context packageContext, String dogID) {
         Log.d(TAG, "newIntent() called.");
         Intent intent = new Intent(packageContext, NewActivityRecordActivity.class);
+
+        // TODO - should receive a list of dogIDs.
         intent.putExtra(EXTRA_DOG_ID, dogID);
         return intent;
     }

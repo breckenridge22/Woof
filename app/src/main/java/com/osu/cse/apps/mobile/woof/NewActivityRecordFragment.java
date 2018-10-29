@@ -12,8 +12,8 @@ import com.google.firebase.database.FirebaseDatabase;
 public class NewActivityRecordFragment extends Fragment implements View.OnClickListener {
 
 
+        private static final String TAG = "NewActivityRecordFragment";
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-
 
         public static NewActivityRecordFragment newInstance() {
             return new NewActivityRecordFragment();
@@ -25,13 +25,14 @@ public class NewActivityRecordFragment extends Fragment implements View.OnClickL
 
         }
 
-        /*@Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            Log.d(TAG, "onCreateView() called");
-            // TODO
 
-        }*/
+//        @Override
+//        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+//                                 Bundle savedInstanceState) {
+//            Log.d(TAG, "onCreateView() called");
+//            // TODO
+//
+//        }
 
         public void onClick(View v) {
             // TODO
