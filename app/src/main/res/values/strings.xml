@@ -50,6 +50,7 @@
     <string name="dog_information_prompt">Update dog information</string>
     <string name="dog_id">Dog I.D.</string>
     <string name="dog_name">Dog Name</string>
+    <string name="save_changes_button">Save Changes</string>
 
     <!-- Strings related to home screen -->
     <string name="map_button">Map</string>

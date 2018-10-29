@@ -49,11 +49,13 @@ public class ActivityHistoryFragment extends DogFragment {
                 Log.d(TAG, "Error: Expected key DOG_ID not found.");
             }
         }
+        updateActivityHistoryUI();
     }
 
 
-    private void updateUI() {
-        Log.d(TAG, "updateUI() called");
+    // TODO: Get this working properly
+    public void updateActivityHistoryUI() {
+        Log.d(TAG, "updateActivityHistoryeUI() called");
 
         // TODO: Fetch actual activity records from the database
         List<ActivityRecord> activityRecordsList = ActivityRecord.getTestActivityRecords();

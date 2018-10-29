@@ -13,11 +13,16 @@
 package com.osu.cse.apps.mobile.woof;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class DogHomeFragment extends DogFragment implements View.OnClickListener {
 
@@ -69,8 +74,20 @@ public class DogHomeFragment extends DogFragment implements View.OnClickListener
                 // open report lost screen activity
                 break;
             case R.id.delete_dog_button:
-                getDog().deleteDog();
-                getActivity().finish();
+                FirebaseDatabase.getInstance().getReference().child("families").child(getFamilyId())
+                        .child("dogs").child(getDogId()).removeValue()
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                getActivity().finish();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d(TAG, "Failed to delete dog from database");
+                            }
+                        });
         }
     }
 

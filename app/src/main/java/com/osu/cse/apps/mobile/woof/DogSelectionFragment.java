@@ -12,14 +12,19 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class DogSelectionFragment extends Fragment {
 
     private final String TAG = "DogSelectionFragment";
 
     private RecyclerView mDogRecyclerView;
+    private List<DogInfo> mDogInfoList;
     private DogAdapter mAdapter;
 
     private String activity_type;
@@ -58,38 +63,42 @@ public class DogSelectionFragment extends Fragment {
     public void onResume() {
         super.onResume();
         Log.i(TAG, "onResume() called");
+
+        mDogInfoList = new ArrayList();
+
+        // populate dog info list from database
+        CurrentUser.getDogInfoFromDatabase(new DogInfoCallback() {
+            @Override
+            public void onDogInfoRetrieved(DogInfo dogInfo) {
+                mDogInfoList.add(dogInfo);
+                if (mAdapter != null) {
+                    mAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(String error) {
+                Log.d(TAG, error);
+            }
+        });
+
         updateUI();
     }
 
     private void updateUI() {
         Log.i(TAG, "on updateUI() called");
-        List<Dog> dogs = new ArrayList(CurrentUser.getDogMap().values());
-
-        /*
-         * Below code segment doesn't work properly because the data set does doesn't actually change
-         * when the user removes a dog from the map in the dogList class.  The user's getdogList() method used above returns
-         * an array list that points to all of the dogs.  The elements in the array list still
-         * point to a dog object after it is removed from the map in the dogList class.
-         *
-         * // TODO: use below code segement after refactoring dogList class into user object and removing dogList class altogether
-         *
         if (mAdapter == null) {
-            mAdapter = new DogAdapter(dogs);
+            mAdapter = new DogAdapter(mDogInfoList);
             mDogRecyclerView.setAdapter(mAdapter);
         }
         else {
             mAdapter.notifyDataSetChanged();
         }
-        */
-
-        mAdapter = new DogAdapter(dogs);
-        mDogRecyclerView.setAdapter(mAdapter);
-
     }
 
     private class DogHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private Dog mDog;
+        private DogInfo mDogInfo;
 
         private ImageView mDogPictureImageView;
         private TextView mDogNameTextView;
@@ -102,29 +111,29 @@ public class DogSelectionFragment extends Fragment {
             mDogNameTextView = itemView.findViewById(R.id.dog_name);
         }
 
-        public void bind(Dog dog) {
-            mDog = dog;
+        public void bind(DogInfo dogInfo) {
+            mDogInfo = dogInfo;
             // TODO - set dog picture on bind
-            mDogNameTextView.setText(dog.getdogName());
+            mDogNameTextView.setText(dogInfo.getdogName());
         }
 
         @Override
         public void onClick(View v) {
             if (activity_type.equals("manage_dogs")) {
                 Log.d(TAG, "Starting DogHomeFragment via DogManagementActivity.");
-                Intent intent = DogManagementActivity.newIntent(getActivity(), mDog.getdogId(),
-                        DogManagementActivity.DOG_HOME);
+                Intent intent = DogManagementActivity.newIntent(getActivity(), mDogInfo.getdogId(),
+                        mDogInfo.getfamilyId(), DogManagementActivity.DOG_HOME);
                 startActivity(intent);
 
             } else if (activity_type.equals("activity_history")) {
                 Log.d(TAG, "Starting ActivityHistoryFragment via DogManagementActivity.");
-                Intent intent = DogManagementActivity.newIntent(getActivity(), mDog.getdogId(),
-                        DogManagementActivity.ACTIVITY_HISTORY);
+                Intent intent = DogManagementActivity.newIntent(getActivity(), mDogInfo.getdogId(),
+                        mDogInfo.getfamilyId(), DogManagementActivity.ACTIVITY_HISTORY);
                 startActivity(intent);
 
             } else if (activity_type.equals("new_activity")){
                 Log.d(TAG, "Starting NewActivityRecordActivity.");
-                Intent intent = NewActivityRecordActivity.newIntent(getActivity(), mDog.getdogId());
+                Intent intent = NewActivityRecordActivity.newIntent(getActivity(), mDogInfo.getdogId());
                 startActivity(intent);
 
             }
@@ -133,9 +142,11 @@ public class DogSelectionFragment extends Fragment {
 
     private class DogAdapter extends RecyclerView.Adapter<DogHolder> {
 
-        private List<Dog> mDogs;
+        private List<DogInfo> mDogInfolist;
 
-        public DogAdapter(List<Dog> dogs) { mDogs = dogs; }
+        public DogAdapter(List<DogInfo> dogInfoList) {
+            mDogInfoList = dogInfoList;
+        }
 
         @Override
         public DogHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -146,12 +157,12 @@ public class DogSelectionFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(DogHolder holder, int position) {
-            Dog dog = mDogs.get(position);
-            holder.bind(dog);
+            DogInfo dogInfo = mDogInfoList.get(position);
+            holder.bind(dogInfo);
         }
 
         @Override
-        public int getItemCount() { return mDogs.size(); }
+        public int getItemCount() { return mDogInfoList.size(); }
 
     }
 

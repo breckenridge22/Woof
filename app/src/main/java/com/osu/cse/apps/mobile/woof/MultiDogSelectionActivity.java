@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.osu.cse.apps.mobile.woof.CurrentUser.getDogMap;
+// import static com.osu.cse.apps.mobile.woof.CurrentUser.getDogMap;
 
 public class MultiDogSelectionActivity extends AppCompatActivity {
 
@@ -24,6 +24,7 @@ public class MultiDogSelectionActivity extends AppCompatActivity {
         return new Intent(packageContext, DogSelectionActivity.class);
     }
 
+    /*
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,11 +41,12 @@ public class MultiDogSelectionActivity extends AppCompatActivity {
         setContentView(R.layout.multi_select_dog);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        mAdapter = new MultiselectRecyclerViewAdapter(mDogList, dogSelected);
+        //mAdapter = new MultiselectRecyclerViewAdapter(mDogList, dogSelected);
         LinearLayoutManager manager = new LinearLayoutManager(MultiDogSelectionActivity.this);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(manager);
-        mRecyclerView.setAdapter(mAdapter);
+        //mRecyclerView.setAdapter(mAdapter);
     }
+    */
 }
 

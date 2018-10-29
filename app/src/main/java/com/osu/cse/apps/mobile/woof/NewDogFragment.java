@@ -22,19 +22,18 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class NewDogFragment extends Fragment implements View.OnClickListener {
 
     private EditText mDogNameEditText;
     private String mDogName = "";
     private Spinner mFamilySpinner;
+    private ArrayAdapter<CharSequence> mAdapter;
     private String mFamilyId = "";
-    private Map<String, Family> mFamilyMap;
     private List<String> mFamilyIdList = new ArrayList();
     private List<String> mFamilyNameList = new ArrayList();
+
     private static final String TAG = "NewDogFragment";
 
     DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -46,7 +45,12 @@ public class NewDogFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getFamilyInformation();
+        CurrentUser.getFamilyInfoFromDatabase(new FamilyInfoCallback() {
+            @Override
+            public void onFamilyInfoRetrieved(FamilyInfo familyInfo) {
+                parseFamilyInfo(familyInfo);
+            }
+        });
     }
 
     @Override
@@ -78,23 +82,25 @@ public class NewDogFragment extends Fragment implements View.OnClickListener {
 
         // Set dropdown menu to choose family
         // Source: https://developer.android.com/guide/topics/ui/controls/spinner#java
-        //ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
-        //        R.array.family_array, android.R.layout.simple_spinner_item);
-        ArrayAdapter<CharSequence> adapter = new ArrayAdapter(getActivity(),
+        Log.d(TAG, "Size of mFamilyNameList before setting adapter: " + mFamilyNameList.size());
+        mAdapter = new ArrayAdapter(getActivity(),
                 android.R.layout.simple_spinner_item, mFamilyNameList);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mFamilySpinner.setAdapter(adapter);
+        mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mFamilySpinner.setAdapter(mAdapter);
         mFamilySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                Log.d(TAG, "onItemSelected() called for dropdown menu");
                 mFamilyId = mFamilyIdList.get(pos);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 // required
+                Log.d(TAG, "onNothingSelected() called for dropdown menu");
             }
         });
+        Log.d(TAG, "Size of mFamilyNameList after setting adapter: " + mFamilyNameList.size());
 
         Button button = v.findViewById(R.id.add_dog_button);
         button.setOnClickListener(this);
@@ -106,23 +112,16 @@ public class NewDogFragment extends Fragment implements View.OnClickListener {
         Log.i(TAG, "onClick() called");
         switch (v.getId()) {
             case R.id.add_dog_button:
-
                 if (!mDogName.equals("") && !mFamilyId.equals("")) {
 
                     // add dog to database and add dog ID under family ID corresponding to
                     // selected family name
-                    String dogId = mDatabase.child("dogs").push().getKey(); // get new unique ID
-                                                                            // from Firebase
-                    Dog dog = new Dog(dogId, mDogName, mFamilyId);
-                    Family family = mFamilyMap.get(mFamilyId);
-                    family.getdogIdList().add(dogId);
-
-                    Map<String, Object> childUpdates = new HashMap();
-                    childUpdates.put("/dogs/" + dogId, dog.toMap());
-                    childUpdates.put("/families/"+ mFamilyId, family.toMap());
-                    mDatabase.updateChildren(childUpdates) // update database atomically
-                            // print toast and finish activity if database successfully updated
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    DatabaseReference ref = mDatabase.child("families").child(mFamilyId)
+                            .child("dogs");
+                    String dogId = ref.push().getKey(); // get new unique ID from Firebase
+                    Dog dog = new Dog(dogId, mDogName);
+                    ref.child(dogId).setValue(dog.toMap())
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 Toast.makeText(getActivity(), "Successfully added new dog!",
@@ -136,7 +135,6 @@ public class NewDogFragment extends Fragment implements View.OnClickListener {
                                         Toast.LENGTH_SHORT);
                             }
                         });
-
                 }
                 else {
                     Log.d(TAG, "test");
@@ -149,11 +147,18 @@ public class NewDogFragment extends Fragment implements View.OnClickListener {
     /*
      * Populate mFamilyIdList and mFamilyNameList for dropdown
      */
-    public void getFamilyInformation() {
-        mFamilyMap = CurrentUser.getFamilyMap();
-        for (Map.Entry<String, Family> entry : mFamilyMap.entrySet()) {
-            mFamilyIdList.add(entry.getKey());
-            mFamilyNameList.add(entry.getValue().getfamilyName());
+    private void parseFamilyInfo(FamilyInfo familyInfo) {
+        String familyId = familyInfo.getfamilyId();
+        String familyName = familyInfo.getfamilyName();
+        Log.d(TAG, "Adding familyId " + familyId + " to list");
+        mFamilyIdList.add(familyInfo.getfamilyId());
+        Log.d(TAG, "Adding familyName " + familyName + " to list");
+        mFamilyNameList.add(familyInfo.getfamilyName());
+        Log.d(TAG, "Size of mFamilyNameList before notifying mAdapter that data set changed: " +
+                mFamilyNameList.size());
+        if (mAdapter != null) {
+            mAdapter.notifyDataSetChanged();
+            Log.d(TAG, "Notified adapter that data set changed");
         }
     }
 
