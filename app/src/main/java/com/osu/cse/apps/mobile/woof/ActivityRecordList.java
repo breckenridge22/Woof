@@ -35,9 +35,11 @@ public class ActivityRecordList {
     public ActivityRecord getActivityRecord(UUID recordID) {
 
         for(ActivityRecord record : mActivityRecordList){
-            if(record.getDogID().equals(recordID)){
+            /*
+            if(record.getdogID().equals(recordID)){
                 return record;
             }
+            */
         }
         return null;
     }

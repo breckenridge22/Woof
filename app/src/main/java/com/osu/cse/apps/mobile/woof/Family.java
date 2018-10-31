@@ -19,9 +19,8 @@ public class Family {
         dogs = new HashMap();
     }
 
-    public Family(String familyName, String userId) {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("families");
-        this.familyId = ref.push().getKey();
+    public Family(String familyId, String familyName, String userId) {
+        this.familyId = familyId;
         this.familyName = familyName;
         userIds = new HashMap();
         this.userIds.put(userId, true);

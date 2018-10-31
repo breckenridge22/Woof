@@ -12,6 +12,10 @@ import android.widget.Button;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.List;
 
 public class HomeScreenFragment extends Fragment implements View.OnClickListener {
 
@@ -62,6 +66,10 @@ public class HomeScreenFragment extends Fragment implements View.OnClickListener
         Button logOutButton = v.findViewById(R.id.log_out_button);
         logOutButton.setOnClickListener(this);
 
+        // TODO: Remove button when finished testing
+        Button testButton = v.findViewById(R.id.test_button);
+        testButton.setOnClickListener(this);
+
         return v;
 
     }
@@ -109,6 +117,15 @@ public class HomeScreenFragment extends Fragment implements View.OnClickListener
                 intent = LoginActivity.newIntent(getActivity());
                 startActivity(intent);
                 break;
+            case R.id.test_button: // TODO: Remove this when finished testing
+                List<ActivityRecord> activityRecords = ActivityRecord.getTestActivityRecords();
+                String dogId = "-LQ6ZsZKyhZNhaemfY5p:-LQ6ZxMded0ArKJKcnFw";  // family Id and dog Id delimited with a colon
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference()
+                        .child("activities").child(dogId);
+                for (ActivityRecord activityRecord : activityRecords) {
+                    String key = ref.push().getKey();
+                    ref.child(key).setValue(activityRecord);
+                }
         }
     }
 

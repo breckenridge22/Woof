@@ -270,8 +270,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         Log.d(TAG, "writeNewUser() called");
         String familyName = UUID.randomUUID().toString().substring(0, 5);
 
-        Family family = new Family(familyName, userId);
-        String familyId = family.getfamilyId();
+        String familyId = mDatabase.child("families").push().getKey();
+        Family family = new Family(familyId, familyName, userId);
         User user = new User(userId, fName, lName, family);
 
         // bundle updates together into one map object so that "users" and "families"

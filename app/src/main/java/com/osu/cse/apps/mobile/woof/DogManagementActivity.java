@@ -135,6 +135,7 @@ public class DogManagementActivity extends AppCompatActivity
         replaceBodyFragment(fragmentId);
     }
 
+    // called when dog's value event listener's onDataChange method is called
     public void onDogInfoChanged() {
         FragmentManager fm = getSupportFragmentManager();
 
