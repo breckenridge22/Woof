@@ -22,7 +22,10 @@ import android.widget.Button;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.List;
 
 public class DogHomeFragment extends DogFragment implements View.OnClickListener {
 
@@ -51,6 +54,10 @@ public class DogHomeFragment extends DogFragment implements View.OnClickListener
 
         Button deleteDogButton = v.findViewById(R.id.delete_dog_button);
         deleteDogButton.setOnClickListener(this);
+
+        // TODO: Remove button when finished testing
+        Button testButton = v.findViewById(R.id.test_button);
+        testButton.setOnClickListener(this);
 
         return v;
     }
@@ -88,6 +95,16 @@ public class DogHomeFragment extends DogFragment implements View.OnClickListener
                                 Log.d(TAG, "Failed to delete dog from database");
                             }
                         });
+            case R.id.test_button: // TODO: Remove this when finished testing
+                List<ActivityRecord> activityRecords = ActivityRecord.getTestActivityRecords();
+                String dogActivityId = getFamilyId() + ":" + getDogId();  // family Id and dog Id delimited with a colon
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference()
+                        .child("activities").child(dogActivityId);
+                for (ActivityRecord activityRecord : activityRecords) {
+                    String key = ref.push().getKey();
+                    ref.child(key).setValue(activityRecord);
+                }
+                break;
         }
     }
 
