@@ -63,8 +63,10 @@
     <string name="log_out_button">Log Out</string>
 
     <!-- Strings related to NewDogFragment -->
-    <string name="new_dog_prompt">Enter Information For New Dog"</string>
+    <string name="new_dog_prompt">Enter Information For New Dog</string>
     <string name="family">Family</string>
-    <string name="title_activity_maps">Map</string>
+
+    <!-- Strings related to Maps-->
+    <string name="mapbox_key">pk.eyJ1IjoiYnVja2V5ZWRyYWtlIiwiYSI6ImNqbnh3cnBvdTBocTUzcG1rNHhmNDViaXQifQ.wN5uJWha3y_wSVp1d0yGzA</string>
 
 </resources>
