@@ -98,20 +98,20 @@ public class FamilyManagementActivity extends AppCompatActivity
                 fragment = new FamilyHomeFragment();
                 break;
             case FAMILY_MEMBERS:
-                //fragment = new FamilyInformationFragment();
+                fragment = new FamilyMembersFragment();
                 break;
             case DOGS:
                 Log.d(TAG, "Error: Dog Selection screen is not a valid body fragment for " +
                         "FamilyManagementActivity");
                 break;
             case INVITE_NEW_MEMBER:
-                //fragment = new InviteUserToFamilyFragment();
+                fragment = new InviteUserToFamilyFragment();
                 break;
             case EDIT_FAMILY_INFO:
-                //fragment = new EditFamilyInfoFragment();
+                fragment = new EditFamilyInfoFragment();
                 break;
             case LEAVE_FAMILY:
-                //fragment = new LeaveFamilyFragment();
+                fragment = new LeaveFamilyFragment();
                 break;
         }
         if (fragment != null) {

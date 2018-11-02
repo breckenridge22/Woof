@@ -58,7 +58,7 @@
     <string name="new_activity_button">New Activity</string>
     <string name="manage_dogs_button">Manage Dogs</string>
     <string name="add_dog_button">Add Dog</string>
-    <string name="friends_family_button">Friends and Family</string>
+    <string name="family_button">Family</string>
     <string name="settings_button">Settings</string>
     <string name="log_out_button">Log Out</string>
 
@@ -103,6 +103,10 @@
     <!-- Strings related to FamilyMembersFragment -->
     <string name="remove_button">Remove</string>
     <string name="coordinator">(coordinator)</string>
+
+    <!-- Strings related to CreateNewFamilyFragment -->
+    <string name="family_name_prompt">Enter new family name:</string>
+    <string name="create_button">Create</string>
 
 
 </resources>

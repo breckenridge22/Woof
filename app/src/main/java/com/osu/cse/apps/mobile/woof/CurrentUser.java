@@ -7,6 +7,7 @@ package com.osu.cse.apps.mobile.woof;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -251,6 +252,41 @@ public class CurrentUser {
     public static void changeDogName(String familyId, String dogId, String newDogName) {
         FirebaseDatabase.getInstance().getReference().child("families").child(familyId)
                 .child("dogs").child(dogId).child("dogName").setValue(newDogName);
+    }
+
+    public static void getFamilyMemberFromDatabase(String familyId, final FamilyMemberCallback callback) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("families")
+                .child(familyId).child("userIds");
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map <String, Boolean> userIds = (Map) dataSnapshot.getValue();
+                if (userIds == null) {
+                    callback.onFailure("User ID map null");
+                    return;
+                }
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users");
+                for (String userId : userIds.keySet()) {
+                    ref.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            User familyMember = dataSnapshot.getValue(User.class);
+                            callback.onFamilyMemberRetrieved(familyMember);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            callback.onFailure("Error retrieving user from database");
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                callback.onFailure("SingleValueEventListener event cancelled");
+            }
+        });
     }
 
 

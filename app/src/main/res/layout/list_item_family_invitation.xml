@@ -6,7 +6,7 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
-        android:id="@+id/family_name_text_view"
+        android:id="@+id/textView10"
         android:layout_width="135dp"
         android:layout_height="match_parent"
         android:layout_marginStart="8dp"
@@ -21,19 +21,19 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/family_name_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="TextView"
             android:textSize="18sp"
-            tools:text="Family Name"/>
+            tools:text="Family Name" />
 
         <TextView
-            android:id="@+id/user_invitation_text_view"
+            android:id="@+id/inviter_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="TextView"
-            tools:text = "User Name invited you"/>
+            tools:text="User Name invited you" />
     </LinearLayout>
 
     <Button
@@ -42,7 +42,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:text="@string/accept_button"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/decline_button"
         app:layout_constraintTop_toTopOf="parent" />
 

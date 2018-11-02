@@ -50,12 +50,12 @@ public class FamilyMainFragment extends Fragment implements View.OnClickListener
                 startActivity(intent);
                 break;
             case R.id.invitations_button:
-                //intent = InvitationsActivity.newIntent(getActivity());
-                //startActivity(intent);
+                intent = FamilyInvitationsActivity.newIntent(getActivity());
+                startActivity(intent);
                 break;
             case R.id. create_new_family_button:
-                //intent = CreateNewFamilyActivity.newIntent(getActivity());
-                //startActivity(intent);
+                intent = CreateNewFamilyActivity.newIntent(getActivity());
+                startActivity(intent);
                 break;
         }
     }
