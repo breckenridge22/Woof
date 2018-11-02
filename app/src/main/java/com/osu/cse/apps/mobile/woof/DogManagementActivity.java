@@ -51,8 +51,6 @@ public class DogManagementActivity extends AppCompatActivity
 
         FragmentManager fm = getSupportFragmentManager();
 
-
-
         int headerContainerId = R.id.fragment_header_container;
         DogHeaderFragment headerFragment =
                 (DogHeaderFragment) fm.findFragmentById(headerContainerId);
@@ -76,14 +74,14 @@ public class DogManagementActivity extends AppCompatActivity
 
     private int getFragmentIdFromIntent() {
         Intent intent = getIntent();
-        int FRAGMENT_ID;
+        int fragmentId;
         if (intent == null) {
-            FRAGMENT_ID = DOG_HOME;
+            fragmentId = DOG_HOME;
         }
         else {
-            FRAGMENT_ID = intent.getIntExtra(EXTRA_FRAGMENT_ID, DOG_HOME);
+            fragmentId = intent.getIntExtra(EXTRA_FRAGMENT_ID, DOG_HOME);
         }
-        return FRAGMENT_ID;
+        return fragmentId;
     }
 
     private void replaceBodyFragment(int fragmentId) {
@@ -107,6 +105,7 @@ public class DogManagementActivity extends AppCompatActivity
                 break;
             case DOG_INFORMATION:
                 fragment = new DogInformationFragment();
+                break;
             case ACTIVITY_SCHEDULE:
                 // TODO
                 break;

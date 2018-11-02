@@ -101,7 +101,8 @@ public class HomeScreenFragment extends Fragment implements View.OnClickListener
                 startActivity(intent);
                 break;
             case R.id.friends_family_button:
-                // TODO
+                intent = FamilyMainActivity.newIntent(getActivity());
+                startActivity(intent);
                 break;
             case R.id.settings_button:
                 intent = SettingsActivity.newIntent(getActivity());

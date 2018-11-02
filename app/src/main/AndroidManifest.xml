@@ -32,7 +32,11 @@
         <activity android:name=".ProfileActivity"></activity>
         <activity android:name=".NewDogActivity"></activity>
         <activity android:name=".DeleteActivity"></activity>
+        <activity android:name=".FamilyMainActivity"></activity>
+        <activity android:name=".FamilySelectionActivity"></activity>
+        <activity android:name=".FamilyManagementActivity"></activity>
         <activity android:name=".MapsActivity"></activity>
+
 
     </application>
 

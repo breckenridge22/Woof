@@ -54,7 +54,7 @@ public class DogSelectionFragment extends Fragment {
         mDogRecyclerView = v.findViewById(R.id.dog_recycler_view);
         mDogRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        updateUI();
+        //updateUI();
 
         return v;
     }

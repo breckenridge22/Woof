@@ -50,6 +50,11 @@ public class NewDogFragment extends Fragment implements View.OnClickListener {
             public void onFamilyInfoRetrieved(FamilyInfo familyInfo) {
                 parseFamilyInfo(familyInfo);
             }
+
+            @Override
+            public void onFailure(String error) {
+
+            }
         });
     }
 

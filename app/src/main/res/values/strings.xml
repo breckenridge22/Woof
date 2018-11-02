@@ -69,4 +69,40 @@
     <!-- Strings related to Maps-->
     <string name="mapbox_key">pk.eyJ1IjoiYnVja2V5ZWRyYWtlIiwiYSI6ImNqbnh3cnBvdTBocTUzcG1rNHhmNDViaXQifQ.wN5uJWha3y_wSVp1d0yGzA</string>
 
+    <!-- Strings related to FamilyMainFragment -->
+    <string name="families_button">Families</string>
+    <string name="invitations_button">Invitations</string>
+    <string name="create_new_family_button">Create New Family</string>
+
+    <!-- Strings related to FamilySelectionFragment -->
+    <string name="coordinator_indicator">You are the coordinator for this family</string>
+
+    <!-- Strings related to FamilyHomeFragment -->
+    <string name="family_members_button">Family Members</string>
+    <string name="dogs_button">Dogs</string>
+    <string name="invite_new_member_button">Invite New Member</string>
+    <string name="edit_family_info_button">Edit Family Info</string>
+    <string name="leave_family_button">Leave Family</string>
+
+    <!-- Strings related to InviteFamilyMemberFragment -->
+    <string name="enter_email_prompt">Enter email address of user:</string>
+    <string name="find_user_button">Find User</string>
+    <string name="invite_button">Invite</string>
+
+    <!-- Strings related to EditFamilyInfoFragment -->
+    <string name="family_name">Family Name</string>
+
+    <!-- Strings related to LeaveFamilyFragment -->
+    <string name="leave_family_question">Are you sure you want to leave this family?</string>
+
+    <!-- Strings related to FamilyInvitationsFragment -->
+    <string name="invited_you"> invited you</string>
+    <string name="accept_button">Accept</string>
+    <string name="decline_button">Decline</string>
+
+    <!-- Strings related to FamilyMembersFragment -->
+    <string name="remove_button">Remove</string>
+    <string name="coordinator">(coordinator)</string>
+
+
 </resources>

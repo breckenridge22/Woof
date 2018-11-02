@@ -133,7 +133,7 @@ public class CurrentUser {
                         // error on fetching family name from database
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-                            Log.d(TAG, "Error getting data from database");
+                            callback.onFailure("Error getting data from database");
                         }
                     });
         }
@@ -161,9 +161,27 @@ public class CurrentUser {
             @Override
             public void onError(String errorMessage) {
                 Log.d(TAG, errorMessage);
+                callback.onFailure(errorMessage);
             }
         });
 
+    }
+
+    public static void getFamilyFromDatabase(String familyId, final FamilyCallback callback) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("families")
+                .child(familyId);
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Family family = dataSnapshot.getValue(Family.class);
+                callback.onFamilyChange(family);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                callback.onFailure("ValueEventListener.onCancelled called");
+            }
+        });
     }
 
     public static String convertDatabaseURLtoPath(String databaseURL) {

@@ -7,24 +7,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-public class DogHeaderFragment extends DogFragment {
+public class FamilyHeaderFragment extends FamilyFragment {
 
-    private TextView mDogNameTextView;
-    private static final String TAG = "DogHeaderFragment";
+    private TextView mFamilyNameTextView;
+    private static final String TAG = "FamilyHeaderFragment";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.i(TAG, "onCreateView() called");
-        View v = inflater.inflate(R.layout.fragment_dog_header, container, false);
-        mDogNameTextView = v.findViewById(R.id.dog_name_header);
+        View v = inflater.inflate(R.layout.fragment_family_header, container, false);
+        mFamilyNameTextView = v.findViewById(R.id.family_name_header);
 
         return v;
     }
 
     @Override
     public void updateUI() {
-        mDogNameTextView.setText(getDog().getdogName());
+        Log.d(TAG, "updateUI() called");
+        mFamilyNameTextView.setText(getFamily().getfamilyName());
     }
 
 }
