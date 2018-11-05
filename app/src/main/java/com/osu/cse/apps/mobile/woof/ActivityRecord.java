@@ -33,6 +33,7 @@ public class ActivityRecord {
     private int calories = 0;
     private String vet_Location;
     private String vet_Visit_Reason;
+    private int walk_dist;
 
     public ActivityRecord() {
         // default constructor for Firebase
@@ -123,6 +124,9 @@ public class ActivityRecord {
         this.vet_Visit_Reason = vet_Visit_Reason;
     }
 
+    public void set_walk_dist(int dist){ this.walk_dist = dist; }
+    public int get_walk_dist(){ return this.walk_dist; }
+
     public String getactivity_ID() {
         return activity_ID;
     }
@@ -143,6 +147,7 @@ public class ActivityRecord {
         a1.setend_Time(new Date());
         a1.setend_Time(new Date());
         a1.setcalories(250);
+        a1.set_walk_dist(2000);
 
         // Food
         ActivityRecord a2 = new ActivityRecord(UUID.randomUUID().toString(), FOOD);
