@@ -8,6 +8,10 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mapbox.android.core.permissions.PermissionsListener;
@@ -35,6 +39,7 @@ import com.mapbox.mapboxsdk.maps.SupportMapFragment;
 
 import static com.mapbox.core.constants.Constants.PRECISION_6;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,6 +60,10 @@ public class MapsActivity extends AppCompatActivity implements PermissionsListen
     private MapboxOptimization optimizedClient;
     private Polyline optimizedPolyline;
     private List<Point> stops;
+    private double mDist;
+    private double mDur;
+    private TextView mDistView;
+    private TextView mDurView;
     // constant strings for the optimized route
     private static final String FIRST = "first";
     private static final String ANY = "any";
@@ -73,6 +82,9 @@ public class MapsActivity extends AppCompatActivity implements PermissionsListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         stops = new ArrayList<>();
+
+        mDurView = this.findViewById(R.id.duration_view);
+        mDistView = this.findViewById(R.id.distance_view);
 
         // Mapbox access token is configured here. This needs to be called either in your application
         // object or in the same activity which contains the mapview.
@@ -198,6 +210,11 @@ public class MapsActivity extends AppCompatActivity implements PermissionsListen
             mapboxMap.removePolyline(optimizedPolyline);
         }
         // Draw points on MapView
+        DecimalFormat df = new DecimalFormat("#.00");
+        mDist = route.distance();
+        mDur = route.duration()/60;
+        mDistView.setText(getString(R.string.distance) + df.format(mDist) + " m");
+        mDurView.setText(getString(R.string.duration) + df.format(mDur) + " mins");
         LatLng[] pointsToDraw = convertLineStringToLatLng(route);
         optimizedPolyline = mapboxMap.addPolyline(new PolylineOptions()
                 .add(pointsToDraw)

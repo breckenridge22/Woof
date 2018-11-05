@@ -68,5 +68,8 @@
 
     <!-- Strings related to Maps-->
     <string name="mapbox_key">pk.eyJ1IjoiYnVja2V5ZWRyYWtlIiwiYSI6ImNqbnh3cnBvdTBocTUzcG1rNHhmNDViaXQifQ.wN5uJWha3y_wSVp1d0yGzA</string>
+    <string name="directions">To plan a route, tap up to 12 spots along the desired route. To clear the points, long press on the screen.</string>
+    <string name="distance">Distance: </string>
+    <string name="duration">Duration: </string>
 
 </resources>
