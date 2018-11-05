@@ -35,7 +35,7 @@ public class Family {
         return familyName;
     }
 
-    public Map<String, Boolean>getuserIds() {
+    public Map<String, Boolean> getuserIds() {
         return userIds;
     }
 

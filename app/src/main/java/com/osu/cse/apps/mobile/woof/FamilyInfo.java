@@ -13,6 +13,11 @@ public class FamilyInfo {
         // default constructor for Firebase
     }
 
+    public FamilyInfo(String familyId, String familyName) {
+        this.familyId = familyId;
+        this.familyName = familyName;
+    }
+
     public String getfamilyId() {
         return familyId;
     }

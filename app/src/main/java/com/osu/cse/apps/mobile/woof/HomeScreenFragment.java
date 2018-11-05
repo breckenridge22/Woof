@@ -2,20 +2,12 @@ package com.osu.cse.apps.mobile.woof;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.List;
 
 public class HomeScreenFragment extends Fragment implements View.OnClickListener {
 
@@ -57,7 +49,7 @@ public class HomeScreenFragment extends Fragment implements View.OnClickListener
         Button addDogButton = v.findViewById(R.id.add_dog_button);
         addDogButton.setOnClickListener(this);
 
-        Button friendsFamilyButton = v.findViewById(R.id.friends_family_button);
+        Button friendsFamilyButton = v.findViewById(R.id.family_button);
         friendsFamilyButton.setOnClickListener(this);
 
         Button settingsButton = v.findViewById(R.id.settings_button);
@@ -100,8 +92,9 @@ public class HomeScreenFragment extends Fragment implements View.OnClickListener
                 intent = NewDogActivity.newIntent(getActivity());
                 startActivity(intent);
                 break;
-            case R.id.friends_family_button:
-                // TODO
+            case R.id.family_button:
+                intent = FamilyMainActivity.newIntent(getActivity());
+                startActivity(intent);
                 break;
             case R.id.settings_button:
                 intent = SettingsActivity.newIntent(getActivity());

@@ -4,4 +4,5 @@ import java.util.Map;
 
 public interface FamilyInfoCallback {
     void onFamilyInfoRetrieved(FamilyInfo familyInfo);
+    void onFailure(String error);
 }

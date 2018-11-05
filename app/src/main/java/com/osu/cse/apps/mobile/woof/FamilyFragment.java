@@ -5,27 +5,24 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
-public abstract class DogFragment extends Fragment {
+public class FamilyFragment extends Fragment {
 
-    private static final String ARG_DOG_ID = "dog_id";
     private static final String ARG_FAMILY_ID = "family_id";
-    private static final String TAG = "DogFragment";
+    private static final String TAG = "FamilyFragment";
     private String mFamilyId;
-    private String mDogId;
-    private Dog mDog;
-    private Callbacks mCallbacks;
+    private Family mFamily;
+    private FamilyFragment.Callbacks mCallbacks;
 
     /*
      * Hosting activity must implement this interface
      */
     public interface Callbacks {
         void onMenuButtonSelected(int fragmentId);
-        void onDogInfoChanged();
+        void onFamilyInfoChanged();
     }
 
-    public void setArgs(String dogId, String familyId) {
+    public void setArgs(String familyId) {
         Bundle args = new Bundle();
-        args.putString(ARG_DOG_ID, dogId);
         args.putString(ARG_FAMILY_ID, familyId);
         setArguments(args);
     }
@@ -39,7 +36,7 @@ public abstract class DogFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         Log.i(TAG, "onAttach() called");
-        mCallbacks = (Callbacks) context;
+        mCallbacks = (FamilyFragment.Callbacks) context;
     }
 
     @Override
@@ -48,26 +45,24 @@ public abstract class DogFragment extends Fragment {
         Log.i(TAG, "onCreate() called");
         Bundle args = getArguments();
         if (args == null) {
-            Log.d(TAG, "Error: Expected ids but received null");
-        }
-        else if (!args.containsKey(ARG_DOG_ID)) {
-            Log.d(TAG, "Error: Expected key dog_id not found.");
+            Log.d(TAG, "Error: Expected family_id but received null");
         }
         else if (!args.containsKey(ARG_FAMILY_ID)) {
             Log.d(TAG,"Error: Expected key family_id not found.");
         }
         else {
-            mDogId = args.getString(ARG_DOG_ID);
             mFamilyId = args.getString(ARG_FAMILY_ID);
-            CurrentUser.getDogFromDatabase(mDogId, mFamilyId, new DogCallback() {
+            Log.d(TAG, "Calling CurrentUser.getFamilyFromDatabase()");
+            CurrentUser.getFamilyFromDatabase(mFamilyId, new FamilyCallback() {
                 @Override
-                public void onDogChange(Dog dog) {
-                    if (dog == null) {
-                        Log.d(TAG, "Dog is null");
+                public void onFamilyChange(Family family) {
+                    Log.d(TAG, "onFamilyChange()");
+                    if (family == null) {
+                        Log.d(TAG, "Family is null");
                     }
                     else {
-                        mDog = dog;
-                        mCallbacks.onDogInfoChanged();
+                        mFamily = family;
+                        mCallbacks.onFamilyInfoChanged();
                     }
                 }
 
@@ -87,23 +82,18 @@ public abstract class DogFragment extends Fragment {
         mCallbacks = null;
     }
 
-    public Callbacks getCallbacks() {
+    public FamilyFragment.Callbacks getCallbacks() {
         return mCallbacks;
-    }
-
-    public String getDogId() {
-        return mDogId;
     }
 
     public String getFamilyId() {
         return mFamilyId;
     }
 
-    public Dog getDog() {
-        return mDog;
+    public Family getFamily() {
+        return mFamily;
     }
 
-    public void updateUI() {
-        Log.d(TAG, "updateUI() called");
-    }
+    public void updateUI() {}
+
 }
