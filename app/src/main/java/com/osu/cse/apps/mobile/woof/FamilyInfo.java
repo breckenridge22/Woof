@@ -8,6 +8,7 @@ public class FamilyInfo {
 
     private String familyId;
     private String familyName;
+    private String coordinatorUserId;
 
     public FamilyInfo() {
         // default constructor for Firebase
@@ -24,6 +25,10 @@ public class FamilyInfo {
 
     public String getfamilyName() {
         return familyName;
+    }
+
+    public String getcoordinatorUserId() {
+        return coordinatorUserId;
     }
 
 }

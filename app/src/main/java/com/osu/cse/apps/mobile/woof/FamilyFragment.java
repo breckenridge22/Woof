@@ -62,7 +62,9 @@ public class FamilyFragment extends Fragment {
                     }
                     else {
                         mFamily = family;
-                        mCallbacks.onFamilyInfoChanged();
+                        if (mCallbacks != null) {
+                            mCallbacks.onFamilyInfoChanged();
+                        }
                     }
                 }
 

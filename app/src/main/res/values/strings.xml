@@ -92,6 +92,7 @@
     <string name="enter_email_prompt">Enter email address of user:</string>
     <string name="find_user_button">Find User</string>
     <string name="invite_button">Invite</string>
+    <string name="user_not_found">User not found</string>
 
     <!-- Strings related to EditFamilyInfoFragment -->
     <string name="family_name">Family Name</string>

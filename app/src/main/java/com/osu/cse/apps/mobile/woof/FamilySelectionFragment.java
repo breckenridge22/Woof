@@ -43,7 +43,7 @@ public class FamilySelectionFragment extends Fragment {
         mFamilyRecyclerView = v.findViewById(R.id.family_recycler_view);
         mFamilyRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        //updateUI();
+        // updateUI();
 
         return v;
     }
@@ -52,7 +52,9 @@ public class FamilySelectionFragment extends Fragment {
     public void onResume() {
         super.onResume();
         Log.i(TAG, "onResume() called");
+        updateUI();
 
+        /*
         mFamilyInfoList = new ArrayList();
 
         // populate family list from database
@@ -73,15 +75,37 @@ public class FamilySelectionFragment extends Fragment {
         });
 
         updateUI();
+        */
     }
 
     private void updateUI() {
         Log.i(TAG, "updateUI() called");
+
+        mFamilyInfoList = new ArrayList();
+
+        // populate family list from database
+        CurrentUser.getFamilyInfoFromDatabase(new FamilyInfoCallback() {
+            @Override
+            public void onFamilyInfoRetrieved(FamilyInfo familyInfo) {
+                Log.d(TAG, "onFamilyInfoRetrieved() called");
+                mFamilyInfoList.add(familyInfo);
+                if (mAdapter != null) {
+                    mAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(String error) {
+                Log.d(TAG, error);
+            }
+        });
+
         if (mAdapter == null) {
             mAdapter = new FamilyAdapter(mFamilyInfoList);
             mFamilyRecyclerView.setAdapter(mAdapter);
         }
         else {
+            mAdapter.setFamilyInfoList(mFamilyInfoList);
             mAdapter.notifyDataSetChanged();
         }
 
@@ -92,11 +116,13 @@ public class FamilySelectionFragment extends Fragment {
         private FamilyInfo mFamilyInfo;
 
         private TextView mFamilyNameTextView;
+        private TextView mCoordinatorTextView;
 
         public FamilyHolder(LayoutInflater inflater, ViewGroup parent)                                                                                                                                                                 {
             super(inflater.inflate(R.layout.list_item_family, parent, false));
             itemView.setOnClickListener(this);
             mFamilyNameTextView = itemView.findViewById(R.id.family_name_text_view);
+            mCoordinatorTextView = itemView.findViewById(R.id.coordinator_text_view);
         }
 
         public void bind(FamilyInfo familyInfo) {
@@ -104,6 +130,11 @@ public class FamilySelectionFragment extends Fragment {
             mFamilyInfo = familyInfo;
             String familyName = familyInfo.getfamilyName();
             mFamilyNameTextView.setText(familyName);
+
+            // make coordinator text view invisible if current user is not the coordinator for this family
+            if (!mFamilyInfo.getcoordinatorUserId().equals(CurrentUser.getUserId())) {
+                mCoordinatorTextView.setVisibility(View.INVISIBLE);
+            }
         }
 
         @Override
@@ -135,6 +166,10 @@ public class FamilySelectionFragment extends Fragment {
 
         @Override
         public int getItemCount() { return mFamilyInfoList.size(); }
+
+        public void setFamilyInfoList(List<FamilyInfo> familyInfoList) {
+            mFamilyInfoList = familyInfoList;
+        }
 
     }
 

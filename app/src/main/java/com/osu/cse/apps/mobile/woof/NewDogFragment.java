@@ -130,14 +130,14 @@ public class NewDogFragment extends Fragment implements View.OnClickListener {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 Toast.makeText(getActivity(), "Successfully added new dog!",
-                                        Toast.LENGTH_SHORT);
+                                        Toast.LENGTH_SHORT).show();
                                 getActivity().finish();
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
                                 Toast.makeText(getActivity(), "Database update failed",
-                                        Toast.LENGTH_SHORT);
+                                        Toast.LENGTH_SHORT).show();
                             }
                         });
                 }
