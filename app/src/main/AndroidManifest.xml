@@ -24,6 +24,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name=".HomeScreenActivity">
         </activity>
         <activity android:name=".DogSelectionActivity"></activity>
@@ -38,6 +39,9 @@
         <activity android:name=".FamilyManagementActivity"></activity>
         <activity android:name=".FamilyInvitationsActivity"></activity>
         <activity android:name=".CreateNewFamilyActivity"></activity>
+        <activity android:name= ".MultiDogSelectionActivity"></activity>
+        <activity android:name=".NewActivityRecordActivity"></activity>
+
 
     </application>
 

@@ -62,6 +62,27 @@
     <string name="settings_button">Settings</string>
     <string name="log_out_button">Log Out</string>
 
+    <!-- Strings related to New Activity -->
+    <string name ="continue_button"></string>
+    <string-array name = "activity_types">
+        <item>Walk</item>
+        <item>Food</item>
+        <item>Water</item>
+        <item>Bathroom</item>
+        <item>Vet Visit</item>
+    </string-array>
+
+    <string-array name = "food_metrics">
+        <item>Oz</item>
+        <item>Cups</item>
+    </string-array>
+
+    <string-array name = "bathroom_type">
+        <item>Pee</item>
+        <item>Poop</item>
+        <item>Both</item>
+    </string-array>
+
     <!-- Strings related to NewDogFragment -->
     <string name="new_dog_prompt">Enter Information For New Dog</string>
     <string name="family">Family</string>

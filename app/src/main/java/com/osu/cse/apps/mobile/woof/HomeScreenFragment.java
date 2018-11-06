@@ -67,6 +67,7 @@ public class HomeScreenFragment extends Fragment implements View.OnClickListener
         Intent intent;
         switch (v.getId()) {
             case R.id.map_button:
+                Log.d(TAG, "Routing to Maps");
                 intent = MapsActivity.newIntent(getActivity());
                 startActivity(intent);
                 break;
@@ -74,21 +75,25 @@ public class HomeScreenFragment extends Fragment implements View.OnClickListener
                 // TODO
                 break;
             case R.id.new_activity_button:
+                Log.d(TAG, "Routing to MultiDogSelectionActivity");
                 intent = MultiDogSelectionActivity.newIntent(getActivity());
                 intent.putExtra("activity_type", "new_activity");
                 startActivity(intent);
                 break;
             case R.id.activity_history_button:
+                Log.d(TAG, "Routing to activity history");
                 intent = DogSelectionActivity.newIntent(getActivity());
                 intent.putExtra("activity_type", "activity_history");
                 startActivity(intent);
                 break;
             case R.id.manage_dogs_button:
+                Log.d(TAG, "Routing to manage dogs");
                 intent = DogSelectionActivity.newIntent(getActivity());
                 intent.putExtra("activity_type", "manage_dogs");
                 startActivity(intent);
                 break;
             case R.id.add_dog_button:
+                Log.d(TAG, "Routing to add dog");
                 intent = NewDogActivity.newIntent(getActivity());
                 startActivity(intent);
                 break;
@@ -101,6 +106,7 @@ public class HomeScreenFragment extends Fragment implements View.OnClickListener
                 startActivity(intent);
                 break;
             case R.id.log_out_button:
+                Log.d(TAG, "Routing to Log out");
                 CurrentUser.setNull();
                 LoginFragment.signOut();
                 intent = LoginActivity.newIntent(getActivity());

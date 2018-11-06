@@ -19,6 +19,7 @@ public class ActivityRecord {
 
     public final static int PEE = 1;
     public final static int POO = 2;
+    public final static int BOTH = 3;
 
     private final static String TAG = "ActivityRecord";
 
@@ -26,7 +27,7 @@ public class ActivityRecord {
     private int activity_Type = 0; // Walk/Exercise, Food, Water, Bathroom, Vet Visit
     private Date start_Time;
     private Date end_Time;
-    private int bathroom_Type = 0; // 1 or 2
+    private int bathroom_Type = 0; // 1 or 2 or 3
     private String food_Brand;
     private int food_Amount = -1;
     private int food_Metric = -1; // cups or ounces
@@ -38,8 +39,7 @@ public class ActivityRecord {
         // default constructor for Firebase
     }
 
-    public ActivityRecord(String id, int activity_Type){
-        this.activity_ID = id;
+    public ActivityRecord(int activity_Type){
         this.activity_Type= activity_Type;
         if (this.activity_Type > 5 || this.activity_Type < 0){
             Log.d(TAG, "ERROR :: INVALID Activity Type");
@@ -138,14 +138,14 @@ public class ActivityRecord {
         List<ActivityRecord> activityRecordList = new ArrayList<>();
 
         // Walk
-        ActivityRecord a1 = new ActivityRecord(UUID.randomUUID().toString(), WALK);
+        ActivityRecord a1 = new ActivityRecord(WALK);
         a1.setstart_Time(new Date());
         a1.setend_Time(new Date());
         a1.setend_Time(new Date());
         a1.setcalories(250);
 
         // Food
-        ActivityRecord a2 = new ActivityRecord(UUID.randomUUID().toString(), FOOD);
+        ActivityRecord a2 = new ActivityRecord(FOOD);
         a2.setstart_Time(new Date());
         a2.setfood_Amount(5);
         a2.setfood_Brand("McNuggets");
@@ -153,16 +153,16 @@ public class ActivityRecord {
         a1.setcalories(1000);
 
         // Water
-        ActivityRecord a3 = new ActivityRecord(UUID.randomUUID().toString(), WATER);
+        ActivityRecord a3 = new ActivityRecord(WATER);
         a3.setstart_Time(new Date());
 
         // Bathroom
-        ActivityRecord a4 = new ActivityRecord(UUID.randomUUID().toString(), BATHROOM);
+        ActivityRecord a4 = new ActivityRecord(BATHROOM);
         a4.setstart_Time(new Date());
         a4.setbathroom_Type(2);
 
         // Vet visit
-        ActivityRecord a5 = new ActivityRecord(UUID.randomUUID().toString(), VETVISIT);
+        ActivityRecord a5 = new ActivityRecord(VETVISIT);
         a5.setstart_Time(new Date());
         a5.setvet_Location("250 W. High St. Columbus, OH 43210");
         a5.setvet_Visit_Reason("Child fed him McNuggets");

@@ -5,17 +5,26 @@ import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
-public class NewActivityRecordActivity {
+import java.util.ArrayList;
+import java.util.List;
+
+public class NewActivityRecordActivity extends SingleFragmentActivity{
 
     private static final String TAG = "NewActivityRecordActivity";
-    private static final String EXTRA_DOG_ID = "DOG_ID";
+    private static final String EXTRA_DOG_ID = "DOG_ID_LIST";
+    private static List<String> mDogIdList;
 
-    public static Intent newIntent(Context packageContext, String dogID) {
+    public static Intent newIntent(Context packageContext, List<String> DogIdList) {
         Log.d(TAG, "newIntent() called.");
-        Intent intent = new Intent(packageContext, NewActivityRecordActivity.class);
 
-        // TODO - should receive a list of dogIDs.
-        intent.putExtra(EXTRA_DOG_ID, dogID);
+        Intent intent = new Intent(packageContext, NewActivityRecordActivity.class);
+        mDogIdList = new ArrayList<String>();
+        for(String s:DogIdList){
+            mDogIdList.add(s);
+        }
+
+        // Pass string into intent
+        intent.putStringArrayListExtra(EXTRA_DOG_ID, (ArrayList<String>) mDogIdList);
         return intent;
     }
 

@@ -5,6 +5,14 @@
     android:layout_height="match_parent"
     android:background="#EEE">
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id = "@+id/multi_select_continue_button"
+        android:text = "Continue"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"/>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
