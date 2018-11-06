@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,7 +54,7 @@ import retrofit2.Response;
 // and its corresponding xml file
 // Also here https://www.mapbox.com/android-docs/java/examples/generate-an-optimized-route/
 public class MapsActivity extends AppCompatActivity implements PermissionsListener,
-        MapboxMap.OnMapClickListener, MapboxMap.OnMapLongClickListener {
+        MapboxMap.OnMapClickListener, MapboxMap.OnMapLongClickListener, View.OnClickListener {
 
     private MapboxMap mapboxMap;
     private PermissionsManager permissionsManager;
@@ -63,6 +64,7 @@ public class MapsActivity extends AppCompatActivity implements PermissionsListen
     private List<Point> stops;
     private double mDist;
     private TextView mDistView;
+    private Button mBeginButton;
     // constant strings for the optimized route
     private static final String FIRST = "first";
     private static final String ANY = "any";
@@ -83,6 +85,11 @@ public class MapsActivity extends AppCompatActivity implements PermissionsListen
         stops = new ArrayList<>();
 
         mDistView = this.findViewById(R.id.distance_view);
+        mBeginButton = this.findViewById(R.id.begin_button);
+
+        if(mBeginButton!=null){
+            mBeginButton.setOnClickListener(this);
+        }
 
         // Mapbox access token is configured here. This needs to be called either in your application
         // object or in the same activity which contains the mapview.
@@ -117,6 +124,12 @@ public class MapsActivity extends AppCompatActivity implements PermissionsListen
             mapboxMap.addOnMapLongClickListener(this);
             enableLocationComponent();
         });
+    }
+
+
+    @Override
+    public void onClick(View v) {
+
     }
 
     @Override

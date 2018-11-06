@@ -1,4 +1,5 @@
 package com.osu.cse.apps.mobile.woof;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -299,7 +300,8 @@ public class NewActivityRecordFragment extends Fragment implements View.OnClickL
             int activity_type = mActivityRecord.getactivity_Type();
             if(activity_type == ActivityRecord.WALK){
                 Log.d(TAG, "Starting walk activity");
-                // TODO - Direct to map/walk activity
+                Intent intent = MapsActivity.newIntent(getActivity());
+                startActivity(intent);
             } else{
                 Log.d(TAG, "Saving activity record");
                 // TODO - save activity record to Firebase

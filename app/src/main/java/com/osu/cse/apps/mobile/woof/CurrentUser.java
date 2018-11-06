@@ -4,6 +4,7 @@ package com.osu.cse.apps.mobile.woof;
  * Singleton class for storing basic user information and methods for database queries
  */
 
+import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -17,13 +18,16 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class CurrentUser {
 
     private static String sUserId;
     private static DatabaseReference sUserDatabaseRef;
+    private static Map<String, ActivityRecord> mCurrentActivities;
 
     private static final String TAG = "CurrentUser";
 
@@ -42,6 +46,25 @@ public class CurrentUser {
     public static void setNull() {
         sUserId = null;
         sUserDatabaseRef = null;
+    }
+
+    public static void setmCurrentActivities(ArrayList<String> dogs){
+        mCurrentActivities = new HashMap<>();
+        for(String s:dogs){
+            mCurrentActivities.put(s, null);
+        }
+    }
+
+    public static void addActivity(ActivityRecord act){
+        Set<String> keys = mCurrentActivities.keySet();
+        for(String s:keys){
+            mCurrentActivities.replace(s, act);
+        }
+    }
+
+    public static void saveActivity(){
+
+        mCurrentActivities.clear();
     }
 
     public static String getUserId() {
