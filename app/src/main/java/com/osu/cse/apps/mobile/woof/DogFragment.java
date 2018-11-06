@@ -67,7 +67,9 @@ public abstract class DogFragment extends Fragment {
                     }
                     else {
                         mDog = dog;
-                        mCallbacks.onDogInfoChanged();
+                        if (mCallbacks != null) {
+                            mCallbacks.onDogInfoChanged();
+                        }
                     }
                 }
 

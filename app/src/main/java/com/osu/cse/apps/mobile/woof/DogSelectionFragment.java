@@ -63,7 +63,9 @@ public class DogSelectionFragment extends Fragment {
     public void onResume() {
         super.onResume();
         Log.i(TAG, "onResume() called");
+        updateUI();
 
+        /*
         mDogInfoList = new ArrayList();
 
         // populate dog info list from database
@@ -83,15 +85,37 @@ public class DogSelectionFragment extends Fragment {
         });
 
         updateUI();
+        */
     }
 
     private void updateUI() {
         Log.i(TAG, "on updateUI() called");
+
+        mDogInfoList = new ArrayList();
+
+        // populate dog info list from database
+        CurrentUser.getDogInfoFromDatabase(new DogInfoCallback() {
+            @Override
+            public void onDogInfoRetrieved(DogInfo dogInfo) {
+                Log.d(TAG, "onDogInfoRetrieved() called");
+                mDogInfoList.add(dogInfo);
+                if (mAdapter != null) {
+                    mAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(String error) {
+                Log.d(TAG, error);
+            }
+        });
+
         if (mAdapter == null) {
             mAdapter = new DogAdapter(mDogInfoList);
             mDogRecyclerView.setAdapter(mAdapter);
         }
         else {
+            mAdapter.setDogInfoList(mDogInfoList);
             mAdapter.notifyDataSetChanged();
         }
     }
@@ -138,7 +162,7 @@ public class DogSelectionFragment extends Fragment {
 
     private class DogAdapter extends RecyclerView.Adapter<DogHolder> {
 
-        private List<DogInfo> mDogInfolist;
+        private List<DogInfo> mDogInfoList;
 
         public DogAdapter(List<DogInfo> dogInfoList) {
             mDogInfoList = dogInfoList;
@@ -159,6 +183,10 @@ public class DogSelectionFragment extends Fragment {
 
         @Override
         public int getItemCount() { return mDogInfoList.size(); }
+
+        public void setDogInfoList(List<DogInfo> dogInfoList) {
+            mDogInfoList = dogInfoList;
+        }
 
     }
 

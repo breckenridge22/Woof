@@ -1,6 +1,7 @@
 package com.osu.cse.apps.mobile.woof;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -9,6 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class EditFamilyInfoFragment extends FamilyFragment {
 
@@ -45,7 +52,25 @@ public class EditFamilyInfoFragment extends FamilyFragment {
         saveChangesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: implement logic to update family name in database
+                Log.d(TAG, "onClick() called");
+                if (mFamilyName == null || mFamilyName.length() == 0) {
+                    Toast.makeText(getActivity(), "Family name field is blank", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference()
+                            .child("families").child(getFamilyId()).child("familyName");
+                    ref.setValue(mFamilyName).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(getActivity(), "Changes saved successfully", Toast.LENGTH_SHORT).show();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getActivity(), "Error saving changes", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
             }
         });
 

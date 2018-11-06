@@ -12,6 +12,7 @@ public class Family {
     private String familyName;
     private Map<String, Boolean> userIds;
     private Map<String, Dog> dogs;
+    private String coordinatorUserId;
 
     public Family() {
         // default constructor required for Firebase
@@ -25,6 +26,7 @@ public class Family {
         userIds = new HashMap();
         this.userIds.put(userId, true);
         dogs = new HashMap();
+        coordinatorUserId = userId;
     }
 
     public String getfamilyId() {
@@ -43,12 +45,17 @@ public class Family {
         return dogs;
     }
 
+    public String getcoordinatorUserId() {
+        return coordinatorUserId;
+    }
+
     public Map<String, Object> toMap() {
         Map<String, Object> result = new HashMap();
         result.put("familyId", familyId);
         result.put("familyName", familyName);
         result.put("userIds", userIds);
         result.put("dogs", dogs);
+        result.put("coordinatorUserId", coordinatorUserId);
         return result;
     }
 

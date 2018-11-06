@@ -125,7 +125,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     }
 
     // Skeleton from https://github.com/firebase/quickstart-android/blob/master/auth/app/src/main/java/com/google/firebase/quickstart/auth/java/EmailPasswordActivity.java
-    private void createAccount(String email, String password) {
+    private void createAccount(final String email, String password) {
         Log.d(TAG, "createAccount: " + email);
 
         mAuth.createUserWithEmailAndPassword(email, password)
@@ -138,7 +138,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                             Toast.makeText(getActivity(), "Account Created", Toast.LENGTH_SHORT).show();
                             FirebaseUser user = mAuth.getCurrentUser();
                             Log.d(TAG, "Created User ID: " + user.getUid());
-                            writeNewUser(user.getUid(), mFNameEditText.getText().toString(), mLNameEditText.getText().toString());
+                            writeNewUser(user.getUid(), mFNameEditText.getText().toString(), mLNameEditText.getText().toString(), email);
                             signIn(mUsernameEditText.getText().toString(), mPasswordEditText.getText().toString());
                         } else {
                             // If sign up fails, display a message to the user.
@@ -263,7 +263,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         return valid;
     }
 
-    private void writeNewUser(String userId, String fName, String lName) {
+    private void writeNewUser(String userId, String fName, String lName, String email) {
 
         // TODO: Get family name from user during user registration and/or ask to join existing family on login
         // Temporarily using this line to generate a random 5-character String for the family name
@@ -272,7 +272,11 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
         String familyId = mDatabase.child("families").push().getKey();
         Family family = new Family(familyId, familyName, userId);
-        User user = new User(userId, fName, lName, family);
+        User user = new User(userId, fName, lName, email, family);
+
+        Log.d(TAG, "User Id: " + userId);
+        Log.d(TAG, "Family Id: " + familyId);
+        Log.d(TAG, "User email: " + email);
 
         // bundle updates together into one map object so that "users" and "families"
         // can be updated atomically (either both will be written to the database
@@ -281,20 +285,21 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         Map<String, Object> childUpdates = new HashMap();
         childUpdates.put("/users/" + userId, user.toMap());
         childUpdates.put("/families/" + familyId, family.toMap());
+        //childUpdates.put("/emails/" + email, userId);
         mDatabase.updateChildren(childUpdates) // update database atomically
                 // print toast and finish activity if database successfully updated
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Toast.makeText(getActivity(), "Successfully added new user!",
-                                Toast.LENGTH_SHORT);
+                                Toast.LENGTH_SHORT).show();
                         Log.d(TAG, "Successfully added new user to database");
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Toast.makeText(getActivity(), "Database update failed",
-                            Toast.LENGTH_SHORT);
+                            Toast.LENGTH_SHORT).show();
                         Log.d(TAG, "Failed to add new user to database");
             }
         });

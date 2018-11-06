@@ -2,6 +2,7 @@ package com.osu.cse.apps.mobile.woof;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,8 +13,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,37 +42,6 @@ public class FamilyInvitationsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(TAG, "onCreate() called");
-
-        mInvitationList = new ArrayList();
-
-        // populate invitation list from database
-        /*
-        CurrentUser.getInvitationsFromDatabase(new InvitationCallback() {
-            @Override
-            public void onDogInfoRetrieved(DogInfo dogInfo) {
-                mDogInfoList.add(dogInfo);
-                if (mAdapter != null) {
-                    mAdapter.notifyDataSetChanged();
-                }
-            }
-
-            @Override
-            public void onFailure(String error) {
-                Log.d(TAG, error);
-            }
-        });
-        */
-
-        // TODO: delete test code below
-        // ********
-        FamilyInfo familyInfo1 = new FamilyInfo("54321", "The Simpsons");
-        Invitation invitation1 = new Invitation("12345", familyInfo1, "Marge Simpson");
-        mInvitationList.add(invitation1);
-        FamilyInfo familyInfo2 = new FamilyInfo("87", "The Kardashians");
-        Invitation invitation2 = new Invitation("78", familyInfo2, "Kim Kardashian");
-        mInvitationList.add(invitation2);
-        // ********
-        // TODO: delete test code above
     }
 
     @Override
@@ -83,11 +60,31 @@ public class FamilyInvitationsFragment extends Fragment {
 
     private void updateUI() {
         Log.i(TAG, "on updateUI() called");
+
+        mInvitationList = new ArrayList();
+
+        // populate invitation list from database
+        CurrentUser.getUserInvitationsFromDatabase(CurrentUser.getUserId(), new InvitationCallback() {
+            @Override
+            public void onInvitationRetrieved(Invitation invitation) {
+                mInvitationList.add(invitation);
+                if (mAdapter != null) {
+                    mAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(String error) {
+                Log.d(TAG, error);
+            }
+        });
+
         if (mAdapter == null) {
             mAdapter = new FamilyInvitationsFragment.InvitationAdapter(mInvitationList);
             mInvitationRecyclerView.setAdapter(mAdapter);
         }
         else {
+            mAdapter.setInvitationList(mInvitationList);
             mAdapter.notifyDataSetChanged();
         }
     }
@@ -118,22 +115,98 @@ public class FamilyInvitationsFragment extends Fragment {
         public void bind(Invitation invitation) {
             mInvitation = invitation;
 
-            mFamilyNameTextView.setText(mInvitation.getfamilyInfo().getfamilyName());
+            CurrentUser.getFamilyInfoFromDatabaseById(mInvitation.getfamilyId(), new FamilyInfoCallback() {
+                @Override
+                public void onFamilyInfoRetrieved(FamilyInfo familyInfo) {
+                    mFamilyNameTextView.setText(familyInfo.getfamilyName());
+                }
 
-            String inviterString = mInvitation.getinviterName() + " invited you";
-            mInviterTextView.setText(inviterString);
+                @Override
+                public void onFailure(String error) {
+                    Log.d(TAG, error);
+                }
+            });
+
+            CurrentUser.getUserFromDatabaseById(mInvitation.getinviterId(), new UserCallback() {
+                @Override
+                public void onUserRetrieved(User user) {
+                    String userName = user.getfName() + " " + user.getlName();
+                    String inviterString = userName + " invited you";
+                    mInviterTextView.setText(inviterString);
+                }
+
+                @Override
+                public void onFailure(String error) {
+                    Log.d(TAG, error);
+                }
+            });
+
         }
 
         @Override
         public void onClick(View v) {
+
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+            String invitationId = mInvitation.getinvitationId();
+            String familyId = mInvitation.getfamilyId();
+            String userId = CurrentUser.getUserId();
+            Map<String, Object> childUpdates = new HashMap();
+            addChildUpdatesRemoveInvitation(childUpdates, userId, familyId, invitationId);
+
             switch(v.getId()) {
+
                 case R.id.accept_button:
-                    // TODO: implement accept button functionality
+                    // atomically perform the following database updates:
+                    // 1. delete invitation object
+                    // 2. remove invitation id from user invitation id list
+                    // 3. remove invitation id from family invitation id list
+                    // 4. add family id to user family id list
+                    // 5. add user id to family user id list
+                    childUpdates.put("/users/" + userId + "/familyIds/" + familyId, true);
+                    childUpdates.put("/families/" + familyId + "/userIds/" + userId, true);
+                    ref.updateChildren(childUpdates).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(getActivity(), "Joined family", Toast.LENGTH_SHORT).show();
+                            updateUI();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d(TAG, "Database error.  Failed to join family.");
+                        }
+                    });
                     break;
+
                 case R.id.decline_button:
-                    // TODO: implement decline button functionality
+                    // atomically perform the following database updates:
+                    // 1. delete invitation object
+                    // 2. remove invitation id from user invitation id list
+                    // 3. remove invitation id from family invitation id list
+                    ref.updateChildren(childUpdates).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(getActivity(), "Declined invitation", Toast.LENGTH_SHORT).show();
+                            updateUI();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d(TAG, "Database error.  Failed to join family.");
+                        }
+                    });
                     break;
+
             }
+        }
+
+        private void addChildUpdatesRemoveInvitation(Map<String, Object> childUpdates,
+                                                     String userId, String familyId, String invitationId) {
+            childUpdates.put("/users/" + userId + "/invitationIds/" +
+                    invitationId, null);
+            childUpdates.put("/families/" + familyId + "/invitationIds/" +
+                    invitationId, null);
+            childUpdates.put("/invitations/" + invitationId, null);
         }
     }
 
@@ -159,6 +232,10 @@ public class FamilyInvitationsFragment extends Fragment {
 
         @Override
         public int getItemCount() { return mInvitationList.size(); }
+
+        public void setInvitationList(List<Invitation> invitationList) {
+            mInvitationList = invitationList;
+        }
 
     }
 

@@ -11,6 +11,7 @@ public class User {
     private String userId;
     private String fName;
     private String lName;
+    private String email;
     private Map<String, Boolean> familyIds;
     private static final String TAG = "User";
 
@@ -19,10 +20,11 @@ public class User {
         familyIds = new HashMap();
     }
 
-    public User(String userId, String fName, String lName, Family family) {
+    public User(String userId, String fName, String lName, String email, Family family) {
         this.userId = userId;
         this.fName = fName;
         this.lName = lName;
+        this.email = email;
         familyIds = new HashMap();
         familyIds.put(family.getfamilyId(), true);
     }
@@ -37,6 +39,10 @@ public class User {
 
     public String getlName() {
         return lName;
+    }
+
+    public String getemail() {
+        return email;
     }
 
     // return list of keys from familyList map object
@@ -64,6 +70,7 @@ public class User {
         result.put("userId", userId);
         result.put("fName", fName);
         result.put("lName", lName);
+        result.put("email", email);
         result.put("familyIds", familyIds);
         return result;
     }

@@ -4,6 +4,7 @@ package com.osu.cse.apps.mobile.woof;
  * Singleton class for storing basic user information and methods for database queries
  */
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -12,6 +13,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -71,10 +73,12 @@ public class CurrentUser {
      * "returned" via callback.
      */
     public static void getFamilyIdsFromDatabase(final FamilyIdsCallback callback) {
+        Log.d(TAG, "getFamilyIdsFromDatabase() called");
         sUserDatabaseRef.child("familyIds")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        Log.d(TAG, "onDataChange() called");
                         if (dataSnapshot == null) {
                             Log.d(TAG, "family Ids data snapshot null");
                             callback.onError("familyIds data snapshot null");
@@ -103,6 +107,7 @@ public class CurrentUser {
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
+                        Log.d(TAG, "onCancelled() called");
                         callback.onError("Unable to get familyIds");
                     }
                 });
@@ -119,7 +124,7 @@ public class CurrentUser {
             Log.d(TAG, "Getting familyInfo for familyId " + familyId);
             ref.child(familyId).addListenerForSingleValueEvent(new ValueEventListener() {
 
-                        // Successfully fetched family name from database/  "Return" family
+                        // Successfully fetched family name from database.  "Return" family
                         // name and family ID to calling function via callback
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -138,6 +143,27 @@ public class CurrentUser {
                         }
                     });
         }
+    }
+
+    public static void getFamilyInfoFromDatabaseById(String familyId, final FamilyInfoCallback callback) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("families")
+                .child(familyId);
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                FamilyInfo familyInfo = dataSnapshot.getValue(FamilyInfo.class);
+                if (familyInfo == null) {
+                    callback.onFailure("Retrieved FamilyInfo object null");
+                    return;
+                }
+                callback.onFamilyInfoRetrieved(familyInfo);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                callback.onFailure("Failed to retrieved FamilyInfo from database");
+            }
+        });
     }
 
     /*
@@ -192,15 +218,18 @@ public class CurrentUser {
     }
 
     public static void getDogInfoFromDatabase(final DogInfoCallback callback) {
+        Log.d(TAG, "getDogInfoFromDatabase() called");
         getFamilyIdsFromDatabase(new FamilyIdsCallback() {
             @Override
             public void onFamilyIdsRetrieved(List<String> familyIdList) {
+                Log.d(TAG, "onFamilyIdsRetrieved() called");
                 for (String familyId : familyIdList) {
                     DatabaseReference ref = FirebaseDatabase.getInstance().getReference()
                             .child("families").child(familyId).child("dogs");
                     ref.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
+                            Log.d(TAG, "onDataChange() called");
                             Map<String, Map<String, String>> dogMap = (Map) dataSnapshot.getValue();
                             String familyId = dataSnapshot.getRef().getParent().getKey();
                             if (dogMap == null) {
@@ -215,6 +244,7 @@ public class CurrentUser {
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
+                            Log.d(TAG, "onCancelled() called");
                             callback.onFailure("Unable to get dogInfo for family");
                         }
                     });
@@ -223,6 +253,7 @@ public class CurrentUser {
 
             @Override
             public void onError(String errorMessage) {
+                Log.d(TAG, "oneError() called");
                 callback.onFailure(errorMessage);
             }
         });
@@ -254,7 +285,7 @@ public class CurrentUser {
                 .child("dogs").child(dogId).child("dogName").setValue(newDogName);
     }
 
-    public static void getFamilyMemberFromDatabase(String familyId, final FamilyMemberCallback callback) {
+    public static void getFamilyMembersFromDatabase(String familyId, final FamilyMemberCallback callback) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("families")
                 .child(familyId).child("userIds");
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -289,5 +320,108 @@ public class CurrentUser {
         });
     }
 
+    public static void searchDatabaseForUserByEmail(String email, final UserCallback callback) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users");
+        Query userQuery = ref.orderByChild("email").equalTo(email);
+        userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                    User user = userSnapshot.getValue(User.class);
+                    callback.onUserRetrieved(user);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                callback.onFailure("Failed getting user from database");
+            }
+        });
+    }
+
+    private interface InvitationIdsCallback {
+        void onInvitationIdsRetrieved(List<String> invitationIds);
+        void onFailure(String error);
+    }
+
+    public static void getUserInvitationIdsFromDatabase(String userId, final InvitationIdsCallback callback) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users")
+                .child(userId).child("invitationIds");
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String, Boolean> invitationIds = (Map) dataSnapshot.getValue();
+                if (invitationIds == null) {
+                    callback.onFailure("Empty user id list retrieved from database");
+                    return;
+                }
+                List<String> invitationIdList = new ArrayList();
+                for (Map.Entry<String, Boolean> entry : invitationIds.entrySet()) {
+                    invitationIdList.add(entry.getKey());
+                }
+                callback.onInvitationIdsRetrieved(invitationIdList);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                callback.onFailure("Failed to get user invitation Ids from database");
+            }
+        });
+    }
+
+    public static void getInvitationFromDatabase(String invitationId, final InvitationCallback callback) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("invitations")
+                .child(invitationId);
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Invitation invitation = dataSnapshot.getValue(Invitation.class);
+                callback.onInvitationRetrieved(invitation);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                callback.onFailure("Failed getting invitation from database");
+            }
+        });
+
+    }
+
+    public static void getUserInvitationsFromDatabase(String userId, final InvitationCallback callback) {
+        getUserInvitationIdsFromDatabase(userId, new InvitationIdsCallback() {
+            @Override
+            public void onInvitationIdsRetrieved(List<String> invitationIds) {
+                for (String invitationId : invitationIds) {
+                    getInvitationFromDatabase(invitationId, callback);
+                }
+            }
+
+            @Override
+            public void onFailure(String error) {
+                Log.d(TAG, error);
+            }
+        });
+
+    }
+
+    public static void getUserFromDatabaseById(String userId, final UserCallback callback) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users")
+                .child(userId);
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                if (user == null) {
+                    callback.onFailure("No user object in database");
+                }
+                callback.onUserRetrieved(user);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                callback.onFailure("Failed getting user from database");
+            }
+        });
+    }
 
 }

@@ -2,6 +2,7 @@ package com.osu.cse.apps.mobile.woof;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -10,9 +11,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FamilyMembersFragment extends FamilyFragment {
 
@@ -55,7 +64,7 @@ public class FamilyMembersFragment extends FamilyFragment {
         mFamilyMemberList = new ArrayList();
 
         // populate family list from database
-        CurrentUser.getFamilyMemberFromDatabase(getFamily().getfamilyId(), new FamilyMemberCallback() {
+        CurrentUser.getFamilyMembersFromDatabase(getFamily().getfamilyId(), new FamilyMemberCallback() {
             @Override
             public void onFamilyMemberRetrieved(User familyMember) {
                 Log.d(TAG, "onFamilyMemberRetrieved() called");
@@ -82,6 +91,7 @@ public class FamilyMembersFragment extends FamilyFragment {
             mFamilyMemberRecyclerView.setAdapter(mAdapter);
         }
         else {
+            mAdapter.setFamilyMemberList(mFamilyMemberList);
             mAdapter.notifyDataSetChanged();
         }
 
@@ -113,13 +123,48 @@ public class FamilyMembersFragment extends FamilyFragment {
             mFamilyMember = familyMember;
             String familyMemberName = mFamilyMember.getfName() + " " + mFamilyMember.getlName();
             mFamilyMemberNameTextView.setText(familyMemberName);
+
+            // hide coordinator indicator if family is not coordinator
+            if (!getFamily().getcoordinatorUserId().equals(familyMember.getuserId())) {
+                mCoordinatorTextView.setVisibility(View.INVISIBLE);
+            }
+
+            // hide remove button if current user is not coordinator
+            if(!getFamily().getcoordinatorUserId().equals(CurrentUser.getUserId())) {
+                mRemoveFamilyMemberButton.setVisibility(View.INVISIBLE);
+            }
+
+            // hide remove button if family member and current user are same
+            if (familyMember.getuserId().equals(CurrentUser.getUserId())) {
+                mRemoveFamilyMemberButton.setVisibility(View.INVISIBLE);
+            }
         }
 
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.remove_button:
-                    // TODO: implement functionality for removing family member from family
+                    // TODO: may not remove user from family if user does not belong to any other families
+                    // TODO: if user has pending invitations to other users for this family, delete those invitations
+                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+                    String familyId = getFamilyId();
+                    String userId = mFamilyMember.getuserId();
+                    Map<String, Object> childUpdates = new HashMap();
+                    childUpdates.put("/families/" + familyId + "/userIds/" + userId, null);
+                    childUpdates.put("/users/" + userId + "/familyIds/" + familyId, null);
+                    ref.updateChildren(childUpdates).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(getActivity(), "Successfully removed user from family",
+                                    Toast.LENGTH_SHORT).show();
+                            updateUI();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d(TAG, "Error removing user from family");
+                        }
+                    });
                     break;
             }
         }
@@ -147,6 +192,10 @@ public class FamilyMembersFragment extends FamilyFragment {
 
         @Override
         public int getItemCount() { return mFamilyMemberList.size(); }
+
+        public void setFamilyMemberList(List<User> familyMemberList) {
+            mFamilyMemberList = familyMemberList;
+        }
 
     }
 
