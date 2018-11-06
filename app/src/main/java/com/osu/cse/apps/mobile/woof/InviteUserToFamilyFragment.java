@@ -61,11 +61,14 @@ public class InviteUserToFamilyFragment extends FamilyFragment {
         mFindUserButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d(TAG, "onClick() called");
                 mUserNotFoundTextView.setVisibility(View.INVISIBLE);
                 CurrentUser.searchDatabaseForUserByEmail(mUserEmail, new UserCallback() {
                     @Override
                     public void onUserRetrieved(User user) {
+                        Log.d(TAG, "onUserRetrieved() called");
                         if (user == null) {
+                            Log.d(TAG, "User object from database is null");
                             mUserNotFoundTextView.setVisibility(View.VISIBLE);
                         }
                         else {
@@ -94,6 +97,7 @@ public class InviteUserToFamilyFragment extends FamilyFragment {
         inviteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d(TAG, "onClick() called");
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
                 String invitationId = ref.child("invitations").push().getKey();
                 Invitation invitation = new Invitation(invitationId, getFamilyId(),
