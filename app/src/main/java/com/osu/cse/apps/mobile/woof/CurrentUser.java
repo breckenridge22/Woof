@@ -321,19 +321,31 @@ public class CurrentUser {
     }
 
     public static void searchDatabaseForUserByEmail(String email, final UserCallback callback) {
+        Log.d(TAG, "searchDatabaseForUserByEmail() called");
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users");
         Query userQuery = ref.orderByChild("email").equalTo(email);
         userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                    User user = userSnapshot.getValue(User.class);
-                    callback.onUserRetrieved(user);
+                Log.d(TAG, "onDataChange called");
+                if (dataSnapshot.getChildrenCount() > 1) {
+                    callback.onFailure("Found more than one user with matching email");
+                    return;
                 }
+                User user = null;
+                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                    user = userSnapshot.getValue(User.class);
+                    if (user == null) {
+                        callback.onFailure("User object obtained from database null");
+                        return;
+                    }
+                }
+                callback.onUserRetrieved(user);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.d(TAG, "onCancelled() called");
                 callback.onFailure("Failed getting user from database");
             }
         });
