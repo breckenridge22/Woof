@@ -124,7 +124,8 @@ public class NewDogFragment extends Fragment implements View.OnClickListener {
                     DatabaseReference ref = mDatabase.child("families").child(mFamilyId)
                             .child("dogs");
                     String dogId = ref.push().getKey(); // get new unique ID from Firebase
-                    Dog dog = new Dog(dogId, mDogName);
+                    String activitiesId = mDatabase.child("activities").push().getKey();
+                    Dog dog = new Dog(dogId, mDogName, activitiesId);
                     ref.child(dogId).setValue(dog.toMap())
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override

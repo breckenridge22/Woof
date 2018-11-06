@@ -237,7 +237,8 @@ public class CurrentUser {
                                 return;
                             }
                             for (Map<String, String> dogInfoMap : dogMap.values()) {
-                                DogInfo dogInfo = new DogInfo(dogInfoMap.get("dogId"), dogInfoMap.get("dogName"), familyId);
+                                DogInfo dogInfo = new DogInfo(dogInfoMap.get("dogId"),
+                                        dogInfoMap.get("dogName"), familyId, dogInfoMap.get("activitiesId"));
                                 callback.onDogInfoRetrieved(dogInfo);
                             }
                         }

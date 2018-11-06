@@ -5,17 +5,20 @@ import java.util.Map;
 
 public class Dog {
 
+    private static final String TAG = "Dog";
+
     private String dogId;
     private String dogName;
-    private static final String TAG = "Dog";
+    private String activitiesId;
 
     public Dog() {
         // default constructor for Firebase
     }
 
-    public Dog(String dogId, String dogName) {
+    public Dog(String dogId, String dogName, String activitiesId) {
         this.dogId = dogId;
         this.dogName = dogName;
+        this.activitiesId = activitiesId;
     }
 
     public String getdogId() {
@@ -26,10 +29,15 @@ public class Dog {
         return dogName;
     }
 
+    public String getactivitiesId() {
+        return activitiesId;
+    }
+
     public Map<String, Object> toMap() {
         Map<String, Object> result = new HashMap();
         result.put("dogId", dogId);
         result.put("dogName", dogName);
+        result.put("activitiesId", activitiesId);
         return result;
     }
 
