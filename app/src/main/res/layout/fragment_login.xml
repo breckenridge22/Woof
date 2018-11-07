@@ -111,6 +111,30 @@
             android:singleLine="true"
             />
 
+        <TextView
+            android:id="@+id/family_name_text_view"
+            android:visibility = "gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="8dp"
+            android:labelFor="@+id/family_name_edit_text"
+            android:text="@string/prompt_family_name"/>
+
+        <EditText
+            android:visibility = "gone"
+            android:id="@+id/family_name_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:inputType="text"
+            android:singleLine="true"
+            />
+
         <Button
             android:id="@+id/login_button"
             android:layout_width="match_parent"

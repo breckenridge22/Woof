@@ -44,6 +44,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private EditText mLNameEditText;
     private TextView mFNameTextView;
     private TextView mLNameTextView;
+    private TextView mFamilyNameTextView;
+    private EditText mFamilyNameEditText;
     private Button mLoginButton;
     private Button mNewUserButton;
     private Button mCancelButton;
@@ -77,6 +79,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         mLNameEditText = v.findViewById(R.id.lName_text);
         mFNameTextView = v.findViewById(R.id.fName_textV);
         mLNameTextView = v.findViewById(R.id.lName_textV);
+        mFamilyNameTextView = v.findViewById(R.id.family_name_text_view);
+        mFamilyNameEditText = v.findViewById(R.id.family_name_edit_text);
         mLoginButton = v.findViewById(R.id.login_button);
         mNewUserButton = v.findViewById(R.id.new_user_button);
         mCancelButton = v.findViewById(R.id.cancel_button);
@@ -138,7 +142,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                             Toast.makeText(getActivity(), "Account Created", Toast.LENGTH_SHORT).show();
                             FirebaseUser user = mAuth.getCurrentUser();
                             Log.d(TAG, "Created User ID: " + user.getUid());
-                            writeNewUser(user.getUid(), mFNameEditText.getText().toString(), mLNameEditText.getText().toString(), email);
+                            writeNewUser(user.getUid(), mFNameEditText.getText().toString(), mLNameEditText.getText().toString(), email, mFamilyNameEditText.getText().toString());
                             signIn(mUsernameEditText.getText().toString(), mPasswordEditText.getText().toString());
                         } else {
                             // If sign up fails, display a message to the user.
@@ -185,6 +189,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 mLNameTextView.setVisibility(View.VISIBLE);
                 mFNameEditText.setVisibility(View.VISIBLE);
                 mLNameEditText.setVisibility(View.VISIBLE);
+                mFamilyNameTextView.setVisibility(View.VISIBLE);
+                mFamilyNameEditText.setVisibility(View.VISIBLE);
                 mLoginButton.setVisibility(View.GONE);
                 mCancelButton.setVisibility(View.VISIBLE);
                 mNewU = false;
@@ -206,6 +212,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             mLNameTextView.setVisibility(View.GONE);
             mFNameEditText.setVisibility(View.GONE);
             mLNameEditText.setVisibility(View.GONE);
+            mFamilyNameTextView.setVisibility(View.GONE);
+            mFamilyNameEditText.setVisibility(View.GONE);
             mLoginButton.setVisibility(View.VISIBLE);
             mCancelButton.setVisibility(View.GONE);
             mNewU = true;
@@ -263,12 +271,11 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         return valid;
     }
 
-    private void writeNewUser(String userId, String fName, String lName, String email) {
+    private void writeNewUser(String userId, String fName, String lName, String email, String familyName) {
 
         // TODO: Get family name from user during user registration and/or ask to join existing family on login
         // Temporarily using this line to generate a random 5-character String for the family name
         Log.d(TAG, "writeNewUser() called");
-        String familyName = UUID.randomUUID().toString().substring(0, 5);
 
         String familyId = mDatabase.child("families").push().getKey();
         Family family = new Family(familyId, familyName, userId);
