@@ -43,6 +43,7 @@ import static com.mapbox.core.constants.Constants.PRECISION_6;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -129,7 +130,15 @@ public class MapsActivity extends AppCompatActivity implements PermissionsListen
 
     @Override
     public void onClick(View v) {
-
+        ActivityRecord act = new ActivityRecord(ActivityRecord.WALK);
+        act.setstart_Time( new Date());
+        act.setwalk_dist(mDist);
+        List<List<Double>> coords = new ArrayList<List<Double>>();
+        for (Point p: stops){
+            coords.add(p.coordinates());
+        }
+        act.setroute(coords);
+        CurrentUser.addActivity(act);
     }
 
     @Override
@@ -137,7 +146,7 @@ public class MapsActivity extends AppCompatActivity implements PermissionsListen
         // Optimization API is limited to 12 coordinate sets
         if (alreadyTwelveMarkersOnMap()) {
             // TODO fix the toast
-            Toast.makeText(MapsActivity.this, "Cut it out.", Toast.LENGTH_LONG).show();
+            Toast.makeText(MapsActivity.this, "Too many pins.", Toast.LENGTH_LONG).show();
         } else {
             Log.d(TAG, "onMapClick called");
             addDestinationMarker(point);

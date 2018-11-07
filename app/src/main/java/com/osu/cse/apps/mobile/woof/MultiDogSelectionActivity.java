@@ -72,7 +72,7 @@ public class MultiDogSelectionActivity extends AppCompatActivity implements Mult
             @Override
             public void onClick(View v){
                 Log.d(TAG, "Calling newIntent() from NewActivityRecordActivity");
-                Intent intent = NewActivityRecordActivity.newIntent(MultiDogSelectionActivity.this, mSelectedDogs);
+                Intent intent = NewActivityRecordActivity.newIntent(MultiDogSelectionActivity.this, mSelectedDogs, mDogInfoList);
                 startActivity(intent);
             }
         });

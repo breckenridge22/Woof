@@ -18,6 +18,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +28,8 @@ public class CurrentUser {
 
     private static String sUserId;
     private static DatabaseReference sUserDatabaseRef;
+    // Map for activities currently in progress, key is the activity ID for a dog and the value is
+    // the activity in progress
     private static Map<String, ActivityRecord> mCurrentActivities;
 
     private static final String TAG = "CurrentUser";
@@ -48,11 +51,19 @@ public class CurrentUser {
         sUserDatabaseRef = null;
     }
 
-    public static void setmCurrentActivities(ArrayList<String> dogs){
+    public static Map<String, ActivityRecord> getmCurrentActivities(){
+        return mCurrentActivities;
+    }
+
+    public static void setmCurrentActivities(List<String> dogs){
         mCurrentActivities = new HashMap<>();
         for(String s:dogs){
             mCurrentActivities.put(s, null);
         }
+    }
+
+    public static void clearmCurrentActivities(){
+        mCurrentActivities.clear();
     }
 
     public static void addActivity(ActivityRecord act){
@@ -63,7 +74,15 @@ public class CurrentUser {
     }
 
     public static void saveActivity(){
-
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference ref = mDatabase.child("activities");
+        for(Map.Entry<String, ActivityRecord> e: mCurrentActivities.entrySet()){
+            if(e.getValue().getactivity_Type()==ActivityRecord.WALK){
+                e.getValue().setend_Time(new Date());
+            }
+            String key = ref.child(e.getKey()).push().getKey();
+            ref.child(key).setValue(e.getValue());
+        }
         mCurrentActivities.clear();
     }
 

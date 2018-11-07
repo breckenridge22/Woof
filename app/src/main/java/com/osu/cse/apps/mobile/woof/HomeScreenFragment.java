@@ -72,7 +72,7 @@ public class HomeScreenFragment extends Fragment implements View.OnClickListener
                 startActivity(intent);
                 break;
             case R.id.finish_walk_button:
-                // TODO
+                CurrentUser.saveActivity();
                 break;
             case R.id.new_activity_button:
                 Log.d(TAG, "Routing to MultiDogSelectionActivity");

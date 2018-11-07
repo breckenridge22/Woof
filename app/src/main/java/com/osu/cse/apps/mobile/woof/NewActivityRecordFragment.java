@@ -26,6 +26,7 @@ public class NewActivityRecordFragment extends Fragment implements View.OnClickL
         private static final String TAG = "NewActivityRecordFragment";
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
         private List<String> dogIDList;
+        private List<String> dogActsList;
 
         // Views
         private Spinner activity_type_spinner;
@@ -52,7 +53,9 @@ public class NewActivityRecordFragment extends Fragment implements View.OnClickL
             super.onCreate(savedInstanceState);
             Bundle b = getArguments();
             dogIDList = b.getStringArrayList("DOG_ID_LIST");
+            dogActsList = b.getStringArrayList("DOG_ACTS_LIST");
             Log.d(TAG, "Size of dogIDList: " + dogIDList.size());
+            Log.d(TAG, "Size of dogActsList: " + dogActsList.size());
         }
 
 
@@ -61,6 +64,15 @@ public class NewActivityRecordFragment extends Fragment implements View.OnClickL
                                  Bundle savedInstanceState) {
             Log.d(TAG, "onCreateView() called");
             View v = inflater.inflate(R.layout.fragment_new_activity, container, false);
+
+            // Prepare the activities map
+            if(CurrentUser.getmCurrentActivities()!=null){
+                CurrentUser.clearmCurrentActivities();
+            }
+            CurrentUser.setmCurrentActivities(dogActsList);
+            int size = CurrentUser.getmCurrentActivities().size();
+            Log.d(TAG, "Dog map ready");
+            Log.d(TAG, "Dog map size: " + size);
 
             Log.d(TAG, "Initializing view elements");
             activity_type_spinner = (Spinner) v.findViewById(R.id.activity_type_spinner);
