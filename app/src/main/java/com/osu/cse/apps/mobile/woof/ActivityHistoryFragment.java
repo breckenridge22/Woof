@@ -17,6 +17,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -119,7 +120,10 @@ public class ActivityHistoryFragment extends DogFragment {
             switch (record.getactivity_Type()) {
                 case ActivityRecord.WALK:
                     if (record.getcalories() >= 0) {
-                        details = details.concat("Calories Burned: " + record.getcalories() + "\n");
+                        DecimalFormat df = new DecimalFormat("#.00");
+                        details = details.concat("Start Time: " + record.getstart_Time() + "\n" +
+                                                 "End Time: " + record.getend_Time()  + "\n" +
+                                                 "Distance: " + df.format(record.getwalk_dist()) + " mi \n");
                     }
                     break;
                 case ActivityRecord.FOOD:
