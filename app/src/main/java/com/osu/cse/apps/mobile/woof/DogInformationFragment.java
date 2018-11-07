@@ -17,19 +17,17 @@ import java.util.UUID;
 public class DogInformationFragment extends DogFragment {
 
     private static final String TAG = "DogInformationFragment";
-    private TextView mDogIdTextView;
     private EditText mDogNameEditText;
     private TextView mFamilyNameTextView;
     private Button mSaveChangesButton;
     private String mDogName;
+    private String mFamilyName;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.i(TAG, "onCreateView() called");
         View v = inflater.inflate(R.layout.fragment_dog_information, container, false);
-
-        mDogIdTextView = v.findViewById(R.id.dog_id);
 
         mDogNameEditText = v.findViewById(R.id.dog_name);
         mDogNameEditText.addTextChangedListener(new TextWatcher() {
@@ -51,6 +49,29 @@ public class DogInformationFragment extends DogFragment {
         });
 
         mFamilyNameTextView = v.findViewById(R.id.family);
+        String familyId = getFamilyId();
+        if (familyId != null) {
+            CurrentUser.getFamilyInfoFromDatabaseById(familyId, new FamilyInfoCallback() {
+                @Override
+                public void onFamilyInfoRetrieved(FamilyInfo familyInfo) {
+                    if (familyInfo == null) {
+                        Log.d(TAG, "Null family info object obtained from database");
+                        return;
+                    }
+                    mFamilyName = familyInfo.getfamilyName();
+                    if (mFamilyName == null) {
+                        Log.d(TAG, "Null family string in family info object from database");
+                        return;
+                    }
+                    mFamilyNameTextView.setText(mFamilyName);
+                }
+
+                @Override
+                public void onFailure(String error) {
+                    Log.d(TAG, error);
+                }
+            });
+        }
 
         mSaveChangesButton = v.findViewById(R.id.save_changes_button);
         mSaveChangesButton.setOnClickListener(new View.OnClickListener() {
@@ -69,9 +90,7 @@ public class DogInformationFragment extends DogFragment {
         if (dog == null) {
             return;
         }
-        mDogIdTextView.setText(getDogId());
         mDogNameEditText.setText(dog.getdogName());
-        mFamilyNameTextView.setText(getFamilyId());
     }
 
 }

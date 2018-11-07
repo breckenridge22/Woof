@@ -229,7 +229,7 @@ public class MapsActivity extends AppCompatActivity implements PermissionsListen
     }
 
     private void drawOptimizedRoute(DirectionsRoute route) {
-            // Remove old polyline
+        // Remove old polyline
         if (optimizedPolyline != null) {
             mapboxMap.removePolyline(optimizedPolyline);
         }

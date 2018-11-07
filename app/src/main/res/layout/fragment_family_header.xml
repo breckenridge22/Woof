@@ -7,8 +7,10 @@
     android:gravity="center_vertical"
     android:orientation="horizontal">
 
+    <!-- this ImageView can be unhidden once its functionality has been properly implemented -->
     <ImageView
         android:id="@+id/imageView2"
+        android:visibility="gone"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_marginLeft="8dp"
