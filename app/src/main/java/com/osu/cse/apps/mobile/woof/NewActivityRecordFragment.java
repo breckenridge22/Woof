@@ -18,6 +18,7 @@ import android.widget.Spinner;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -332,6 +333,7 @@ public class NewActivityRecordFragment extends Fragment implements View.OnClickL
                 startActivity(intent);
             } else{
                 Log.d(TAG, "Saving activity record");
+                mActivityRecord.setstart_Time(new Date());
                 CurrentUser.addActivity(mActivityRecord);
                 CurrentUser.saveActivity();
                 Log.d(TAG, "Redirecting to home screen");
