@@ -332,7 +332,11 @@ public class NewActivityRecordFragment extends Fragment implements View.OnClickL
                 startActivity(intent);
             } else{
                 Log.d(TAG, "Saving activity record");
-                // TODO - save activity record to Firebase
+                CurrentUser.addActivity(mActivityRecord);
+                CurrentUser.saveActivity();
+                Log.d(TAG, "Redirecting to home screen");
+                Intent intent = HomeScreenActivity.newIntent(getActivity());
+                startActivity(intent);
             }
 
         }
