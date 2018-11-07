@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +43,7 @@ import static com.mapbox.core.constants.Constants.PRECISION_6;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -53,7 +55,7 @@ import retrofit2.Response;
 // and its corresponding xml file
 // Also here https://www.mapbox.com/android-docs/java/examples/generate-an-optimized-route/
 public class MapsActivity extends AppCompatActivity implements PermissionsListener,
-        MapboxMap.OnMapClickListener, MapboxMap.OnMapLongClickListener {
+        MapboxMap.OnMapClickListener, MapboxMap.OnMapLongClickListener, View.OnClickListener {
 
     private MapboxMap mapboxMap;
     private PermissionsManager permissionsManager;
@@ -63,6 +65,7 @@ public class MapsActivity extends AppCompatActivity implements PermissionsListen
     private List<Point> stops;
     private double mDist;
     private TextView mDistView;
+    private Button mBeginButton;
     // constant strings for the optimized route
     private static final String FIRST = "first";
     private static final String ANY = "any";
@@ -83,6 +86,11 @@ public class MapsActivity extends AppCompatActivity implements PermissionsListen
         stops = new ArrayList<>();
 
         mDistView = this.findViewById(R.id.distance_view);
+        mBeginButton = this.findViewById(R.id.begin_button);
+
+        if(mBeginButton!=null){
+            mBeginButton.setOnClickListener(this);
+        }
 
         // Mapbox access token is configured here. This needs to be called either in your application
         // object or in the same activity which contains the mapview.
@@ -119,12 +127,29 @@ public class MapsActivity extends AppCompatActivity implements PermissionsListen
         });
     }
 
+
+    @Override
+    public void onClick(View v) {
+        ActivityRecord act = new ActivityRecord(ActivityRecord.WALK);
+        act.setstart_Time( new Date());
+        act.setwalk_dist(mDist);
+        List<List<Double>> coords = new ArrayList<List<Double>>();
+        for (Point p: stops){
+            coords.add(p.coordinates());
+        }
+        act.setroute(coords);
+        CurrentUser.addActivity(act);
+        Intent intent = HomeScreenActivity.newIntent(this);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
+
     @Override
     public void onMapClick(@NonNull LatLng point) {
         // Optimization API is limited to 12 coordinate sets
         if (alreadyTwelveMarkersOnMap()) {
             // TODO fix the toast
-            Toast.makeText(MapsActivity.this, "Cut it out.", Toast.LENGTH_LONG).show();
+            Toast.makeText(MapsActivity.this, "Too many pins.", Toast.LENGTH_LONG).show();
         } else {
             Log.d(TAG, "onMapClick called");
             addDestinationMarker(point);
