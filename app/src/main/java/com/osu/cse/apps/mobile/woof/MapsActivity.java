@@ -282,7 +282,7 @@ public class MapsActivity extends AppCompatActivity implements PermissionsListen
     @Override
     public void onExplanationNeeded(List<String> permissionsToExplain) {
         // TODO fix this toast
-        Toast.makeText(this, "Shut up", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Cannot plan walks without location permission.", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -291,7 +291,7 @@ public class MapsActivity extends AppCompatActivity implements PermissionsListen
             enableLocationComponent();
         } else {
             // TODO fix the toast
-            Toast.makeText(this, "Shut up", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Cannot plan walks without location permission.", Toast.LENGTH_LONG).show();
             finish();
         }
     }
