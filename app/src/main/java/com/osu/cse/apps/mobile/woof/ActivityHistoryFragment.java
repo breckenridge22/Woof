@@ -34,9 +34,28 @@ public class ActivityHistoryFragment extends DogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView called");
+        View view = inflater.inflate(R.layout.fragment_activity_list, container, false);
+        mActivityRecyclerView = (RecyclerView) view.findViewById(R.id.activity_recycler_view);
+        mActivityRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        // updateUI();
+        return view;
+    }
+
+    // TODO: Get this working properly
+    public void updateUI() {
+        Log.d(TAG, "updateActivityHistoryUI() called");
+
         mActivityRecordsList = new ArrayList();
+        Dog dog = getDog();
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("activities")
-                .child(getFamilyId() + ":" + getDogId());
+                .child(dog.getactivitiesId());
         Query activitiesQuery = ref.limitToLast(MAX_ACTIVITIES); // limit number of activities to display
         activitiesQuery.addChildEventListener(new ChildEventListener() {
             @Override
@@ -70,33 +89,17 @@ public class ActivityHistoryFragment extends DogFragment {
             }
         });
 
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.d(TAG, "onCreateView called");
-        View view = inflater.inflate(R.layout.fragment_activity_list, container, false);
-        mActivityRecyclerView = (RecyclerView) view.findViewById(R.id.activity_recycler_view);
-        mActivityRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        updateActivityHistoryUI(); // TODO: Does this need to be called from onCreateView?
-        return view;
-    }
-
-    // TODO: Get this working properly
-    public void updateActivityHistoryUI() {
-        Log.d(TAG, "updateActivityHistoryUI() called");
-
         if (mAdapter == null) {
             mAdapter = new ActivityAdapter(mActivityRecordsList);
             mActivityRecyclerView.setAdapter(mAdapter);
-        }
-        else {
+        } else {
+            mAdapter.setActivityRecords(mActivityRecordsList);
             mAdapter.notifyDataSetChanged();
         }
     }
 
 
-    private class ActivityHolder extends RecyclerView.ViewHolder  {
+    private class ActivityHolder extends RecyclerView.ViewHolder {
 
         private ActivityRecord mActivityRecord;
         private TextView mActivityDetails;
@@ -107,15 +110,15 @@ public class ActivityHistoryFragment extends DogFragment {
             super(inflater.inflate(R.layout.list_item_activity, parent, false));
 
             mActivityType = itemView.findViewById(R.id.activity_type);
-            mActivityTime= itemView.findViewById(R.id.activity_time);
+            mActivityTime = itemView.findViewById(R.id.activity_time);
             mActivityDetails = itemView.findViewById(R.id.activity_details);
         }
 
         private String getActivityDetails(ActivityRecord record) {
             String details = "";
-            switch(record.getactivity_Type()) {
+            switch (record.getactivity_Type()) {
                 case ActivityRecord.WALK:
-                    if(record.getcalories() >= 0) {
+                    if (record.getcalories() >= 0) {
                         details = details.concat("Calories Burned: " + record.getcalories() + "\n");
                     }
                     break;
@@ -124,16 +127,15 @@ public class ActivityHistoryFragment extends DogFragment {
                     String amt = "";
                     String metric = "";
 
-                    if(!record.getfood_Brand().isEmpty()) {
+                    if (!record.getfood_Brand().isEmpty()) {
                         brand = record.getfood_Brand();
                     }
-                    if(record.getfood_Amount() > 0) {
+                    if (record.getfood_Amount() > 0) {
                         amt = String.valueOf(record.getfood_Amount());
                     }
-                    if(record.getfood_Metric() == ActivityRecord.CUPS) {
+                    if (record.getfood_Metric() == ActivityRecord.CUPS) {
                         metric = "Cups";
-                    }
-                    else if(record.getfood_Metric() == ActivityRecord.OUNCES) {
+                    } else if (record.getfood_Metric() == ActivityRecord.OUNCES) {
                         metric = "Oz";
                     }
                     details = details + brand + ": " + amt + " " + metric + "\n";
@@ -145,18 +147,17 @@ public class ActivityHistoryFragment extends DogFragment {
                     // No additional details to present
                     break;
                 case ActivityRecord.BATHROOM:
-                    if(record.getbathroom_Type() == ActivityRecord.PEE) {
+                    if (record.getbathroom_Type() == ActivityRecord.PEE) {
                         details = details.concat("Pee");
-                    }
-                    else if (record.getbathroom_Type() == ActivityRecord.POO) {
+                    } else if (record.getbathroom_Type() == ActivityRecord.POO) {
                         details = details.concat("Poo");
                     }
                     break;
                 case ActivityRecord.VETVISIT:
-                    if(!record.getvet_Location().isEmpty()) {
+                    if (!record.getvet_Location().isEmpty()) {
                         details = details.concat(record.getvet_Location() + "\n");
                     }
-                    if(!record.getvet_Visit_Reason().isEmpty()) {
+                    if (!record.getvet_Visit_Reason().isEmpty()) {
                         details = details.concat("Reason: ");
                         details = details.concat(record.getvet_Visit_Reason());
                     }
@@ -165,12 +166,12 @@ public class ActivityHistoryFragment extends DogFragment {
             return details.trim();
         }
 
-        private String getActivityDateTime(Date date){
+        private String getActivityDateTime(Date date) {
             return date.toString();
         }
 
         private String getActivityTypeString(int type) {
-            switch(type) {
+            switch (type) {
                 case ActivityRecord.WALK:
                     return "WALK/EXERCISE";
                 case ActivityRecord.FOOD:
@@ -196,7 +197,7 @@ public class ActivityHistoryFragment extends DogFragment {
             // Retrieve start/end times and convert to string
             // If end time exists, append to start time
             String str_time = getActivityDateTime(mActivityRecord.getstart_Time());
-            if(mActivityRecord.getend_Time() != null) {
+            if (mActivityRecord.getend_Time() != null) {
                 str_time.concat(" - ");
                 str_time.concat(mActivityRecord.getend_Time().toString());
             }
@@ -213,7 +214,7 @@ public class ActivityHistoryFragment extends DogFragment {
 
         private List<ActivityRecord> mActivityRecords;
 
-        public ActivityAdapter (List<ActivityRecord> activityRecords) {
+        public ActivityAdapter(List<ActivityRecord> activityRecords) {
             mActivityRecords = activityRecords;
         }
 
@@ -233,8 +234,12 @@ public class ActivityHistoryFragment extends DogFragment {
         public int getItemCount() {
             if (mActivityRecords == null) {
                 return 0;
-            }
-            else return mActivityRecords.size(); }
+            } else return mActivityRecords.size();
+        }
+
+        private void setActivityRecords(List<ActivityRecord> activityRecords) {
+            mActivityRecords = activityRecords;
+        }
 
     }
 }
