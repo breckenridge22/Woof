@@ -42,21 +42,20 @@
             android:id = "@+id/food_amount_edittext"
             android:inputType = "number|numberDecimal"
             android:hint="12.34"
-            android:margin="4dp"
+            android:layout_margin="4dp"
             />
         <Spinner
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id = "@+id/food_metrics_spinner"
-            android:margin="4dp"
-
+            android:layout_margin="4dp"
             />
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id = "@+id/food_brand_edittext"
             android:hint="Food Brand"
-            android:margin="4dp"
+            android:layout_margin="4dp"
             />
         <EditText
             android:layout_width="wrap_content"
@@ -64,13 +63,13 @@
             android:id = "@+id/calories_eaten_edittext"
             android:inputType = "number"
             android:hint="12345"
-            android:margin="4dp"
+            android:layout_margin="4dp"
             />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Calories"
-            android:margi="4dp"
+            android:layout_margin="4dp"
             android:layout_toRightOf="@id/calories_eaten_edittext"/>
     </LinearLayout>
 
