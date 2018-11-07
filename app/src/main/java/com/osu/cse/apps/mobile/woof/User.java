@@ -54,6 +54,13 @@ public class User {
         return invitationIds;
     }
 
+
+
+    public void changeEmail(String email) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        ref.child("users").child(userId).child("email").setValue(email);
+    }
+
     public void changeFirstName(String firstName) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         ref.child("users").child(userId).child("fName").setValue(firstName);

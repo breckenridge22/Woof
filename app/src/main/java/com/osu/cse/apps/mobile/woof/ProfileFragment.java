@@ -193,6 +193,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
+                                        mCurrentUser.changeEmail(email);
                                         Toast.makeText(getActivity(), "Updated Email", Toast.LENGTH_SHORT).show();
                                         Log.d(TAG, "User email address updated.");
                                     } else {
