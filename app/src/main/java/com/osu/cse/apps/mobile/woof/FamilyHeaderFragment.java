@@ -25,7 +25,11 @@ public class FamilyHeaderFragment extends FamilyFragment {
     @Override
     public void updateUI() {
         Log.d(TAG, "updateUI() called");
-        mFamilyNameTextView.setText(getFamily().getfamilyName());
+        Family family = getFamily();
+        if (family == null) {
+            return;
+        }
+        mFamilyNameTextView.setText(family.getfamilyName());
     }
 
 }

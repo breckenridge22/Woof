@@ -66,6 +66,9 @@ public class DogInformationFragment extends DogFragment {
     @Override
     public void updateUI() {
         Dog dog = getDog();
+        if (dog == null) {
+            return;
+        }
         mDogIdTextView.setText(getDogId());
         mDogNameEditText.setText(dog.getdogName());
         mFamilyNameTextView.setText(getFamilyId());

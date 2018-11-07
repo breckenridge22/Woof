@@ -35,8 +35,6 @@ public class ActivityHistoryFragment extends DogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
     }
 
     @Override
@@ -50,11 +48,16 @@ public class ActivityHistoryFragment extends DogFragment {
     }
 
     // TODO: Get this working properly
+    @Override
     public void updateUI() {
-        Log.d(TAG, "updateActivityHistoryUI() called");
+        Log.d(TAG, "updateUI() called");
 
         mActivityRecordsList = new ArrayList();
         Dog dog = getDog();
+        if (dog == null) {
+            return;
+        }
+
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("activities")
                 .child(dog.getactivitiesId());
         Query activitiesQuery = ref.limitToLast(MAX_ACTIVITIES); // limit number of activities to display
