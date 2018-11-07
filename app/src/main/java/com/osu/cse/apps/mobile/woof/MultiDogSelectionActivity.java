@@ -23,6 +23,7 @@ public class MultiDogSelectionActivity extends AppCompatActivity implements Mult
     private Button mContinueButton;
     private RecyclerView.Adapter mAdapter;
     private List<DogInfo> mDogInfoList;
+    private List<DogInfo> mSelectedDogInfoList;
     private Map<String, Boolean> mDogSelected;
     private List<String> mSelectedDogs;
 
@@ -41,6 +42,7 @@ public class MultiDogSelectionActivity extends AppCompatActivity implements Mult
         Log.d(TAG, "Getting CurrentUser's Dogs.");
 
         mDogInfoList = new ArrayList();
+        mSelectedDogInfoList = new ArrayList();
         mDogSelected = new HashMap<>();
         mSelectedDogs = new ArrayList();
 

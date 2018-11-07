@@ -40,6 +40,7 @@ public class CurrentUser {
             sUserId = auth.getCurrentUser().getUid();
             sUserDatabaseRef = FirebaseDatabase.getInstance().getReference().child("users")
                     .child(sUserId);
+            mCurrentActivities = new HashMap<>();
         }
     }
 
@@ -56,7 +57,6 @@ public class CurrentUser {
     }
 
     public static void setmCurrentActivities(List<String> dogs){
-        mCurrentActivities = new HashMap<>();
         for(String s:dogs){
             mCurrentActivities.put(s, null);
         }
@@ -75,12 +75,13 @@ public class CurrentUser {
 
     public static void saveActivity(){
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference ref = mDatabase.child("activities");
+        DatabaseReference ref;
         for(Map.Entry<String, ActivityRecord> e: mCurrentActivities.entrySet()){
+            ref = mDatabase.child("activities").child(e.getKey());
             if(e.getValue().getactivity_Type()==ActivityRecord.WALK){
                 e.getValue().setend_Time(new Date());
             }
-            String key = ref.child(e.getKey()).push().getKey();
+            String key = ref.push().getKey();
             ref.child(key).setValue(e.getValue());
         }
         mCurrentActivities.clear();

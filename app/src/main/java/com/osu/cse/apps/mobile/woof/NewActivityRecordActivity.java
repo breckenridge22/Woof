@@ -28,7 +28,9 @@ public class NewActivityRecordActivity extends SingleFragmentActivity{
 
         mDogActsList = new ArrayList<>();
         for (DogInfo d: dogInfoList){
-            mDogActsList.add(d.getactivitiesId());
+            if(mDogIdList.contains(d.getdogId())) {
+                mDogActsList.add(d.getactivitiesId());
+            }
         }
 
 

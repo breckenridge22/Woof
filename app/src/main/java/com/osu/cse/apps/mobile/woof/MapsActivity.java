@@ -139,6 +139,9 @@ public class MapsActivity extends AppCompatActivity implements PermissionsListen
         }
         act.setroute(coords);
         CurrentUser.addActivity(act);
+        Intent intent = HomeScreenActivity.newIntent(this);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
 
     @Override

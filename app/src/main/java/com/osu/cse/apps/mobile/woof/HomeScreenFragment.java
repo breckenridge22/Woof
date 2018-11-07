@@ -8,10 +8,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class HomeScreenFragment extends Fragment implements View.OnClickListener {
 
     private static final String TAG = "HomeScreenFragment";
+    private Button mFinishWalkButton;
 
     public static HomeScreenFragment newInstance() {
         return new HomeScreenFragment();
@@ -31,11 +33,11 @@ public class HomeScreenFragment extends Fragment implements View.OnClickListener
 
         View v = inflater.inflate(R.layout.fragment_home_screen, container, false);
 
-        Button mapButton = v.findViewById(R.id.map_button);
-        mapButton.setOnClickListener(this);
-
-        Button finishWalkButton = v.findViewById(R.id.finish_walk_button);
-        finishWalkButton.setOnClickListener(this);
+        mFinishWalkButton = v.findViewById(R.id.finish_walk_button);
+        if(CurrentUser.getmCurrentActivities().size()>0){
+            mFinishWalkButton.setVisibility(View.VISIBLE);
+        }
+        mFinishWalkButton.setOnClickListener(this);
 
         Button newActivityButton = v.findViewById(R.id.new_activity_button);
         newActivityButton.setOnClickListener(this);
@@ -66,13 +68,10 @@ public class HomeScreenFragment extends Fragment implements View.OnClickListener
     public void onClick(View v) {
         Intent intent;
         switch (v.getId()) {
-            case R.id.map_button:
-                Log.d(TAG, "Routing to Maps");
-                intent = MapsActivity.newIntent(getActivity());
-                startActivity(intent);
-                break;
             case R.id.finish_walk_button:
                 CurrentUser.saveActivity();
+                mFinishWalkButton.setVisibility(View.GONE);
+                Toast.makeText(getActivity(), "Walk Completed.", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.new_activity_button:
                 Log.d(TAG, "Routing to MultiDogSelectionActivity");
@@ -110,6 +109,7 @@ public class HomeScreenFragment extends Fragment implements View.OnClickListener
                 CurrentUser.setNull();
                 LoginFragment.signOut();
                 intent = LoginActivity.newIntent(getActivity());
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
                 break;
 
