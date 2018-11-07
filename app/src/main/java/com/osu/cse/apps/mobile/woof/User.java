@@ -13,6 +13,7 @@ public class User {
     private String lName;
     private String email;
     private Map<String, Boolean> familyIds;
+    private Map<String, Boolean> invitationIds;
     private static final String TAG = "User";
 
     public User() {
@@ -45,9 +46,12 @@ public class User {
         return email;
     }
 
-    // return list of keys from familyList map object
     public Map<String, Boolean> getfamilyIds() {
         return familyIds;
+    }
+
+    public Map<String, Boolean> getinvitationIds() {
+        return invitationIds;
     }
 
     public void changeFirstName(String firstName) {

@@ -97,7 +97,7 @@ public class DogHomeFragment extends DogFragment implements View.OnClickListener
                         });
             case R.id.test_button: // TODO: Remove this when finished testing
                 List<ActivityRecord> activityRecords = ActivityRecord.getTestActivityRecords();
-                String dogActivityId = getFamilyId() + ":" + getDogId();  // family Id and dog Id delimited with a colon
+                String dogActivityId = getDog().getactivitiesId();  // family Id and dog Id delimited with a colon
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference()
                         .child("activities").child(dogActivityId);
                 for (ActivityRecord activityRecord : activityRecords) {

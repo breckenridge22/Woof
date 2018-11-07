@@ -61,10 +61,15 @@ public class FamilyMembersFragment extends FamilyFragment {
         super.onResume();
         Log.i(TAG, "updateUI() called");
 
+        Family family = getFamily();
+        if (family == null) {
+            return;
+        }
+
         mFamilyMemberList = new ArrayList();
 
         // populate family list from database
-        CurrentUser.getFamilyMembersFromDatabase(getFamily().getfamilyId(), new FamilyMemberCallback() {
+        CurrentUser.getFamilyMembersFromDatabase(family.getfamilyId(), new FamilyMemberCallback() {
             @Override
             public void onFamilyMemberRetrieved(User familyMember) {
                 Log.d(TAG, "onFamilyMemberRetrieved() called");

@@ -31,6 +31,11 @@ public class InviteUserToFamilyFragment extends FamilyFragment {
     private Button mFindUserButton;
     private TextView mUserNameTextView;
     private TextView mUserNotFoundTextView;
+    private Button mInviteButton;
+    private TextView mUserExceptionTextView;
+    private int mUserInvitationCount;
+    private int mUserInvitationTotal;
+    private boolean mUserInvitationSent;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -70,12 +75,36 @@ public class InviteUserToFamilyFragment extends FamilyFragment {
                         if (user == null) {
                             Log.d(TAG, "User object from database is null");
                             mUserNotFoundTextView.setVisibility(View.VISIBLE);
-                        }
-                        else {
-                            mUser = user;
-                            mFindUserButton.setVisibility(View.INVISIBLE);
-                            mUserNameTextView.setText(mUser.getfName() + " " + mUser.getlName());
+                        } else {
                             mUserResultLayout.setVisibility(View.VISIBLE);
+                            mFindUserButton.setVisibility(View.INVISIBLE);
+                            mUser = user;
+                            if (checkUserInFamily()) {
+                                mUserExceptionTextView.setVisibility(View.VISIBLE);
+                                mUserExceptionTextView.setText("User already in family");
+                            }
+                            else if (mUser.getinvitationIds() == null) {
+                                setViewsOnUserInvitable();
+                            }
+                            else {
+                                checkInvitationAlreadySent(new InvitationAlreadySentCallback() {
+                                    @Override
+                                    public void onInvitationAlreadySent() {
+                                        mUserExceptionTextView.setVisibility(View.VISIBLE);
+                                        mUserExceptionTextView.setText("Invitation already sent");
+                                    }
+
+                                    @Override
+                                    public void onInvitationNotSent() {
+                                        setViewsOnUserInvitable();
+                                    }
+
+                                    @Override
+                                    public void onFailure(String error) {
+                                        Log.d(TAG, error);
+                                    }
+                                });
+                            }
                         }
                     }
 
@@ -93,8 +122,8 @@ public class InviteUserToFamilyFragment extends FamilyFragment {
 
         mUserNameTextView = v.findViewById(R.id.user_name_text_view);
 
-        Button inviteButton = v.findViewById(R.id.invite_button);
-        inviteButton.setOnClickListener(new View.OnClickListener() {
+        mInviteButton = v.findViewById(R.id.invite_button);
+        mInviteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick() called");
@@ -121,11 +150,64 @@ public class InviteUserToFamilyFragment extends FamilyFragment {
                 });
             }
         });
+        mInviteButton.setVisibility(View.INVISIBLE);
+
+        mUserExceptionTextView = v.findViewById(R.id.user_exception_text_view);
+        mUserExceptionTextView.setVisibility(View.INVISIBLE);
 
         mUserNotFoundTextView = v.findViewById(R.id.user_not_found_text_view);
         mUserNotFoundTextView.setVisibility(View.INVISIBLE);
 
         return v;
+    }
+
+    private boolean checkUserInFamily() {
+        boolean userInFamily = false;
+        Family family = getFamily();
+        String userId = mUser.getuserId();
+        for (Map.Entry<String, Boolean> entry : family.getuserIds().entrySet()) {
+            if (entry.getKey().equals(userId)) {
+                userInFamily = true;
+                break;
+            }
+        }
+        return userInFamily;
+    }
+
+    private void checkInvitationAlreadySent(final InvitationAlreadySentCallback callback) {
+        mUserInvitationCount = 0;
+        mUserInvitationTotal = mUser.getinvitationIds().size();
+        mUserInvitationSent = false;
+        String userId = mUser.getuserId();
+        CurrentUser.getUserInvitationsFromDatabase(userId, new InvitationCallback() {
+            @Override
+            public void onInvitationRetrieved(Invitation invitation) {
+                mUserInvitationCount++;
+                if (invitation.getfamilyId().equals(getFamilyId())) {
+                    mUserInvitationSent = true;
+                    callback.onInvitationAlreadySent();
+                }
+                else if (mUserInvitationCount >= mUserInvitationTotal && !mUserInvitationSent) {
+                    callback.onInvitationNotSent();
+                }
+            }
+
+            @Override
+            public void onFailure(String error) {
+                callback.onFailure("Failed getting invitation from database");
+            }
+        });
+    }
+
+    private interface InvitationAlreadySentCallback {
+        void onInvitationAlreadySent();
+        void onInvitationNotSent();
+        void onFailure(String error);
+    }
+
+    private void setViewsOnUserInvitable() {
+        mUserNameTextView.setText(mUser.getfName() + " " + mUser.getlName());
+        mInviteButton.setVisibility(View.VISIBLE);
     }
 
 }
