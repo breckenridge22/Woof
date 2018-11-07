@@ -102,7 +102,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id = "@+id/vet_address_edittext"
-            android:textAllCaps="true"
             android:hint="Vet Location/Address"
             android:layout_margin="4dp"/>
 

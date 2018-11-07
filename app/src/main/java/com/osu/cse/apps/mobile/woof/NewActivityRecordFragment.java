@@ -289,6 +289,9 @@ public class NewActivityRecordFragment extends Fragment implements View.OnClickL
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    Log.d(TAG, "VET ADDRESS");
+                    Log.d(TAG, s.toString());
+                    Log.d(TAG, s.toString().trim());
                     mActivityRecord.setvet_Location(s.toString().trim());
                     enableButtonIfPossible();
                 }
@@ -307,6 +310,9 @@ public class NewActivityRecordFragment extends Fragment implements View.OnClickL
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    Log.d(TAG, "VET REASON");
+                    Log.d(TAG, s.toString());
+                    Log.d(TAG, s.toString().trim());
                     mActivityRecord.setvet_Visit_Reason(s.toString().trim());
                     enableButtonIfPossible();
                 }
@@ -409,6 +415,7 @@ public class NewActivityRecordFragment extends Fragment implements View.OnClickL
                         }
                         break;
                     case ActivityRecord.VETVISIT:
+                        Log.d(TAG, "Checking Vet_visit conditions for submit button");
                         if (!mActivityRecord.getvet_Visit_Reason().isEmpty()) {
                             if (!mActivityRecord.getvet_Location().isEmpty()) {
                                 submit_button.setEnabled(true);
