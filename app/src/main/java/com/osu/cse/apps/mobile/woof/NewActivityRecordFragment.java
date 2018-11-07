@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import com.google.firebase.database.DatabaseReference;
@@ -35,6 +36,13 @@ public class NewActivityRecordFragment extends Fragment implements View.OnClickL
         private Spinner bathroom_type_spinner;
         private EditText vet_address_edittext;
         private EditText vet_reason_edittext;
+
+        private LinearLayout vet_view;
+        private LinearLayout bathroom_view;
+        private LinearLayout food_view;
+        private View view2;
+        private View view4;
+        private View middle_view;
 
         private Button submit_button;
 
@@ -80,6 +88,14 @@ public class NewActivityRecordFragment extends Fragment implements View.OnClickL
             submit_button = (Button) v.findViewById(R.id.new_activity_submit);
             submit_button.setEnabled(false);
 
+            vet_view = (LinearLayout) v.findViewById(R.id.vet_view);
+            bathroom_view = (LinearLayout) v.findViewById(R.id.bathroom_view);
+            food_view = (LinearLayout) v.findViewById(R.id.food_view);
+            view2 = (View) v.findViewById(R.id.secondview);
+            view4 = (View) v.findViewById(R.id.fourthview);
+            middle_view = (View) v.findViewById(R.id.middle_view);
+
+
             Log.d(TAG, "Generating Spinner adapters");
             // Generate activity_type_spinner selection values
             ArrayAdapter<CharSequence> activityAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.activity_types, android.R.layout.simple_spinner_item);
@@ -87,7 +103,7 @@ public class NewActivityRecordFragment extends Fragment implements View.OnClickL
             activityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             activity_type_spinner.setAdapter(activityAdapter);
 
-            final ArrayAdapter<CharSequence> metricsAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.food_metrics, android.R.layout.simple_spinner_item);
+            ArrayAdapter<CharSequence> metricsAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.food_metrics, android.R.layout.simple_spinner_item);
             metricsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             food_metrics_spinner.setAdapter(metricsAdapter);
 
@@ -309,46 +325,42 @@ public class NewActivityRecordFragment extends Fragment implements View.OnClickL
 
         private void setGoneAll(){
             Log.d(TAG, "setGoneAll() called.");
-            food_amount_edittext.setVisibility(View.GONE);
-            food_metrics_spinner.setVisibility(View.GONE);
-            food_brand_edittext.setVisibility(View.GONE);
-            calories_eaten_edittext.setVisibility(View.GONE);
-            bathroom_type_spinner.setVisibility(View.GONE);
-            vet_address_edittext.setVisibility(View.GONE);
-            vet_reason_edittext.setVisibility(View.GONE);
+            vet_view.setVisibility(View.GONE);
+            bathroom_view.setVisibility(View.GONE);
+            food_view.setVisibility(View.GONE);
+            view2.setVisibility(View.GONE);
+            view4.setVisibility(View.GONE);
+            middle_view.setVisibility(View.VISIBLE);
         }
 
         private void setBathroomVisible(){
             Log.d(TAG, "setBathroomVisible() called.");
-            food_amount_edittext.setVisibility(View.GONE);
-            food_metrics_spinner.setVisibility(View.GONE);
-            food_brand_edittext.setVisibility(View.GONE);
-            calories_eaten_edittext.setVisibility(View.GONE);
-            bathroom_type_spinner.setVisibility(View.VISIBLE);
-            vet_address_edittext.setVisibility(View.GONE);
-            vet_reason_edittext.setVisibility(View.GONE);
+            vet_view.setVisibility(View.GONE);
+            bathroom_view.setVisibility(View.VISIBLE);
+            food_view.setVisibility(View.GONE);
+            view2.setVisibility(View.VISIBLE);
+            view4.setVisibility(View.VISIBLE);
+            middle_view.setVisibility(View.GONE);
         }
 
         private void setFoodVisible(){
             Log.d(TAG, "setFoodVisible() called.");
-            food_amount_edittext.setVisibility(View.VISIBLE);
-            food_metrics_spinner.setVisibility(View.VISIBLE);
-            food_brand_edittext.setVisibility(View.VISIBLE);
-            calories_eaten_edittext.setVisibility(View.VISIBLE);
-            bathroom_type_spinner.setVisibility(View.GONE);
-            vet_address_edittext.setVisibility(View.GONE);
-            vet_reason_edittext.setVisibility(View.GONE);
+            vet_view.setVisibility(View.GONE);
+            bathroom_view.setVisibility(View.GONE);
+            food_view.setVisibility(View.VISIBLE);
+            view2.setVisibility(View.VISIBLE);
+            view4.setVisibility(View.VISIBLE);
+            middle_view.setVisibility(View.GONE);
         }
 
         private void setVetVisible(){
             Log.d(TAG, "setVetVisible() called.");
-            food_amount_edittext.setVisibility(View.GONE);
-            food_metrics_spinner.setVisibility(View.GONE);
-            food_brand_edittext.setVisibility(View.GONE);
-            calories_eaten_edittext.setVisibility(View.GONE);
-            bathroom_type_spinner.setVisibility(View.GONE);
-            vet_address_edittext.setVisibility(View.VISIBLE);
-            vet_reason_edittext.setVisibility(View.VISIBLE);
+            vet_view.setVisibility(View.VISIBLE);
+            bathroom_view.setVisibility(View.GONE);
+            food_view.setVisibility(View.GONE);
+            view2.setVisibility(View.VISIBLE);
+            view4.setVisibility(View.VISIBLE);
+            middle_view.setVisibility(View.GONE);
         }
 
         private void enableButtonIfPossible() {

@@ -1,69 +1,147 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <Spinner
-        android:id = "@+id/activity_type_spinner"
-        android:layout_width = "wrap_content"
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf = "parent"
-        app:layout_constraintRight_toRightOf = "parent"/>
+        android:id = "@+id/activity_view"
+        android:layout_toLeftOf="@id/secondview"
+        android:orientation="vertical">
+        <Spinner
+            android:id = "@+id/activity_type_spinner"
+            android:layout_width = "match_parent"
+            android:layout_height="match_parent"
+            />
+    </LinearLayout>
 
-
-    <!-- Food related views -->
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:id = "@+id/food_amount_edittext"
-        android:inputType = "number|numberDecimal"
-        android:visibility = "gone"/>
-    <Spinner
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id = "@+id/food_metrics_spinner"
-        android:visibility = "gone" />
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:id = "@+id/food_brand_edittext"
-        android:visibility = "gone"/>
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:id = "@+id/calories_eaten_edittext"
-        android:inputType = "number"
-        android:visibility = "gone"/>
-
-    <!-- Bathroom related views -->
-    <Spinner
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:id = "@+id/bathroom_type_spinner"
-        android:visibility="gone"/>
-
-    <!-- Vet related views -->
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:id = "@+id/vet_address_edittext"
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:id="@+id/secondview"
         android:visibility="gone"
-        android:textAllCaps="true"/>
-
-    <EditText
-        android:id="@+id/vet_reason_edittext"
-        android:layout_width="242dp"
-        android:layout_height="match_parent"
-        android:visibility ="gone" />
-
-    <Button
-        android:id = "@+id/new_activity_submit"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:text = "Submit"
+        android:id="@+id/food_view"
+        android:layout_toRightOf="@id/secondview"
+        android:layout_toLeftOf="@id/fourthview"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+
+        <!-- Food related views -->
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id = "@+id/food_amount_edittext"
+            android:inputType = "number|numberDecimal"
+            android:hint="12.34"
+            android:margin="4dp"
+            />
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id = "@+id/food_metrics_spinner"
+            android:margin="4dp"
+
+            />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id = "@+id/food_brand_edittext"
+            android:hint="Food Brand"
+            android:margin="4dp"
+            />
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id = "@+id/calories_eaten_edittext"
+            android:inputType = "number"
+            android:hint="12345"
+            android:margin="4dp"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Calories"
+            android:margi="4dp"
+            android:layout_toRightOf="@id/calories_eaten_edittext"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/bathroom_view"
+        android:layout_toLeftOf="@id/secondview"
+        android:layout_toRightOf="@id/fourthview"
+        android:visibility="gone">
+        <!-- Bathroom related views -->
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id = "@+id/bathroom_type_spinner"
+            android:layout_margin="8dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:id="@+id/vet_view"
+        android:layout_toLeftOf="@id/secondview"
+        android:orientation="vertical"
+        android:visibility="gone"
+        >
+        <!-- Vet related views -->
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id = "@+id/vet_address_edittext"
+            android:textAllCaps="true"
+            android:hint="Vet Location/Address"
+            android:layout_margin="4dp"/>
+
+        <EditText
+            android:id="@+id/vet_reason_edittext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Reason for visit"
+            android:layout_margin="4dp"
+            />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:id="@+id/fourthview"
+        android:visibility="gone"
+        android:layout_toRightOf="@id/fifthview"
         />
 
-</android.support.constraint.ConstraintLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:id="@+id/middle_view"
+        android:layout_toLeftOf="@id/activity_view"
+        android:layout_toRightOf="@id/fifthview"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/fifthview"
+        >
+        <Button
+            android:id = "@+id/new_activity_submit"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text = "Submit"
+            />
+    </LinearLayout>
+</LinearLayout>

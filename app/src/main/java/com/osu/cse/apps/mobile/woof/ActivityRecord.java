@@ -32,8 +32,8 @@ public class ActivityRecord {
     private int food_Amount = -1;
     private int food_Metric = -1; // cups or ounces
     private int calories = 0;
-    private String vet_Location;
-    private String vet_Visit_Reason;
+    private String vet_Location="";
+    private String vet_Visit_Reason="";
     private int walk_dist;
 
     public ActivityRecord() {
