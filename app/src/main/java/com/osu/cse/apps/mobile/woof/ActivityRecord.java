@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.UUID;
 import android.util.Log;
 
+import com.mapbox.geojson.Point;
+import com.mapbox.mapboxsdk.geometry.LatLng;
+
 public class ActivityRecord {
 
     public final static int WALK = 1;
@@ -32,9 +35,12 @@ public class ActivityRecord {
     private int food_Amount = -1;
     private int food_Metric = -1; // cups or ounces
     private int calories = 0;
+
     private String vet_Location="";
     private String vet_Visit_Reason="";
-    private int walk_dist;
+    private double walk_dist;
+    private List<List<Double>> route;
+
 
     public ActivityRecord() {
         // default constructor for Firebase
@@ -124,8 +130,8 @@ public class ActivityRecord {
         this.vet_Visit_Reason = vet_Visit_Reason;
     }
 
-    public void set_walk_dist(int dist){ this.walk_dist = dist; }
-    public int get_walk_dist(){ return this.walk_dist; }
+    public void setwalk_dist(double dist){ this.walk_dist = dist; }
+    public double getwalk_dist(){ return this.walk_dist; }
 
     public String getactivity_ID() {
         return activity_ID;
@@ -134,7 +140,12 @@ public class ActivityRecord {
     public void setactivity_ID(String activity_ID) {
         this.activity_ID = activity_ID;
     }
-    // TODO - GPS Paths
+
+    public void setroute(List<List<Double>> rte){
+        this.route = rte;
+    }
+
+    public List<List<Double>> getroute(){ return this.route; }
 
 
     public static List<ActivityRecord> getTestActivityRecords(){
@@ -147,7 +158,7 @@ public class ActivityRecord {
         a1.setend_Time(new Date());
         a1.setend_Time(new Date());
         a1.setcalories(250);
-        a1.set_walk_dist(2000);
+        a1.setwalk_dist(2000);
 
         // Food
         ActivityRecord a2 = new ActivityRecord(FOOD);
