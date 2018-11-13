@@ -205,7 +205,10 @@ public class NewActivityRecordFragment extends Fragment implements View.OnClickL
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                     Log.d(TAG, "Food Amount Text Editor modified");
-                    mActivityRecord.setfood_Amount(Integer.parseInt(s.toString().trim()));
+                    String number = s.toString();
+                    if(!number.isEmpty()) {
+                        mActivityRecord.setfood_Amount(Integer.parseInt(number));
+                    }
                     enableButtonIfPossible();
                 }
 
@@ -225,7 +228,9 @@ public class NewActivityRecordFragment extends Fragment implements View.OnClickL
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                     Log.d(TAG, "Food Brand Text Editor modified");
-                    mActivityRecord.setfood_Brand(s.toString().trim());
+                    if(!s.toString().isEmpty()) {
+                        mActivityRecord.setfood_Brand(s.toString().trim());
+                    }
                     enableButtonIfPossible();
                 }
 
@@ -244,7 +249,9 @@ public class NewActivityRecordFragment extends Fragment implements View.OnClickL
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                     Log.d(TAG, "Calories Eaten Text Editor modified");
-                    mActivityRecord.setcalories(Integer.parseInt(s.toString().trim()));
+                    if(!s.toString().isEmpty()) {
+                        mActivityRecord.setcalories(Integer.parseInt(s.toString().trim()));
+                    }
                     enableButtonIfPossible();
                 }
 
@@ -291,9 +298,9 @@ public class NewActivityRecordFragment extends Fragment implements View.OnClickL
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                     Log.d(TAG, "VET ADDRESS");
-                    Log.d(TAG, s.toString());
-                    Log.d(TAG, s.toString().trim());
-                    mActivityRecord.setvet_Location(s.toString().trim());
+                    if(!s.toString().isEmpty()) {
+                        mActivityRecord.setvet_Location(s.toString().trim());
+                    }
                     enableButtonIfPossible();
                 }
 
@@ -312,9 +319,9 @@ public class NewActivityRecordFragment extends Fragment implements View.OnClickL
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                     Log.d(TAG, "VET REASON");
-                    Log.d(TAG, s.toString());
-                    Log.d(TAG, s.toString().trim());
-                    mActivityRecord.setvet_Visit_Reason(s.toString().trim());
+                    if(!s.toString().isEmpty()) {
+                        mActivityRecord.setvet_Visit_Reason(s.toString().trim());
+                    }
                     enableButtonIfPossible();
                 }
 

@@ -16,6 +16,7 @@
             android:id = "@+id/activity_type_spinner"
             android:layout_width = "match_parent"
             android:layout_height="match_parent"
+            android:layout_margin="12dp"
             />
     </LinearLayout>
 
@@ -24,6 +25,7 @@
         android:layout_height="0dp"
         android:id="@+id/secondview"
         android:visibility="gone"
+        android:layout_margin="2dp"
         />
     <LinearLayout
         android:layout_width="match_parent"
@@ -40,22 +42,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id = "@+id/food_amount_edittext"
-            android:inputType = "number|numberDecimal"
-            android:hint="12.34"
-            android:layout_margin="4dp"
+            android:inputType = "number"
+            android:hint="1234"
+            android:layout_margin="8dp"
             />
         <Spinner
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id = "@+id/food_metrics_spinner"
-            android:layout_margin="4dp"
+            android:layout_margin="8dp"
             />
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id = "@+id/food_brand_edittext"
             android:hint="Food Brand"
-            android:layout_margin="4dp"
+            android:layout_margin="8dp"
             />
         <EditText
             android:layout_width="wrap_content"
@@ -63,13 +65,13 @@
             android:id = "@+id/calories_eaten_edittext"
             android:inputType = "number"
             android:hint="12345"
-            android:layout_margin="4dp"
+            android:layout_margin="8dp"
             />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Calories"
-            android:layout_margin="4dp"
+            android:layout_margin="8dp"
             android:layout_toRightOf="@id/calories_eaten_edittext"/>
     </LinearLayout>
 
@@ -110,7 +112,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Reason for visit"
-            android:layout_margin="4dp"
+            android:layout_margin="8dp"
             />
     </LinearLayout>
 
@@ -128,6 +130,7 @@
         android:id="@+id/middle_view"
         android:layout_toLeftOf="@id/activity_view"
         android:layout_toRightOf="@id/fifthview"
+        android:layout_margin="2dp"
         />
 
     <LinearLayout
@@ -140,6 +143,7 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:text = "Submit"
+            android:layout_margin="4dp"
             />
     </LinearLayout>
 </LinearLayout>
