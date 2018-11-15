@@ -267,6 +267,13 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             } else {
                 mLNameEditText.setError(null);
             }
+            String familyName = mFamilyNameEditText.getText().toString();
+            if (TextUtils.isEmpty(familyName)) {
+                mFamilyNameEditText.setError("Required.");
+                valid = false;
+            } else {
+                mFamilyNameEditText.setError(null);
+            }
         }
         return valid;
     }
