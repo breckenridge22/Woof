@@ -124,6 +124,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             Log.d(TAG, "OnStart Login");
             Toast.makeText(getActivity(), "Signed in", Toast.LENGTH_SHORT).show();
             Intent intent = HomeScreenActivity.newIntent(getActivity());
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         }
     }
@@ -168,8 +169,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                             Toast.makeText(getActivity(), "Signed in", Toast.LENGTH_SHORT).show();
                             FirebaseUser user = mAuth.getCurrentUser();
                             Intent intent = HomeScreenActivity.newIntent(getActivity());
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(intent);
-                            getActivity().finish();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
