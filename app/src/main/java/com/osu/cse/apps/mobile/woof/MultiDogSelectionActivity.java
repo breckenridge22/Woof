@@ -70,6 +70,7 @@ public class MultiDogSelectionActivity extends AppCompatActivity implements Mult
         setContentView(R.layout.multi_select_dog);
 
         mContinueButton = (Button) findViewById(R.id.multi_select_continue_button);
+        mContinueButton.setEnabled(false);
         mContinueButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -96,6 +97,11 @@ public class MultiDogSelectionActivity extends AppCompatActivity implements Mult
         for(String key:dogSelected.keySet()){
             if(dogSelected.containsKey(key) && dogSelected.get(key) == true){
                 mSelectedDogs.add(key);
+            }
+            if(mSelectedDogs.size() > 0){
+                mContinueButton.setEnabled(true);
+            } else{
+                mContinueButton.setEnabled(false);
             }
         }
     }

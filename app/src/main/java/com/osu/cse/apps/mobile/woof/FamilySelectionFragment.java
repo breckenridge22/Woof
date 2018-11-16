@@ -53,29 +53,7 @@ public class FamilySelectionFragment extends Fragment {
         super.onResume();
         Log.i(TAG, "onResume() called");
         updateUI();
-
-        /*
-        mFamilyInfoList = new ArrayList();
-
-        // populate family list from database
-        CurrentUser.getFamilyInfoFromDatabase(new FamilyInfoCallback() {
-            @Override
-            public void onFamilyInfoRetrieved(FamilyInfo familyInfo) {
-                Log.d(TAG, "onFamilyInfoRetrieved() called");
-                mFamilyInfoList.add(familyInfo);
-                if (mAdapter != null) {
-                    mAdapter.notifyDataSetChanged();
-                }
-            }
-
-            @Override
-            public void onFailure(String error) {
-                Log.d(TAG, error);
-            }
-        });
-
-        updateUI();
-        */
+        mAdapter.setIsClickable(true);
     }
 
     private void updateUI() {
@@ -139,14 +117,18 @@ public class FamilySelectionFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
+            if(mAdapter.isClickable){
+                mAdapter.setIsClickable(false);
                 Intent intent = FamilyManagementActivity.newIntent(getActivity(), mFamilyInfo.getfamilyId(), FamilyManagementActivity.FAMILY_HOME);
                 startActivity(intent);
+            }
         }
     }
 
     private class FamilyAdapter extends RecyclerView.Adapter<FamilyHolder> {
 
         private List<FamilyInfo> mFamilyInfoList;
+        private Boolean isClickable = true;
 
         public FamilyAdapter(List<FamilyInfo> familyInfoList) {
             mFamilyInfoList = familyInfoList;
@@ -169,6 +151,14 @@ public class FamilySelectionFragment extends Fragment {
 
         public void setFamilyInfoList(List<FamilyInfo> familyInfoList) {
             mFamilyInfoList = familyInfoList;
+        }
+
+        public void setIsClickable(Boolean click){
+            isClickable = click;
+        }
+
+        public Boolean getClickable(){
+            return isClickable;
         }
 
     }

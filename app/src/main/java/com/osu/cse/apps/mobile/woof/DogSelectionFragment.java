@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -64,28 +65,7 @@ public class DogSelectionFragment extends Fragment {
         super.onResume();
         Log.i(TAG, "onResume() called");
         updateUI();
-
-        /*
-        mDogInfoList = new ArrayList();
-
-        // populate dog info list from database
-        CurrentUser.getDogInfoFromDatabase(new DogInfoCallback() {
-            @Override
-            public void onDogInfoRetrieved(DogInfo dogInfo) {
-                mDogInfoList.add(dogInfo);
-                if (mAdapter != null) {
-                    mAdapter.notifyDataSetChanged();
-                }
-            }
-
-            @Override
-            public void onFailure(String error) {
-                Log.d(TAG, error);
-            }
-        });
-
-        updateUI();
-        */
+        mAdapter.setClickable(true);
     }
 
     private void updateUI() {
@@ -143,19 +123,22 @@ public class DogSelectionFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
+            if(mAdapter.isClickable()) {
+                mAdapter.setClickable(false);
 
-            if (activity_type.equals("manage_dogs")) {
-                Log.d(TAG, "Starting DogHomeFragment via DogManagementActivity.");
-                Intent intent = DogManagementActivity.newIntent(getActivity(), mDogInfo.getdogId(),
-                        mDogInfo.getfamilyId(), DogManagementActivity.DOG_HOME);
-                startActivity(intent);
+                if (activity_type.equals("manage_dogs")) {
+                    Log.d(TAG, "Starting DogHomeFragment via DogManagementActivity.");
+                    Intent intent = DogManagementActivity.newIntent(getActivity(), mDogInfo.getdogId(),
+                            mDogInfo.getfamilyId(), DogManagementActivity.DOG_HOME);
+                    startActivity(intent);
 
-            } else if (activity_type.equals("activity_history")) {
-                Log.d(TAG, "Starting ActivityHistoryFragment via DogManagementActivity.");
-                Intent intent = DogManagementActivity.newIntent(getActivity(), mDogInfo.getdogId(),
-                        mDogInfo.getfamilyId(), DogManagementActivity.ACTIVITY_HISTORY);
-                startActivity(intent);
+                } else if (activity_type.equals("activity_history")) {
+                    Log.d(TAG, "Starting ActivityHistoryFragment via DogManagementActivity.");
+                    Intent intent = DogManagementActivity.newIntent(getActivity(), mDogInfo.getdogId(),
+                            mDogInfo.getfamilyId(), DogManagementActivity.ACTIVITY_HISTORY);
+                    startActivity(intent);
 
+                }
             }
         }
     }
@@ -163,6 +146,7 @@ public class DogSelectionFragment extends Fragment {
     private class DogAdapter extends RecyclerView.Adapter<DogHolder> {
 
         private List<DogInfo> mDogInfoList;
+        private Boolean isClickable = true;
 
         public DogAdapter(List<DogInfo> dogInfoList) {
             mDogInfoList = dogInfoList;
@@ -186,6 +170,14 @@ public class DogSelectionFragment extends Fragment {
 
         public void setDogInfoList(List<DogInfo> dogInfoList) {
             mDogInfoList = dogInfoList;
+        }
+
+        public boolean isClickable(){
+            return isClickable;
+        }
+
+        public void setClickable(Boolean click){
+            isClickable = click;
         }
 
     }

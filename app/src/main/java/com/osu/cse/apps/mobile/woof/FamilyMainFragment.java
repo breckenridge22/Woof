@@ -12,6 +12,9 @@ import android.widget.Button;
 public class FamilyMainFragment extends Fragment implements View.OnClickListener {
 
     private static final String TAG = "FamilyMainFragment";
+    private Button mFamiliesButton;
+    private Button mInvitationsButton;
+    private Button mCreateNewFamilyButton;
 
     public static FamilyMainFragment newInstance() {
         return new FamilyMainFragment();
@@ -30,19 +33,21 @@ public class FamilyMainFragment extends Fragment implements View.OnClickListener
 
         View v = inflater.inflate(R.layout.fragment_family_main, container, false);
 
-        Button familiesButton = v.findViewById(R.id.families_button);
-        familiesButton.setOnClickListener(this);
+        mFamiliesButton = v.findViewById(R.id.families_button);
+        mFamiliesButton.setOnClickListener(this);
 
-        Button invitationsButton = v.findViewById(R.id.invitations_button);
-        invitationsButton.setOnClickListener(this);
+        mInvitationsButton = v.findViewById(R.id.invitations_button);
+        mInvitationsButton.setOnClickListener(this);
 
-        Button createNewFamilyButton = v.findViewById(R.id.create_new_family_button);
-        createNewFamilyButton.setOnClickListener(this);
+        mCreateNewFamilyButton = v.findViewById(R.id.create_new_family_button);
+        mCreateNewFamilyButton.setOnClickListener(this);
+        enableButtons(true);
 
         return v;
     }
 
     public void onClick(View v) {
+        enableButtons(false);
         Intent intent;
         switch(v.getId()) {
             case R.id.families_button:
@@ -58,6 +63,19 @@ public class FamilyMainFragment extends Fragment implements View.OnClickListener
                 startActivity(intent);
                 break;
         }
+    }
+
+    @Override
+    public void onResume(){
+        Log.d(TAG, "Called onResume()");
+        super.onResume();
+        enableButtons(true);
+    }
+
+    private void enableButtons(Boolean enable){
+        mCreateNewFamilyButton.setEnabled(enable);
+        mInvitationsButton.setEnabled(enable);
+        mFamiliesButton.setEnabled(enable);
     }
 
 }

@@ -14,6 +14,13 @@ public class HomeScreenFragment extends Fragment implements View.OnClickListener
 
     private static final String TAG = "HomeScreenFragment";
     private Button mFinishWalkButton;
+    private Button mNewActivityButton;
+    private Button mActivityHistoryButton;
+    private Button mManageDogsButton;
+    private Button mAddDogButton;
+    private Button mFamilyButton;
+    private Button mSettingsButton;
+    private Button mLogOutButton;
 
     public static HomeScreenFragment newInstance() {
         return new HomeScreenFragment();
@@ -39,26 +46,28 @@ public class HomeScreenFragment extends Fragment implements View.OnClickListener
         }
         mFinishWalkButton.setOnClickListener(this);
 
-        Button newActivityButton = v.findViewById(R.id.new_activity_button);
-        newActivityButton.setOnClickListener(this);
+        mNewActivityButton = v.findViewById(R.id.new_activity_button);
+        mNewActivityButton.setOnClickListener(this);
 
-        Button activityHistoryButton = v.findViewById(R.id.activity_history_button);
-        activityHistoryButton.setOnClickListener(this);
+        mActivityHistoryButton = v.findViewById(R.id.activity_history_button);
+        mActivityHistoryButton.setOnClickListener(this);
 
-        Button manageDogsButton = v.findViewById(R.id.manage_dogs_button);
-        manageDogsButton.setOnClickListener(this);
+        mManageDogsButton = v.findViewById(R.id.manage_dogs_button);
+        mManageDogsButton.setOnClickListener(this);
 
-        Button addDogButton = v.findViewById(R.id.add_dog_button);
-        addDogButton.setOnClickListener(this);
+        mAddDogButton = v.findViewById(R.id.add_dog_button);
+        mAddDogButton.setOnClickListener(this);
 
-        Button friendsFamilyButton = v.findViewById(R.id.family_button);
-        friendsFamilyButton.setOnClickListener(this);
+        mFamilyButton = v.findViewById(R.id.family_button);
+        mFamilyButton.setOnClickListener(this);
 
-        Button settingsButton = v.findViewById(R.id.settings_button);
-        settingsButton.setOnClickListener(this);
+        mSettingsButton = v.findViewById(R.id.settings_button);
+        mSettingsButton.setOnClickListener(this);
 
-        Button logOutButton = v.findViewById(R.id.log_out_button);
-        logOutButton.setOnClickListener(this);
+        mLogOutButton = v.findViewById(R.id.log_out_button);
+        mLogOutButton.setOnClickListener(this);
+
+        enableButtons(true);
 
         return v;
 
@@ -66,6 +75,7 @@ public class HomeScreenFragment extends Fragment implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
+        enableButtons(false);
         Intent intent;
         switch (v.getId()) {
             case R.id.finish_walk_button:
@@ -114,6 +124,23 @@ public class HomeScreenFragment extends Fragment implements View.OnClickListener
                 break;
 
         }
+    }
+
+    private void enableButtons(Boolean enable){
+        mFinishWalkButton.setEnabled(enable);
+        mNewActivityButton.setEnabled(enable);
+        mActivityHistoryButton.setEnabled(enable);
+        mManageDogsButton.setEnabled(enable);
+        mAddDogButton.setEnabled(enable);
+        mFamilyButton.setEnabled(enable);
+        mSettingsButton.setEnabled(enable);
+        mLogOutButton.setEnabled(enable);
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        enableButtons(true);
     }
 
 }
