@@ -25,7 +25,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DogHomeFragment extends DogFragment implements View.OnClickListener {
 
@@ -81,30 +83,21 @@ public class DogHomeFragment extends DogFragment implements View.OnClickListener
                 // open report lost screen activity
                 break;
             case R.id.delete_dog_button:
-                FirebaseDatabase.getInstance().getReference().child("families").child(getFamilyId())
-                        .child("dogs").child(getDogId()).removeValue()
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                getActivity().finish();
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.d(TAG, "Failed to delete dog from database");
-                            }
-                        });
-            case R.id.test_button: // TODO: Remove this when finished testing
-                List<ActivityRecord> activityRecords = ActivityRecord.getTestActivityRecords();
-                String dogActivityId = getDog().getactivitiesId();  // family Id and dog Id delimited with a colon
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference()
-                        .child("activities").child(dogActivityId);
-                for (ActivityRecord activityRecord : activityRecords) {
-                    String key = ref.push().getKey();
-                    ref.child(key).setValue(activityRecord);
-                }
-                break;
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+                Map<String, Object> childUpdates = new HashMap();
+                childUpdates.put("/families/" + getFamilyId() + "/dogs/" + getDogId(), null);
+                childUpdates.put("/activities/" + getDog().getactivitiesId(), null);
+                ref.updateChildren(childUpdates).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        getActivity().finish();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "Failed to delete dog from database");
+                    }
+                });
         }
     }
 
