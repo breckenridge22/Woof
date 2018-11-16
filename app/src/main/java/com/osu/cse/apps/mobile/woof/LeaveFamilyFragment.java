@@ -43,13 +43,22 @@ public class LeaveFamilyFragment extends FamilyFragment implements View.OnClickL
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.yes_button:
-                Family family = getFamily();
-                if (family.getuserIds().size() <= 1) {
-                    Toast.makeText(getActivity(), "Sorry, you can't leave this family since you " +
-                            "don't belong to any other families", Toast.LENGTH_LONG).show();
-                    return;
-                }
-                updateFamily();
+                CurrentUser.getFamilyIdsFromDatabase(new FamilyIdsCallback() {
+                    @Override
+                    public void onFamilyIdsRetrieved(List<String> familyIdList) {
+                        if (familyIdList.size() <= 1) {
+                            Toast.makeText(getActivity(), "Sorry, you can't leave this family since you " +
+                                    "don't belong to any other families", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        updateFamily();
+                    }
+
+                    @Override
+                    public void onError(String errorMessage) {
+                        Log.d(TAG, errorMessage);
+                    }
+                });
                 break;
             case R.id.no_button:
                 Toast.makeText(getActivity(), "Why the cold feet?", Toast.LENGTH_SHORT).show();
@@ -62,33 +71,38 @@ public class LeaveFamilyFragment extends FamilyFragment implements View.OnClickL
         Family family = getFamily();
         String familyId = getFamily().getfamilyId();
         String currentUserId = CurrentUser.getUserId();
-        String familyCoordinatorUserId = family.getcoordinatorUserId();
 
         // prep database updates
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         Map<String, Object> childUpdates = new HashMap();
-        childUpdates.put("/families/" + familyId + "/userIds/" + currentUserId, null);
+
         childUpdates.put("/users/" + currentUserId + "/familyIds/" + familyId, null);
 
         // prep update for family coordinator user Id if current user is family coordinator
-        if (familyCoordinatorUserId.equals(currentUserId)) {
-            String newCoordinatorId = "";
-            List<String> userIdList = new ArrayList();
-            for (Map.Entry<String, Boolean> entry : family.getuserIds().entrySet()) {
-                userIdList.add(entry.getKey());
-            }
-            int numMembers = userIdList.size();
-            boolean foundNewCoordinator = false;
-            Random random = new Random();
+        if (family.getuserIds().size() > 1) {
+            childUpdates.put("/families/" + familyId + "/userIds/" + currentUserId, null);
+            String familyCoordinatorUserId = family.getcoordinatorUserId();
+            if (familyCoordinatorUserId.equals(currentUserId)) {
+                String newCoordinatorId = "";
+                List<String> userIdList = new ArrayList();
+                for (Map.Entry<String, Boolean> entry : family.getuserIds().entrySet()) {
+                    userIdList.add(entry.getKey());
+                }
+                int numMembers = userIdList.size();
+                boolean foundNewCoordinator = false;
+                Random random = new Random();
 
-            // randomly choose another family member as coordinator
-            while (!foundNewCoordinator) {
-                int randIndex = random.nextInt() % numMembers;
-                newCoordinatorId = userIdList.get(randIndex);
-                foundNewCoordinator = !newCoordinatorId.equals(currentUserId);
+                // randomly choose another family member as coordinator
+                while (!foundNewCoordinator) {
+                    int randIndex = Math.abs(random.nextInt() % numMembers);
+                    newCoordinatorId = userIdList.get(randIndex);
+                    foundNewCoordinator = !newCoordinatorId.equals(currentUserId);
+                }
+                childUpdates.put("/families/" + familyId + "/coordinatorUserId", newCoordinatorId);
             }
-
-            childUpdates.put("/families/" + familyId + "/coordinatorUserId", newCoordinatorId);
+        }
+        else {
+            childUpdates.put("families/" + familyId, null);
         }
 
         // update database atomically

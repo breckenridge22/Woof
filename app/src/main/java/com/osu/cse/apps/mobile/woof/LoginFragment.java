@@ -54,7 +54,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private boolean mNewU = true;
 
     public static FirebaseAuth mAuth;
-    DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+    DatabaseReference mDatabase;
 
     private final static String OPT_NAME = "name";
 
@@ -66,6 +66,25 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     }
 
     private Callbacks mCallbacks;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        FirebaseDatabase databaseInstance = FirebaseDatabase.getInstance();
+
+        // Ensure that setPersistenceEnabled has not been called before (if called after any other usage of the FirebaseDatabase instance,
+        // app will crash).  In this case, checking to see if LoginActivity was started
+        // from some other activity within the app (i.e., from Home Screen on sign out for from
+        // DeleteFragment on account deletion), in which case setPersistenceEnabled should already
+        // have been called.
+        Bundle args = getArguments();
+        if (args == null || !args.containsKey(LoginActivity.EXTRA_SIGN_OUT)) {
+            databaseInstance.setPersistenceEnabled(true);
+        }
+
+        mDatabase = databaseInstance.getReference();
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -196,19 +215,19 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 mCancelButton.setVisibility(View.VISIBLE);
                 mNewU = false;
             } else {
-                if(validateSignUpForm()) {
+                if (validateSignUpForm()) {
                     createAccount(mUsernameEditText.getText().toString(), mPasswordEditText.getText().toString());
                 } else {
                     Toast.makeText(getActivity(), "Please fill in all details.", Toast.LENGTH_LONG).show();
                 }
             }
         } else if (i == R.id.login_button) {
-            if(validateSignInForm()) {
+            if (validateSignInForm()) {
                 signIn(mUsernameEditText.getText().toString(), mPasswordEditText.getText().toString());
             } else {
                 Toast.makeText(getActivity(), "Please Enter an email and password.", Toast.LENGTH_LONG).show();
             }
-        } else if (i == R.id.cancel_button){
+        } else if (i == R.id.cancel_button) {
             mFNameTextView.setVisibility(View.GONE);
             mLNameTextView.setVisibility(View.GONE);
             mFNameEditText.setVisibility(View.GONE);
@@ -252,7 +271,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     // Skeleton from https://github.com/firebase/quickstart-android/blob/master/auth/app/src/main/java/com/google/firebase/quickstart/auth/java/EmailPasswordActivity.java
     private boolean validateSignUpForm() {
         boolean valid = validateSignInForm();
-        if(valid) {
+        if (valid) {
             String email = mFNameEditText.getText().toString();
             if (TextUtils.isEmpty(email)) {
                 mFNameEditText.setError("Required.");
@@ -311,11 +330,11 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                         Log.d(TAG, "Successfully added new user to database");
                     }
                 }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getActivity(), "Database update failed",
-                            Toast.LENGTH_SHORT).show();
-                        Log.d(TAG, "Failed to add new user to database");
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getActivity(), "Database update failed",
+                        Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "Failed to add new user to database");
             }
         });
 
