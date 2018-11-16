@@ -351,6 +351,7 @@ public class NewActivityRecordFragment extends Fragment implements View.OnClickL
                 CurrentUser.saveActivity();
                 Log.d(TAG, "Redirecting to home screen");
                 Intent intent = HomeScreenActivity.newIntent(getActivity());
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
             }
 
