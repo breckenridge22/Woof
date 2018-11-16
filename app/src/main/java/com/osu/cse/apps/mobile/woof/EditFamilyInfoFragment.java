@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -55,21 +56,25 @@ public class EditFamilyInfoFragment extends FamilyFragment {
                 Log.d(TAG, "onClick() called");
                 if (mFamilyName == null || mFamilyName.length() == 0) {
                     Toast.makeText(getActivity(), "Family name field is blank", Toast.LENGTH_SHORT).show();
-                }
-                else {
+                } else {
                     DatabaseReference ref = FirebaseDatabase.getInstance().getReference()
                             .child("families").child(getFamilyId()).child("familyName");
-                    ref.setValue(mFamilyName).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Toast.makeText(getActivity(), "Changes saved successfully", Toast.LENGTH_SHORT).show();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(getActivity(), "Error saving changes", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    Task updateTask = ref.setValue(mFamilyName);
+                    if (CurrentUser.isConnectedToDatabase()) {
+                        updateTask.addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(getActivity(), "Changes saved successfully", Toast.LENGTH_SHORT).show();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(getActivity(), "Error saving changes", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    } else {
+                        Toast.makeText(getActivity(), "Changes saved successfully", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });

@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -100,24 +101,28 @@ public class LeaveFamilyFragment extends FamilyFragment implements View.OnClickL
                 }
                 childUpdates.put("/families/" + familyId + "/coordinatorUserId", newCoordinatorId);
             }
-        }
-        else {
+        } else {
             childUpdates.put("families/" + familyId, null);
         }
 
         // update database atomically
-        ref.updateChildren(childUpdates).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Toast.makeText(getActivity(), "Successfully left family", Toast.LENGTH_SHORT).show();
-                getActivity().finish();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d(TAG, "Error updating family database information");
-            }
-        });
-
+        Task updateTask = ref.updateChildren(childUpdates);
+        if (CurrentUser.isConnectedToDatabase()) {
+            updateTask.addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Toast.makeText(getActivity(), "Successfully left family", Toast.LENGTH_SHORT).show();
+                    getActivity().finish();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.d(TAG, "Error updating family database information");
+                }
+            });
+        } else {
+            Toast.makeText(getActivity(), "Successfully left family", Toast.LENGTH_SHORT).show();
+            getActivity().finish();
+        }
     }
 }

@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -94,8 +95,7 @@ public class FamilyMembersFragment extends FamilyFragment {
         if (mAdapter == null) {
             mAdapter = new FamilyMembersFragment.FamilyMemberAdapter(mFamilyMemberList);
             mFamilyMemberRecyclerView.setAdapter(mAdapter);
-        }
-        else {
+        } else {
             mAdapter.setFamilyMemberList(mFamilyMemberList);
             mAdapter.notifyDataSetChanged();
         }
@@ -110,7 +110,7 @@ public class FamilyMembersFragment extends FamilyFragment {
         private TextView mCoordinatorTextView;
         private Button mRemoveFamilyMemberButton;
 
-        public FamilyMemberHolder(LayoutInflater inflater, ViewGroup parent)                                                                                                                                                                 {
+        public FamilyMemberHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.list_item_family_member, parent, false));
 
             mFamilyMemberNameTextView = itemView.findViewById(R.id.family_member_name_text_view);
@@ -135,7 +135,7 @@ public class FamilyMembersFragment extends FamilyFragment {
             }
 
             // hide remove button if current user is not coordinator
-            if(!getFamily().getcoordinatorUserId().equals(CurrentUser.getUserId())) {
+            if (!getFamily().getcoordinatorUserId().equals(CurrentUser.getUserId())) {
                 mRemoveFamilyMemberButton.setVisibility(View.INVISIBLE);
             }
 
@@ -157,19 +157,26 @@ public class FamilyMembersFragment extends FamilyFragment {
                     Map<String, Object> childUpdates = new HashMap();
                     childUpdates.put("/families/" + familyId + "/userIds/" + userId, null);
                     childUpdates.put("/users/" + userId + "/familyIds/" + familyId, null);
-                    ref.updateChildren(childUpdates).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Toast.makeText(getActivity(), "Successfully removed user from family",
-                                    Toast.LENGTH_SHORT).show();
-                            updateUI();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.d(TAG, "Error removing user from family");
-                        }
-                    });
+                    Task updateTask = ref.updateChildren(childUpdates);
+                    if (CurrentUser.isConnectedToDatabase()) {
+                        updateTask.addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(getActivity(), "Successfully removed user from family",
+                                        Toast.LENGTH_SHORT).show();
+                                updateUI();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d(TAG, "Error removing user from family");
+                            }
+                        });
+                    } else {
+                        Toast.makeText(getActivity(), "Successfully removed user from family",
+                                Toast.LENGTH_SHORT).show();
+                        updateUI();
+                    }
                     break;
             }
         }
@@ -196,7 +203,9 @@ public class FamilyMembersFragment extends FamilyFragment {
         }
 
         @Override
-        public int getItemCount() { return mFamilyMemberList.size(); }
+        public int getItemCount() {
+            return mFamilyMemberList.size();
+        }
 
         public void setFamilyMemberList(List<User> familyMemberList) {
             mFamilyMemberList = familyMemberList;

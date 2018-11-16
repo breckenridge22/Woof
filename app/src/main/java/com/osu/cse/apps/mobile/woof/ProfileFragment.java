@@ -18,6 +18,8 @@ import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
@@ -193,9 +195,28 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
-                                        mCurrentUser.changeEmail(email);
-                                        Toast.makeText(getActivity(), "Updated Email", Toast.LENGTH_SHORT).show();
-                                        Log.d(TAG, "User email address updated.");
+                                        String email = mEmailEditText.getText().toString();
+                                        String userId = mCurrentUser.getuserId();
+                                        Task updateTask = FirebaseDatabase.getInstance().getReference()
+                                                .child("users").child(userId).child("email").setValue(email);
+                                        if (CurrentUser.isConnectedToDatabase()) {
+                                            updateTask.addOnSuccessListener(new OnSuccessListener() {
+                                                @Override
+                                                public void onSuccess(Object o) {
+                                                    Toast.makeText(getActivity(), "Updated Email", Toast.LENGTH_SHORT).show();
+                                                    Log.d(TAG, "User email address updated.");
+                                                }
+                                            }).addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.d(TAG, "Failed to change email");
+                                                }
+                                            });
+                                        }
+                                        else {
+                                            Toast.makeText(getActivity(), "Updated Email", Toast.LENGTH_SHORT).show();
+                                            Log.d(TAG, "User email address updated.");
+                                        }
                                     } else {
                                         Toast.makeText(getActivity(), "Invalid new email", Toast.LENGTH_SHORT).show();
                                         Log.d(TAG, "User email address not updated.");
@@ -233,8 +254,26 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                     mFNameEditText.setError("Required.");
                 } else {
                     mFNameEditText.setError(null);
-                    mCurrentUser.changeFirstName(mFNameEditText.getText().toString());
-                    Toast.makeText(getActivity(), "Updated First Name", Toast.LENGTH_SHORT).show();
+                    String userId = mCurrentUser.getuserId();
+                    String firstName = mFNameEditText.getText().toString();
+                    Task updateTask = FirebaseDatabase.getInstance().getReference().child("users")
+                            .child(userId).child("fName").setValue(firstName);
+                    if (CurrentUser.isConnectedToDatabase()) {
+                        updateTask.addOnSuccessListener(new OnSuccessListener() {
+                            @Override
+                            public void onSuccess(Object o) {
+                                Toast.makeText(getActivity(), "Updated First Name", Toast.LENGTH_SHORT).show();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d(TAG, "Failed to change first name");
+                            }
+                        });
+                    }
+                    else {
+                        Toast.makeText(getActivity(), "Updated First Name", Toast.LENGTH_SHORT).show();
+                    }
                 }
                 break;
             case R.id.update_lName_button:
@@ -244,8 +283,26 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                     mLNameEditText.setError("Required.");
                 } else {
                     mLNameEditText.setError(null);
-                    mCurrentUser.changeLastName(mLNameEditText.getText().toString());
-                    Toast.makeText(getActivity(), "Updated Last Name", Toast.LENGTH_SHORT).show();
+                    String userId = mCurrentUser.getuserId();
+                    String lastName = mLNameEditText.getText().toString();
+                    Task updateTask = FirebaseDatabase.getInstance().getReference().child("users")
+                            .child(userId).child("lName").setValue(lastName);
+                    if (CurrentUser.isConnectedToDatabase()) {
+                        updateTask.addOnSuccessListener(new OnSuccessListener() {
+                            @Override
+                            public void onSuccess(Object o) {
+                                Toast.makeText(getActivity(), "Updated Last Name", Toast.LENGTH_SHORT).show();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d(TAG, "Failed to change last name");
+                            }
+                        });
+                    }
+                    else {
+                        Toast.makeText(getActivity(), "Updated Last Name", Toast.LENGTH_SHORT).show();
+                    }
                 }
                 break;
         }

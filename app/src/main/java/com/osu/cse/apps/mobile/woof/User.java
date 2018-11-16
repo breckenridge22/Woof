@@ -54,23 +54,6 @@ public class User {
         return invitationIds;
     }
 
-
-
-    public void changeEmail(String email) {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-        ref.child("users").child(userId).child("email").setValue(email);
-    }
-
-    public void changeFirstName(String firstName) {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-        ref.child("users").child(userId).child("fName").setValue(firstName);
-    }
-
-    public void changeLastName(String lastName) {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-        ref.child("users").child(userId).child("lName").setValue(lastName);
-    }
-
     // Use this method to generate map of key value pairs that can be stored for user in
     // database.  Better than just storing the user object directly so that extraneous
     // getters such as getfamilyNameList() don't cause extraneous information to be written

@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -82,8 +83,7 @@ public class FamilyInvitationsFragment extends Fragment {
         if (mAdapter == null) {
             mAdapter = new FamilyInvitationsFragment.InvitationAdapter(mInvitationList);
             mInvitationRecyclerView.setAdapter(mAdapter);
-        }
-        else {
+        } else {
             mAdapter.setInvitationList(mInvitationList);
             mAdapter.notifyDataSetChanged();
         }
@@ -98,7 +98,7 @@ public class FamilyInvitationsFragment extends Fragment {
         private Button mAcceptButton;
         private Button mDeclineButton;
 
-        public InvitationHolder(LayoutInflater inflater, ViewGroup parent)                                                                                                                                                                 {
+        public InvitationHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.list_item_family_invitation, parent, false));
 
             mFamilyNameTextView = itemView.findViewById(R.id.family_name_text_view);
@@ -153,7 +153,7 @@ public class FamilyInvitationsFragment extends Fragment {
             Map<String, Object> childUpdates = new HashMap();
             addChildUpdatesRemoveInvitation(childUpdates, userId, familyId, invitationId);
 
-            switch(v.getId()) {
+            switch (v.getId()) {
 
                 case R.id.accept_button:
                     // atomically perform the following database updates:
@@ -164,18 +164,24 @@ public class FamilyInvitationsFragment extends Fragment {
                     // 5. add user id to family user id list
                     childUpdates.put("/users/" + userId + "/familyIds/" + familyId, true);
                     childUpdates.put("/families/" + familyId + "/userIds/" + userId, true);
-                    ref.updateChildren(childUpdates).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Toast.makeText(getActivity(), "Joined family", Toast.LENGTH_SHORT).show();
-                            updateUI();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.d(TAG, "Database error.  Failed to join family.");
-                        }
-                    });
+                    Task updateTask = ref.updateChildren(childUpdates);
+                    if (CurrentUser.isConnectedToDatabase()) {
+                        updateTask.addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(getActivity(), "Joined family", Toast.LENGTH_SHORT).show();
+                                updateUI();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d(TAG, "Database error.  Failed to join family.");
+                            }
+                        });
+                    } else {
+                        Toast.makeText(getActivity(), "Joined family", Toast.LENGTH_SHORT).show();
+                        updateUI();
+                    }
                     break;
 
                 case R.id.decline_button:
@@ -183,18 +189,24 @@ public class FamilyInvitationsFragment extends Fragment {
                     // 1. delete invitation object
                     // 2. remove invitation id from user invitation id list
                     // 3. remove invitation id from family invitation id list
-                    ref.updateChildren(childUpdates).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Toast.makeText(getActivity(), "Declined invitation", Toast.LENGTH_SHORT).show();
-                            updateUI();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.d(TAG, "Database error.  Failed to join family.");
-                        }
-                    });
+                    Task updateTask2 = ref.updateChildren(childUpdates);
+                    if (CurrentUser.isConnectedToDatabase()) {
+                        updateTask2.addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(getActivity(), "Declined invitation", Toast.LENGTH_SHORT).show();
+                                updateUI();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d(TAG, "Database error.  Failed to join family.");
+                            }
+                        });
+                    } else {
+                        Toast.makeText(getActivity(), "Declined invitation", Toast.LENGTH_SHORT).show();
+                        updateUI();
+                    }
                     break;
 
             }
@@ -231,7 +243,9 @@ public class FamilyInvitationsFragment extends Fragment {
         }
 
         @Override
-        public int getItemCount() { return mInvitationList.size(); }
+        public int getItemCount() {
+            return mInvitationList.size();
+        }
 
         public void setInvitationList(List<Invitation> invitationList) {
             mInvitationList = invitationList;

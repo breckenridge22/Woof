@@ -28,6 +28,7 @@ public class CurrentUser {
 
     private static String sUserId;
     private static DatabaseReference sUserDatabaseRef;
+    private static Boolean sConnectedToDatabase;
     // Map for activities currently in progress, key is the activity ID for a dog and the value is
     // the activity in progress
     private static Map<String, ActivityRecord> mCurrentActivities;
@@ -38,8 +39,20 @@ public class CurrentUser {
         if (sUserId == null) {
             FirebaseAuth auth = FirebaseAuth.getInstance();
             sUserId = auth.getCurrentUser().getUid();
-            sUserDatabaseRef = FirebaseDatabase.getInstance().getReference().child("users")
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+            sUserDatabaseRef = ref.child("users")
                     .child(sUserId);
+            ref.child(".info/connected").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    sConnectedToDatabase = dataSnapshot.getValue(Boolean.class);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Log.d(TAG, "Error fetching connection status of user to database");
+                }
+            });
             mCurrentActivities = new HashMap<>();
         }
     }
@@ -52,33 +65,33 @@ public class CurrentUser {
         sUserDatabaseRef = null;
     }
 
-    public static Map<String, ActivityRecord> getmCurrentActivities(){
+    public static Map<String, ActivityRecord> getmCurrentActivities() {
         return mCurrentActivities;
     }
 
-    public static void setmCurrentActivities(List<String> dogs){
-        for(String s:dogs){
+    public static void setmCurrentActivities(List<String> dogs) {
+        for (String s : dogs) {
             mCurrentActivities.put(s, null);
         }
     }
 
-    public static void clearmCurrentActivities(){
+    public static void clearmCurrentActivities() {
         mCurrentActivities.clear();
     }
 
-    public static void addActivity(ActivityRecord act){
+    public static void addActivity(ActivityRecord act) {
         Set<String> keys = mCurrentActivities.keySet();
-        for(String s:keys){
+        for (String s : keys) {
             mCurrentActivities.replace(s, act);
         }
     }
 
-    public static void saveActivity(){
+    public static void saveActivity() {
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
         DatabaseReference ref;
-        for(Map.Entry<String, ActivityRecord> e: mCurrentActivities.entrySet()){
+        for (Map.Entry<String, ActivityRecord> e : mCurrentActivities.entrySet()) {
             ref = mDatabase.child("activities").child(e.getKey());
-            if(e.getValue().getactivity_Type()==ActivityRecord.WALK){
+            if (e.getValue().getactivity_Type() == ActivityRecord.WALK) {
                 e.getValue().setend_Time(new Date());
             }
             String key = ref.push().getKey();
@@ -93,6 +106,10 @@ public class CurrentUser {
 
     public static DatabaseReference getUserDatabaseRef() {
         return sUserDatabaseRef;
+    }
+
+    public static Boolean isConnectedToDatabase() {
+        return sConnectedToDatabase;
     }
 
     public static void getCurrentUserFromDatabase(final UserCallback callback) {
@@ -131,15 +148,13 @@ public class CurrentUser {
                             if (familyIds.entrySet() == null) {
                                 Log.d(TAG, "family Ids entry set null");
                                 callback.onError("familyIds entry set null");
-                            }
-                            else {
+                            } else {
                                 for (Map.Entry<String, Boolean> entry : familyIds.entrySet()) {
                                     if (entry != null) {
                                         familyIdList.add(entry.getKey());
                                         Log.d(TAG, "Key " + entry.getKey() + " retrieved " +
                                                 "from database");
-                                    }
-                                    else {
+                                    } else {
                                         Log.d(TAG, "familyID entry null");
                                     }
                                 }
@@ -167,24 +182,24 @@ public class CurrentUser {
             Log.d(TAG, "Getting familyInfo for familyId " + familyId);
             ref.child(familyId).addListenerForSingleValueEvent(new ValueEventListener() {
 
-                        // Successfully fetched family name from database.  "Return" family
-                        // name and family ID to calling function via callback
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            if (dataSnapshot == null) {
-                                Log.d(TAG, "No entry found");
-                                return;
-                            }
-                            FamilyInfo familyInfo = dataSnapshot.getValue(FamilyInfo.class);
-                            callback.onFamilyInfoRetrieved(familyInfo);
-                        }
+                // Successfully fetched family name from database.  "Return" family
+                // name and family ID to calling function via callback
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot == null) {
+                        Log.d(TAG, "No entry found");
+                        return;
+                    }
+                    FamilyInfo familyInfo = dataSnapshot.getValue(FamilyInfo.class);
+                    callback.onFamilyInfoRetrieved(familyInfo);
+                }
 
-                        // error on fetching family name from database
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            callback.onFailure("Error getting data from database");
-                        }
-                    });
+                // error on fetching family name from database
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    callback.onFailure("Error getting data from database");
+                }
+            });
         }
     }
 
@@ -306,21 +321,20 @@ public class CurrentUser {
     public static void getDogFromDatabase(String dogId, String familyId, final DogCallback callback) {
         FirebaseDatabase.getInstance().getReference().child("families").child(familyId)
                 .child("dogs").child(dogId).addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        Dog dog = dataSnapshot.getValue(Dog.class);
-                        if (dataSnapshot == null) {
-                            callback.onFailure("Null reference in database");
-                        }
-                        else {
-                            callback.onDogChange(dog);
-                        }
-                    }
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Dog dog = dataSnapshot.getValue(Dog.class);
+                if (dataSnapshot == null) {
+                    callback.onFailure("Null reference in database");
+                } else {
+                    callback.onDogChange(dog);
+                }
+            }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        callback.onFailure("Failed getting dog in database");
-                    }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                callback.onFailure("Failed getting dog in database");
+            }
         });
     }
 
@@ -335,7 +349,7 @@ public class CurrentUser {
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Map <String, Boolean> userIds = (Map) dataSnapshot.getValue();
+                Map<String, Boolean> userIds = (Map) dataSnapshot.getValue();
                 if (userIds == null) {
                     callback.onFailure("User ID map null");
                     return;
@@ -397,6 +411,7 @@ public class CurrentUser {
 
     private interface InvitationIdsCallback {
         void onInvitationIdsRetrieved(List<String> invitationIds);
+
         void onFailure(String error);
     }
 

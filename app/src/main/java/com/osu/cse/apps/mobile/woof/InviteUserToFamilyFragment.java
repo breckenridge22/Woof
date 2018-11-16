@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -136,18 +137,25 @@ public class InviteUserToFamilyFragment extends FamilyFragment {
                 childUpdates.put("/users/" + mUser.getuserId() + "/invitationIds/" + invitationId, true);
                 childUpdates.put("/families/" + getFamilyId() + "/invitationIds/" + invitationId, true);
                 childUpdates.put("/invitations/" + invitationId, invitation.toMap());
-                ref.updateChildren(childUpdates).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(getActivity(), "Invitation sent", Toast.LENGTH_SHORT).show();
-                        getActivity().finish();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, "Failed sending invitation");
-                    }
-                });
+                Task updateTask = ref.updateChildren(childUpdates);
+                if (CurrentUser.isConnectedToDatabase()) {
+                    updateTask.addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(getActivity(), "Invitation sent", Toast.LENGTH_SHORT).show();
+                            getActivity().finish();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d(TAG, "Failed sending invitation");
+                        }
+                    });
+                }
+                else {
+                    Toast.makeText(getActivity(), "Invitation sent", Toast.LENGTH_SHORT).show();
+                    getActivity().finish();
+                }
             }
         });
         mInviteButton.setVisibility(View.INVISIBLE);

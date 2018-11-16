@@ -22,6 +22,7 @@ import android.widget.Button;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -87,17 +88,25 @@ public class DogHomeFragment extends DogFragment implements View.OnClickListener
                 Map<String, Object> childUpdates = new HashMap();
                 childUpdates.put("/families/" + getFamilyId() + "/dogs/" + getDogId(), null);
                 childUpdates.put("/activities/" + getDog().getactivitiesId(), null);
-                ref.updateChildren(childUpdates).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        getActivity().finish();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, "Failed to delete dog from database");
-                    }
-                });
+                Task updateTask = ref.updateChildren(childUpdates);
+                if (CurrentUser.isConnectedToDatabase()) {
+                    updateTask.addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            getActivity().finish();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d(TAG, "Failed to delete dog from database");
+                        }
+                    });
+                }
+                else {
+                    getActivity().finish();
+                }
+
+
         }
     }
 

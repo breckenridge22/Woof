@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -68,8 +69,7 @@ public class CreateNewFamilyFragment extends Fragment {
                 if (mFamilyName == null || mFamilyName.length() == 0) {
                     Toast.makeText(getActivity(),
                             "\"Enter family name field\" must not be blank", Toast.LENGTH_SHORT).show();
-                }
-                else {
+                } else {
                     DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
                     String familyId = ref.child("families").push().getKey();
                     String userId = CurrentUser.getUserId();
@@ -79,18 +79,24 @@ public class CreateNewFamilyFragment extends Fragment {
                     Map<String, Object> childUpdates = new HashMap();
                     childUpdates.put("/families/" + familyId, newFamily.toMap());
                     childUpdates.put("/users/" + userId + "/familyIds/" + familyId, true);
-                    ref.updateChildren(childUpdates).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Toast.makeText(getActivity(), "New family successfully created", Toast.LENGTH_SHORT).show();
-                            getActivity().finish();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(getActivity(), "Failed to create new family", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    Task updateTask = ref.updateChildren(childUpdates);
+                    if (CurrentUser.isConnectedToDatabase()) {
+                        updateTask.addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(getActivity(), "New family successfully created", Toast.LENGTH_SHORT).show();
+                                getActivity().finish();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(getActivity(), "Failed to create new family", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    } else {
+                        Toast.makeText(getActivity(), "New family successfully created", Toast.LENGTH_SHORT).show();
+                        getActivity().finish();
+                    }
                 }
             }
         });

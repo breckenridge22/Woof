@@ -54,7 +54,9 @@ public class DeleteFragment extends Fragment implements View.OnClickListener {
 
     public static FirebaseAuth mAuth;
 
-    public static DeleteFragment newInstance() { return new DeleteFragment(); }
+    public static DeleteFragment newInstance() {
+        return new DeleteFragment();
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -93,7 +95,7 @@ public class DeleteFragment extends Fragment implements View.OnClickListener {
 
     // Skeleton from https://firebase.google.com/docs/auth/android/manage-users
     public void reauthenticate() {
-        if(validateSignInForm()) {
+        if (validateSignInForm()) {
             AuthCredential credential = EmailAuthProvider
                     .getCredential(mEmailText.getText().toString(), mPasswordText.getText().toString());
 
@@ -146,39 +148,39 @@ public class DeleteFragment extends Fragment implements View.OnClickListener {
         int i = v.getId();
         Intent intent;
         FirebaseUser aUser = mAuth.getCurrentUser();
-        switch(i){
+        switch (i) {
             case R.id.reauthenticate_delete:
                 Log.d(TAG, "Reauth button pressed");
                 reauthenticate();
                 break;
             case R.id.yes_button:
                 aUser.delete()
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                Log.d(TAG, "User account deleted.");
-                                deleteUserFromDatabase(new DeleteUserCallback() {
-                                    @Override
-                                    public void onUserDeleted() {
-                                        Log.d(TAG, "onUserDeleted() called");
-                                        CurrentUser.setNull();
-                                        Intent intent = LoginActivity.newIntent(getActivity());
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                        startActivity(intent);
-                                        Toast.makeText(getActivity(), "Deleted Account", Toast.LENGTH_SHORT).show();
-                                    }
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Log.d(TAG, "User account deleted.");
+                                    deleteUserFromDatabase(new DeleteUserCallback() {
+                                        @Override
+                                        public void onUserDeleted() {
+                                            Log.d(TAG, "onUserDeleted() called");
+                                            CurrentUser.setNull();
+                                            Intent intent = LoginActivity.newIntent(getActivity());
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                            startActivity(intent);
+                                            Toast.makeText(getActivity(), "Deleted Account", Toast.LENGTH_SHORT).show();
+                                        }
 
-                                    @Override
-                                    public void onFailure(String error) {
-                                        Log.d(TAG, "onFailure() called::" + error);
-                                        Toast.makeText(getActivity(), "Failed to delete account", Toast.LENGTH_SHORT).show();
-                                        getActivity().finish();
-                                    }
-                                });
+                                        @Override
+                                        public void onFailure(String error) {
+                                            Log.d(TAG, "onFailure() called::" + error);
+                                            Toast.makeText(getActivity(), "Failed to delete account", Toast.LENGTH_SHORT).show();
+                                            getActivity().finish();
+                                        }
+                                    });
+                                }
                             }
-                        }
-                    });
+                        });
                 break;
             case R.id.no_button:
                 intent = SettingsActivity.newIntent(getActivity());
@@ -189,6 +191,7 @@ public class DeleteFragment extends Fragment implements View.OnClickListener {
 
     private interface DeleteUserCallback {
         void onUserDeleted();
+
         void onFailure(String error);
     }
 
@@ -233,20 +236,25 @@ public class DeleteFragment extends Fragment implements View.OnClickListener {
                                 }
 
                                 // atomic database delete
-                                FirebaseDatabase.getInstance().getReference()
-                                        .updateChildren(childUpdates)
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                callback.onUserDeleted();
-                                            }
-                                        }).addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                callback.onFailure("Failed to atomically " +
-                                                        "delete user and family information");
-                                            }
-                                });
+                                Task updateTask = FirebaseDatabase.getInstance().getReference()
+                                        .updateChildren(childUpdates);
+                                if (CurrentUser.isConnectedToDatabase()) {
+                                    updateTask.addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            callback.onUserDeleted();
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            callback.onFailure("Failed to atomically " +
+                                                    "delete user and family information");
+                                        }
+                                    });
+                                }
+                                else {
+                                    callback.onUserDeleted();
+                                }
                             }
                         }
 
@@ -269,6 +277,7 @@ public class DeleteFragment extends Fragment implements View.OnClickListener {
 
     private interface FamilyMemberNumberCallback {
         void onFamilyMembersCounted();
+
         void onFailure(String error);
     }
 
@@ -284,13 +293,11 @@ public class DeleteFragment extends Fragment implements View.OnClickListener {
                     DatabaseReference ref = dataSnapshot.getRef();
                     if (numUsers == 1) {
                         mFamiliesToDelete.add(ref.getParent());
-                    }
-                    else {
+                    } else {
                         mUserIdListsToDeleteUserFrom.add(ref);
                     }
                     callback.onFamilyMembersCounted();
-                }
-                else {
+                } else {
                     callback.onFailure("Number of users counted is less than one");
                 }
             }

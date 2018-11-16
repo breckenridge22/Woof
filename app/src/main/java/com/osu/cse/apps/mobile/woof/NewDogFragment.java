@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -126,8 +127,9 @@ public class NewDogFragment extends Fragment implements View.OnClickListener {
                     String dogId = ref.push().getKey(); // get new unique ID from Firebase
                     String activitiesId = mDatabase.child("activities").push().getKey();
                     Dog dog = new Dog(dogId, mDogName, activitiesId);
-                    ref.child(dogId).setValue(dog.toMap())
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    Task updateTask = ref.child(dogId).setValue(dog.toMap());
+                    if (CurrentUser.isConnectedToDatabase()) {
+                            updateTask.addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 Toast.makeText(getActivity(), "Successfully added new dog!",
@@ -141,6 +143,12 @@ public class NewDogFragment extends Fragment implements View.OnClickListener {
                                         Toast.LENGTH_SHORT).show();
                             }
                         });
+                    }
+                    else {
+                        Toast.makeText(getActivity(), "Successfully added new dog!",
+                                Toast.LENGTH_SHORT).show();
+                        getActivity().finish();
+                    }
                 }
                 else {
                     Log.d(TAG, "test");
