@@ -30,7 +30,7 @@ public class ActivityHistoryFragment extends DogFragment {
     private RecyclerView mActivityRecyclerView;
     private ActivityAdapter mAdapter;
     private List<ActivityRecord> mActivityRecordsList;
-    private static final int MAX_ACTIVITIES = 15;
+    private static final int MAX_ACTIVITIES = 100;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

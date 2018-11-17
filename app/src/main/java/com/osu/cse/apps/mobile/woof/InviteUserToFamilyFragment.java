@@ -68,10 +68,10 @@ public class InviteUserToFamilyFragment extends FamilyFragment {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick() called");
-                mUserNotFoundTextView.setVisibility(View.INVISIBLE);
                 CurrentUser.searchDatabaseForUserByEmail(mUserEmail, new UserCallback() {
                     @Override
                     public void onUserRetrieved(User user) {
+                        mUserNotFoundTextView.setVisibility(View.INVISIBLE);
                         Log.d(TAG, "onUserRetrieved() called");
                         if (user == null) {
                             Log.d(TAG, "User object from database is null");
@@ -81,16 +81,16 @@ public class InviteUserToFamilyFragment extends FamilyFragment {
                             mFindUserButton.setVisibility(View.INVISIBLE);
                             mUser = user;
                             if (checkUserInFamily()) {
+                                mUserNameTextView.setText(mUser.getfName() + " " + mUser.getlName());
                                 mUserExceptionTextView.setVisibility(View.VISIBLE);
                                 mUserExceptionTextView.setText("User already in family");
-                            }
-                            else if (mUser.getinvitationIds() == null) {
+                            } else if (mUser.getinvitationIds() == null) {
                                 setViewsOnUserInvitable();
-                            }
-                            else {
+                            } else {
                                 checkInvitationAlreadySent(new InvitationAlreadySentCallback() {
                                     @Override
                                     public void onInvitationAlreadySent() {
+                                        mUserNameTextView.setText(mUser.getfName() + " " + mUser.getlName());
                                         mUserExceptionTextView.setVisibility(View.VISIBLE);
                                         mUserExceptionTextView.setText("Invitation already sent");
                                     }
@@ -151,8 +151,7 @@ public class InviteUserToFamilyFragment extends FamilyFragment {
                             Log.d(TAG, "Failed sending invitation");
                         }
                     });
-                }
-                else {
+                } else {
                     Toast.makeText(getActivity(), "Invitation sent", Toast.LENGTH_SHORT).show();
                     getActivity().finish();
                 }
@@ -194,8 +193,7 @@ public class InviteUserToFamilyFragment extends FamilyFragment {
                 if (invitation.getfamilyId().equals(getFamilyId())) {
                     mUserInvitationSent = true;
                     callback.onInvitationAlreadySent();
-                }
-                else if (mUserInvitationCount >= mUserInvitationTotal && !mUserInvitationSent) {
+                } else if (mUserInvitationCount >= mUserInvitationTotal && !mUserInvitationSent) {
                     callback.onInvitationNotSent();
                 }
             }
@@ -209,7 +207,9 @@ public class InviteUserToFamilyFragment extends FamilyFragment {
 
     private interface InvitationAlreadySentCallback {
         void onInvitationAlreadySent();
+
         void onInvitationNotSent();
+
         void onFailure(String error);
     }
 

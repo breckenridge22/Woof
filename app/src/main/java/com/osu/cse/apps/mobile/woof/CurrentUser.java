@@ -378,11 +378,17 @@ public class CurrentUser {
         });
     }
 
+    /*
+     * Note: addValueEventListener is used here instead of addSingleValueEventListener because
+     * of an issue with Firebase persistence where if the locally cached datasnapshot does not have any
+     * children, subsequent calls with a single value event listener will not check the database for an updated value.
+     * This may be related to the fact that a query is used.
+     */
     public static void searchDatabaseForUserByEmail(String email, final UserCallback callback) {
         Log.d(TAG, "searchDatabaseForUserByEmail() called");
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users");
         Query userQuery = ref.orderByChild("email").equalTo(email);
-        userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+        userQuery.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.d(TAG, "onDataChange called");
