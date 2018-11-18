@@ -28,6 +28,7 @@ public class FamilyMembersFragment extends FamilyFragment {
 
     private static final String TAG = "FamilyMembersFragment";
 
+    private TextView mNoFamilyMembersTextView;
     private RecyclerView mFamilyMemberRecyclerView;
     private List<User> mFamilyMemberList;
     private FamilyMembersFragment.FamilyMemberAdapter mAdapter;
@@ -49,6 +50,11 @@ public class FamilyMembersFragment extends FamilyFragment {
 
         View v = inflater.inflate(R.layout.fragment_family_members, container, false);
 
+        mNoFamilyMembersTextView = v.findViewById(R.id.no_family_members_text_view);
+        if (mFamilyMemberList != null && mFamilyMemberList.size() > 0) {
+            mNoFamilyMembersTextView.setVisibility(View.INVISIBLE);
+        }
+
         mFamilyMemberRecyclerView = v.findViewById(R.id.family_member_recycler_view);
         mFamilyMemberRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
@@ -68,12 +74,18 @@ public class FamilyMembersFragment extends FamilyFragment {
         }
 
         mFamilyMemberList = new ArrayList();
+        if (mNoFamilyMembersTextView != null && mFamilyMemberList.size() == 0) {
+            mNoFamilyMembersTextView.setVisibility(View.VISIBLE);
+        }
 
         // populate family list from database
         CurrentUser.getFamilyMembersFromDatabase(family.getfamilyId(), new FamilyMemberCallback() {
             @Override
             public void onFamilyMemberRetrieved(User familyMember) {
                 Log.d(TAG, "onFamilyMemberRetrieved() called");
+                if (mNoFamilyMembersTextView != null) {
+                    mNoFamilyMembersTextView.setVisibility(View.INVISIBLE);
+                }
                 mFamilyMemberList.add(familyMember);
                 if (mAdapter != null) {
                     mAdapter.notifyDataSetChanged();
@@ -115,10 +127,8 @@ public class FamilyMembersFragment extends FamilyFragment {
 
             mFamilyMemberNameTextView = itemView.findViewById(R.id.family_member_name_text_view);
 
-            // TODO: dynamically set visibility for coordinator text view
             mCoordinatorTextView = itemView.findViewById(R.id.coordinator_text_view);
 
-            // TODO: dynamically set visibility for remove button (coordinator only)
             mRemoveFamilyMemberButton = itemView.findViewById(R.id.remove_button);
             mRemoveFamilyMemberButton.setOnClickListener(this);
         }

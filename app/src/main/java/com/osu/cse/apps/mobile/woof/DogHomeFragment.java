@@ -58,10 +58,6 @@ public class DogHomeFragment extends DogFragment implements View.OnClickListener
         Button deleteDogButton = v.findViewById(R.id.delete_dog_button);
         deleteDogButton.setOnClickListener(this);
 
-        // TODO: Remove button when finished testing
-        Button testButton = v.findViewById(R.id.test_button);
-        testButton.setOnClickListener(this);
-
         return v;
     }
 

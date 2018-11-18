@@ -32,6 +32,7 @@ public class FamilyInvitationsFragment extends Fragment {
 
     private Map<String, Invitation> mInvitationMap;
     private List<Invitation> mInvitationList;
+    private TextView mNoInvitationsTextView;
     private RecyclerView mInvitationRecyclerView;
     private InvitationAdapter mAdapter;
 
@@ -51,6 +52,8 @@ public class FamilyInvitationsFragment extends Fragment {
         Log.i(TAG, "onCreateView() called");
         View v = inflater.inflate(R.layout.fragment_family_invitations, container, false);
 
+        mNoInvitationsTextView = v.findViewById(R.id.no_invitations_text_view);
+
         mInvitationRecyclerView = v.findViewById(R.id.invitation_recycler_view);
         mInvitationRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
@@ -62,12 +65,14 @@ public class FamilyInvitationsFragment extends Fragment {
     private void updateUI() {
         Log.i(TAG, "on updateUI() called");
 
+        mNoInvitationsTextView.setVisibility(View.VISIBLE);
         mInvitationList = new ArrayList();
 
         // populate invitation list from database
         CurrentUser.getUserInvitationsFromDatabase(CurrentUser.getUserId(), new InvitationCallback() {
             @Override
             public void onInvitationRetrieved(Invitation invitation) {
+                mNoInvitationsTextView.setVisibility(View.INVISIBLE);
                 mInvitationList.add(invitation);
                 if (mAdapter != null) {
                     mAdapter.notifyDataSetChanged();

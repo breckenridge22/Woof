@@ -24,6 +24,7 @@ public class DogSelectionFragment extends Fragment {
 
     private final String TAG = "DogSelectionFragment";
 
+    private TextView mNoDogsTextView;
     private RecyclerView mDogRecyclerView;
     private List<DogInfo> mDogInfoList;
     private DogAdapter mAdapter;
@@ -52,10 +53,10 @@ public class DogSelectionFragment extends Fragment {
         Log.i(TAG, "onCreateView() called");
         View v = inflater.inflate(R.layout.fragment_dog_selection, container, false);
 
+        mNoDogsTextView = v.findViewById(R.id.no_dogs_text_view);
+
         mDogRecyclerView = v.findViewById(R.id.dog_recycler_view);
         mDogRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-        //updateUI();
 
         return v;
     }
@@ -72,12 +73,14 @@ public class DogSelectionFragment extends Fragment {
         Log.i(TAG, "on updateUI() called");
 
         mDogInfoList = new ArrayList();
+        mNoDogsTextView.setVisibility(View.VISIBLE);
 
         // populate dog info list from database
         CurrentUser.getDogInfoFromDatabase(new DogInfoCallback() {
             @Override
             public void onDogInfoRetrieved(DogInfo dogInfo) {
                 Log.d(TAG, "onDogInfoRetrieved() called");
+                mNoDogsTextView.setVisibility(View.INVISIBLE);
                 mDogInfoList.add(dogInfo);
                 if (mAdapter != null) {
                     mAdapter.notifyDataSetChanged();

@@ -10,13 +10,8 @@ import com.google.firebase.FirebaseApp;
 
 public class LoginActivity extends SingleFragmentActivity implements LoginFragment.Callbacks {
 
-    public static final String EXTRA_SIGN_OUT =
-            "sign_out";
-
     public static Intent newIntent(Context packageContext) {
-        Intent intent = new Intent(packageContext, LoginActivity.class);
-        intent.putExtra(EXTRA_SIGN_OUT, true);
-        return intent;
+        return new Intent(packageContext, LoginActivity.class);
     }
 
     @Override

@@ -22,7 +22,6 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:paddingLeft="16dp"
-        android:text="TextView"
         android:textSize="24sp"
         tools:text="Family Name" />
 </LinearLayout>

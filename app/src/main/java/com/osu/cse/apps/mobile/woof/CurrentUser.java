@@ -28,7 +28,8 @@ public class CurrentUser {
 
     private static String sUserId;
     private static DatabaseReference sUserDatabaseRef;
-    private static Boolean sConnectedToDatabase;
+    private static boolean sConnectedToDatabase;
+    private static boolean sDatabasePersistenceEnabled;
     // Map for activities currently in progress, key is the activity ID for a dog and the value is
     // the activity in progress
     private static Map<String, ActivityRecord> mCurrentActivities;
@@ -110,6 +111,14 @@ public class CurrentUser {
 
     public static Boolean isConnectedToDatabase() {
         return sConnectedToDatabase;
+    }
+
+    public static boolean isDatabasePersistenceEnabled() {
+        return sDatabasePersistenceEnabled;
+    }
+
+    public static void setDatabasePersistenceEnabled(boolean enabled) {
+        sDatabasePersistenceEnabled = enabled;
     }
 
     public static void getCurrentUserFromDatabase(final UserCallback callback) {

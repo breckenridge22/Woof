@@ -102,6 +102,7 @@
 
     <!-- Strings related to FamilySelectionFragment -->
     <string name="coordinator_indicator">You are the coordinator for this family</string>
+    <string name="no_families">No families to display</string>
 
     <!-- Strings related to FamilyHomeFragment -->
     <string name="family_members_button">Family Members</string>
@@ -126,14 +127,18 @@
     <string name="invited_you"> invited you</string>
     <string name="accept_button">Accept</string>
     <string name="decline_button">Decline</string>
+    <string name="no_invitations">No invitations to display</string>
 
     <!-- Strings related to FamilyMembersFragment -->
     <string name="remove_button">Remove</string>
     <string name="coordinator">(coordinator)</string>
+    <string name="no_family_members">No family members to display</string>
 
     <!-- Strings related to CreateNewFamilyFragment -->
     <string name="family_name_prompt">Enter new family name:</string>
     <string name="create_button">Create</string>
 
+    <!--Strings related to DogSelectionFragment -->
+    <string name="no_dogs">No dogs to display</string>
 
 </resources>

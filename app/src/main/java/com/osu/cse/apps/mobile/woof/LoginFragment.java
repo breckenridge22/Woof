@@ -73,14 +73,11 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
         FirebaseDatabase databaseInstance = FirebaseDatabase.getInstance();
 
-        // Ensure that setPersistenceEnabled has not been called before (if called after any other usage of the FirebaseDatabase instance,
-        // app will crash).  In this case, checking to see if LoginActivity was started
-        // from some other activity within the app (i.e., from Home Screen on sign out for from
-        // DeleteFragment on account deletion), in which case setPersistenceEnabled should already
-        // have been called.
-        Bundle args = getArguments();
-        if (args == null || !args.containsKey(LoginActivity.EXTRA_SIGN_OUT)) {
+        // Ensure that setPersistenceEnabled has not been called before (if called after any other
+        // usage of the FirebaseDatabase instance, app will crash).  Otherwise, set database persistence.
+        if (!CurrentUser.isDatabasePersistenceEnabled()) {
             databaseInstance.setPersistenceEnabled(true);
+            CurrentUser.setDatabasePersistenceEnabled(true);
         }
 
         mDatabase = databaseInstance.getReference();

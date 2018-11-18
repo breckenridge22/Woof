@@ -24,7 +24,6 @@
             android:id="@+id/family_name_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TextView"
             android:textSize="18sp"
             tools:text="Family Name" />
 
@@ -32,7 +31,6 @@
             android:id="@+id/inviter_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TextView"
             tools:text="User Name invited you" />
     </LinearLayout>
 

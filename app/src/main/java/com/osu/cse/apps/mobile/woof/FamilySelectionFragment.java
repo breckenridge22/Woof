@@ -19,6 +19,7 @@ public class FamilySelectionFragment extends Fragment {
 
     private static final String TAG = "FamilySelectionFragment";
 
+    private TextView mNoFamiliesTextView;
     private RecyclerView mFamilyRecyclerView;
     private List<FamilyInfo> mFamilyInfoList;
     private FamilyAdapter mAdapter;
@@ -40,6 +41,8 @@ public class FamilySelectionFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_family_selection, container, false);
 
+        mNoFamiliesTextView = v.findViewById(R.id.no_families_text_view);
+
         mFamilyRecyclerView = v.findViewById(R.id.family_recycler_view);
         mFamilyRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
@@ -59,6 +62,7 @@ public class FamilySelectionFragment extends Fragment {
     private void updateUI() {
         Log.i(TAG, "updateUI() called");
 
+        mNoFamiliesTextView.setVisibility(View.VISIBLE);
         mFamilyInfoList = new ArrayList();
 
         // populate family list from database
@@ -66,6 +70,7 @@ public class FamilySelectionFragment extends Fragment {
             @Override
             public void onFamilyInfoRetrieved(FamilyInfo familyInfo) {
                 Log.d(TAG, "onFamilyInfoRetrieved() called");
+                mNoFamiliesTextView.setVisibility(View.INVISIBLE);
                 mFamilyInfoList.add(familyInfo);
                 if (mAdapter != null) {
                     mAdapter.notifyDataSetChanged();
