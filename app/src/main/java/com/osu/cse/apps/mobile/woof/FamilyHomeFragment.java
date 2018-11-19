@@ -20,9 +20,6 @@ public class FamilyHomeFragment extends FamilyFragment implements View.OnClickLi
         Button familyMembersButton = v.findViewById(R.id.family_members_button);
         familyMembersButton.setOnClickListener(this);
 
-        Button dogsButton = v.findViewById(R.id.dogs_button);
-        dogsButton.setOnClickListener(this);
-
         Button inviteNewMemberButton = v.findViewById(R.id.invite_new_member_button);
         inviteNewMemberButton.setOnClickListener(this);
 
@@ -40,9 +37,6 @@ public class FamilyHomeFragment extends FamilyFragment implements View.OnClickLi
         switch (v.getId()) {
             case R.id.family_members_button:
                 getCallbacks().onMenuButtonSelected(FamilyManagementActivity.FAMILY_MEMBERS);
-                break;
-            case R.id.dogs_button:
-                // TODO: intent to run DogSelectionActivity (can't use onMenuButtonSelected)
                 break;
             case R.id.invite_new_member_button:
                 getCallbacks().onMenuButtonSelected(FamilyManagementActivity.INVITE_NEW_MEMBER);
