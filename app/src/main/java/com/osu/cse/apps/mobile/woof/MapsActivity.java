@@ -137,11 +137,6 @@ public class MapsActivity extends AppCompatActivity implements PermissionsListen
         ActivityRecord act = new ActivityRecord(ActivityRecord.WALK);
         act.setstart_Time( new Date());
         act.setwalk_dist(mDist);
-        List<List<Double>> coords = new ArrayList<List<Double>>();
-        for (Point p: stops){
-            coords.add(p.coordinates());
-        }
-        act.setroute(coords);
         CurrentUser.addActivity(act);
         Intent intent = HomeScreenActivity.newIntent(this);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

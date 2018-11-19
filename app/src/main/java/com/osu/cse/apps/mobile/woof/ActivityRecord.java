@@ -39,7 +39,6 @@ public class ActivityRecord {
     private String vet_Location="";
     private String vet_Visit_Reason="";
     private double walk_dist;
-    private List<List<Double>> route;
 
 
     public ActivityRecord() {
@@ -140,12 +139,6 @@ public class ActivityRecord {
     public void setactivity_ID(String activity_ID) {
         this.activity_ID = activity_ID;
     }
-
-    public void setroute(List<List<Double>> rte){
-        this.route = rte;
-    }
-
-    public List<List<Double>> getroute(){ return this.route; }
 
 
     public static List<ActivityRecord> getTestActivityRecords(){
