@@ -51,7 +51,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-// Most of this comes from https://github.com/mapbox/mapbox-android-demo/blob/master/MapboxAndroidDemo/src/main/java/com/mapbox/mapboxandroiddemo/examples/plugins/LocationComponentFragmentActivity.java
+// Most of this comes from https://github.com/mapbox/mapbox-android-demo/blob/master/MapboxAndroidDemo/src/main/java/com/mapbox/mapboxandroiddemo/examples/location/LocationComponentFragmentActivity.java
 // and its corresponding xml file
 // Also here https://www.mapbox.com/android-docs/java/examples/generate-an-optimized-route/
 public class MapsActivity extends AppCompatActivity implements PermissionsListener,
@@ -103,9 +103,13 @@ public class MapsActivity extends AppCompatActivity implements PermissionsListen
             // Create fragment
             final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
+
+            LatLng Dreese = new LatLng(40.0023, -83.0159);
+
             // Build mapboxMap
             MapboxMapOptions options = new MapboxMapOptions();
             options.camera(new CameraPosition.Builder()
+                    .target(Dreese)
                     .zoom(15)
                     .build());
 
