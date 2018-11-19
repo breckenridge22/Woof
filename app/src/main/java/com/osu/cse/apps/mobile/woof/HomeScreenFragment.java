@@ -82,6 +82,7 @@ public class HomeScreenFragment extends Fragment implements View.OnClickListener
                 CurrentUser.saveActivity();
                 mFinishWalkButton.setVisibility(View.GONE);
                 Toast.makeText(getActivity(), "Walk Completed.", Toast.LENGTH_SHORT).show();
+                enableButtons(true);
                 break;
             case R.id.new_activity_button:
                 Log.d(TAG, "Routing to MultiDogSelectionActivity");
