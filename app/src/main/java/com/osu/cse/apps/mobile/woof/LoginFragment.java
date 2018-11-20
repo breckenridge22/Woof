@@ -75,8 +75,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
         FirebaseDatabase databaseInstance = FirebaseDatabase.getInstance();
 
-
-
         if (savedInstanceState != null) {
             mNewU = savedInstanceState.getBoolean(SIGN_UP_BUTTON_CLICKED_ONCE, true);
         }
@@ -151,8 +149,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             mCancelButton.setVisibility(View.VISIBLE);
         }
     }
-
-
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
