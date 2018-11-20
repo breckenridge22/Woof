@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -85,103 +86,120 @@
                 android:layout_marginTop="8dp"
                 android:text="@string/update_profile" />
 
-            <LinearLayout
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/linearLayout10"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginVertical="16dp"
+                app:layout_constraintTop_toBottomOf="@+id/title">
 
                 <Button
                     android:id="@+id/update_email_button"
-                    android:layout_width="100dp"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
-                    android:layout_marginBottom="8dp"
-                    android:text="@string/update_email" />
+                    android:layout_marginBottom="16dp"
+                    android:text="@string/update_email"
+                    app:layout_constraintStart_toStartOf="parent" />
 
                 <EditText
                     android:id="@+id/update_email_edit"
-                    android:layout_width="213dp"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_weight="1"
-                    android:textAlignment="textEnd" />
-            </LinearLayout>
+                    android:layout_marginHorizontal="10dp"
+                    android:textAlignment="textEnd"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/update_email_button" />
+            </android.support.constraint.ConstraintLayout>
 
 
-            <LinearLayout
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/linearLayout11"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
                 android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/update_password_button"
-                    android:layout_width="100dp"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
                     android:layout_marginBottom="16dp"
+                    app:layout_constraintStart_toStartOf="parent"
                     android:text="@string/update_password" />
 
                 <EditText
                     android:id="@+id/update_pass_edit"
-                    android:layout_width="213dp"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_weight="1"
-                    android:inputType="textPassword"
-                    android:textAlignment="textEnd" />
+                    android:layout_marginHorizontal="10dp"
+                    android:textAlignment="textEnd"
+                    app:layout_constraintStart_toEndOf="@+id/update_password_button"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    />
 
-            </LinearLayout>
+            </android.support.constraint.ConstraintLayout>
 
 
-            <LinearLayout
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/linearLayout12"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
                 android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/update_fName_button"
-                    android:layout_width="100dp"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
                     android:layout_marginBottom="16dp"
+                    app:layout_constraintStart_toStartOf="parent"
                     android:text="@string/update_fName" />
 
                 <EditText
                     android:id="@+id/update_fName_edit"
-                    android:layout_width="213dp"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_weight="1"
-                    android:textAlignment="textEnd" />
+                    android:layout_marginHorizontal="10dp"
+                    android:textAlignment="textEnd"
+                    app:layout_constraintStart_toEndOf="@+id/update_fName_button"
+                    app:layout_constraintEnd_toEndOf="parent" />
 
-            </LinearLayout>
+            </android.support.constraint.ConstraintLayout>
 
-            <LinearLayout
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/linearLayout13"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
                 android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/update_lName_button"
-                    android:layout_width="100dp"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
                     android:layout_marginBottom="16dp"
+                    app:layout_constraintStart_toStartOf="parent"
                     android:text="@string/update_lName" />
 
                 <EditText
                     android:id="@+id/update_lName_edit"
-                    android:layout_width="213dp"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_weight="1"
+                    android:layout_marginHorizontal="10dp"
+                    app:layout_constraintStart_toEndOf="@+id/update_lName_button"
+                    app:layout_constraintEnd_toEndOf="parent"
                     android:textAlignment="textEnd" />
 
-            </LinearLayout>
+            </android.support.constraint.ConstraintLayout>
         </LinearLayout>
 
     </LinearLayout>
