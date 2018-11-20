@@ -21,7 +21,17 @@ import com.google.firebase.database.FirebaseDatabase;
 public class EditFamilyInfoFragment extends FamilyFragment {
 
     private static final String TAG = "EditFamilyInfoFragment";
+    private static final String KEY_FAMILY_NAME = "family_name";
     private String mFamilyName;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.i(TAG, "onCreate() called");
+        if (savedInstanceState != null) {
+            mFamilyName = savedInstanceState.getString(KEY_FAMILY_NAME, "");
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -31,6 +41,9 @@ public class EditFamilyInfoFragment extends FamilyFragment {
         View v = inflater.inflate(R.layout.fragment_edit_family_info, container, false);
 
         EditText familyNameEditText = v.findViewById(R.id.family_name_edit_text);
+        if (mFamilyName != null) {
+            familyNameEditText.setText(mFamilyName);
+        }
         familyNameEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -80,6 +93,15 @@ public class EditFamilyInfoFragment extends FamilyFragment {
         });
 
         return v;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        Log.i(TAG, "onSaveInstanceState() called");
+        if (mFamilyName != null) {
+            savedInstanceState.putString(KEY_FAMILY_NAME, mFamilyName);
+        }
     }
 
 }

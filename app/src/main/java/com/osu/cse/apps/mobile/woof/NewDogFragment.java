@@ -28,14 +28,17 @@ import java.util.List;
 public class NewDogFragment extends Fragment implements View.OnClickListener {
 
     private EditText mDogNameEditText;
-    private String mDogName = "";
+    private String mDogName;
     private Spinner mFamilySpinner;
     private ArrayAdapter<CharSequence> mAdapter;
-    private String mFamilyId = "";
-    private List<String> mFamilyIdList = new ArrayList();
+    private int mSpinnerPos;
+    private String mFamilyId;
+    private List<String> mFamilyIdList;
     private List<String> mFamilyNameList = new ArrayList();
 
     private static final String TAG = "NewDogFragment";
+    private static final String KEY_DOG_NAME = "dog_name";
+    private static final String KEY_SPINNER_POS = "spinner_pos";
 
     DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
 
@@ -46,6 +49,14 @@ public class NewDogFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            mDogName = savedInstanceState.getString(KEY_DOG_NAME, "");
+            mSpinnerPos = savedInstanceState.getInt(KEY_SPINNER_POS, 0);
+        }
+
+        mFamilyIdList = new ArrayList();
+        mFamilyNameList = new ArrayList();
         CurrentUser.getFamilyInfoFromDatabase(new FamilyInfoCallback() {
             @Override
             public void onFamilyInfoRetrieved(FamilyInfo familyInfo) {
@@ -66,6 +77,12 @@ public class NewDogFragment extends Fragment implements View.OnClickListener {
         View v = inflater.inflate(R.layout.fragment_new_dog, container, false);
 
         mDogNameEditText = v.findViewById(R.id.dog_name);
+        if (mDogName != null) {
+            mDogNameEditText.setText(mDogName);
+        }
+        else {
+            mDogName = "";
+        }
         mDogNameEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(
@@ -97,7 +114,9 @@ public class NewDogFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 Log.d(TAG, "onItemSelected() called for dropdown menu");
+                Log.d(TAG, "pos = " + pos);
                 mFamilyId = mFamilyIdList.get(pos);
+                mSpinnerPos = pos;
             }
 
             @Override
@@ -114,11 +133,21 @@ public class NewDogFragment extends Fragment implements View.OnClickListener {
         return v;
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        Log.i(TAG, "onSaveInstanceState() called");
+        if (mDogName != null) {
+            savedInstanceState.putString(KEY_DOG_NAME, mDogName);
+        }
+        savedInstanceState.putInt(KEY_SPINNER_POS, mSpinnerPos);
+    }
+
     public void onClick(View v) {
         Log.i(TAG, "onClick() called");
         switch (v.getId()) {
             case R.id.add_dog_button:
-                if (!mDogName.equals("") && !mFamilyId.equals("")) {
+                if (!mDogName.equals("")) {
 
                     // add dog to database and add dog ID under family ID corresponding to
                     // selected family name
@@ -174,6 +203,7 @@ public class NewDogFragment extends Fragment implements View.OnClickListener {
             mAdapter.notifyDataSetChanged();
             Log.d(TAG, "Notified adapter that data set changed");
         }
+        mFamilySpinner.setSelection(mSpinnerPos);
     }
 
 }
