@@ -25,6 +25,7 @@ import java.util.Map;
 public class CreateNewFamilyFragment extends Fragment {
 
     private static final String TAG = "CreateNewFamilyFragment";
+    private static final String KEY_FAMILY_NAME = "family_name";
     private String mFamilyName;
 
     public static CreateNewFamilyFragment newInstance() {
@@ -35,6 +36,9 @@ public class CreateNewFamilyFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(TAG, "onCreate() called");
+        if (savedInstanceState != null) {
+            mFamilyName = savedInstanceState.getString(KEY_FAMILY_NAME, "");
+        }
     }
 
     @Override
@@ -43,6 +47,9 @@ public class CreateNewFamilyFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_create_new_family, container, false);
 
         EditText familyNameEditText = v.findViewById(R.id.family_name_edit_text);
+        if (mFamilyName != null) {
+            familyNameEditText.setText(mFamilyName);
+        }
         familyNameEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -102,6 +109,15 @@ public class CreateNewFamilyFragment extends Fragment {
         });
 
         return v;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        Log.i(TAG, "onSaveInstanceState() called");
+        if (mFamilyName != null) {
+            savedInstanceState.putString(KEY_FAMILY_NAME, mFamilyName);
+        }
     }
 
 }

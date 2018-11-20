@@ -17,11 +17,20 @@ import java.util.UUID;
 public class DogInformationFragment extends DogFragment {
 
     private static final String TAG = "DogInformationFragment";
+    private static final String KEY_DOG_NAME = "dog_name";
     private EditText mDogNameEditText;
     private TextView mFamilyNameTextView;
     private Button mSaveChangesButton;
     private String mDogName;
     private String mFamilyName;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            mDogName = savedInstanceState.getString(KEY_DOG_NAME, "");
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -47,6 +56,9 @@ public class DogInformationFragment extends DogFragment {
                 // required
             }
         });
+        if (mDogName != null) {
+            mDogNameEditText.setText(mDogName);
+        }
 
         mFamilyNameTextView = v.findViewById(R.id.family);
         String familyId = getFamilyId();
@@ -85,12 +97,26 @@ public class DogInformationFragment extends DogFragment {
     }
 
     @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        Log.i(TAG, "onSaveInstanceState() called");
+        if (mDogName != null) {
+            savedInstanceState.putString(KEY_DOG_NAME, mDogName);
+        }
+    }
+
+    @Override
     public void updateUI() {
         Dog dog = getDog();
         if (dog == null) {
             return;
         }
-        mDogNameEditText.setText(dog.getdogName());
+        if (mDogName == null) {
+            mDogNameEditText.setText(dog.getdogName());
+        }
+        else {
+            mDogNameEditText.setText(mDogName);
+        }
     }
 
 }

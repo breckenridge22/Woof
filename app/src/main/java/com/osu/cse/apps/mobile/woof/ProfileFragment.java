@@ -48,6 +48,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private FirebaseUser mUser;
     private User mCurrentUser;
     private static final String TAG = "ProfileFragment";
+    private boolean mReauthenticated = false;
+    private static final String REAUTHED = "reauthenticated";
 
 
     DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -79,6 +81,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 Log.d(TAG, "Failed to retrieve current user object from database");
             }
         });
+
+
+        if (savedInstanceState != null) {
+            mReauthenticated = savedInstanceState.getBoolean(REAUTHED, true);
+        }
     }
 
     @Override
@@ -126,6 +133,22 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         mCallbacks = (ProfileFragment.Callbacks) context;
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        if (mReauthenticated){
+            mReauthLayout.setVisibility(View.GONE);
+            mUpdateLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);;
+        Log.i(TAG, "onSaveInstanceState() called");
+        savedInstanceState.putBoolean(REAUTHED, mReauthenticated);
+    }
+
     // Skeleton from https://firebase.google.com/docs/auth/android/manage-users
     public void reauthenticate() {
         if(validateSignInForm()) {
@@ -141,6 +164,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                                 Log.d(TAG, "User re-authenticated.");
                                 mReauthLayout.setVisibility(View.GONE);
                                 mUpdateLayout.setVisibility(View.VISIBLE);
+                                mReauthenticated = true;
                                 Toast.makeText(getActivity(), "Successfully re-authenticated", Toast.LENGTH_SHORT).show();
                             } else {
                                 Log.d(TAG, "Re-authentication failed.");
