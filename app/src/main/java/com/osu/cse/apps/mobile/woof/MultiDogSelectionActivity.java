@@ -23,7 +23,6 @@ public class MultiDogSelectionActivity extends AppCompatActivity implements Mult
     private Button mContinueButton;
     private RecyclerView.Adapter mAdapter;
     private List<DogInfo> mDogInfoList;
-    private List<DogInfo> mSelectedDogInfoList;
     private Map<String, Boolean> mDogSelected;
     private List<String> mSelectedDogs;
 
@@ -32,45 +31,66 @@ public class MultiDogSelectionActivity extends AppCompatActivity implements Mult
         return new Intent(packageContext, MultiDogSelectionActivity.class);
     }
 
+    @Override
+    protected void onSaveInstanceState(final Bundle outState){
+        super.onSaveInstanceState(outState);
+        outState.putStringArrayList("selected_dogs", MultiselectRecyclerViewAdapter.getSelected());
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate() called.");
         super.onCreate(savedInstanceState);
 
-        // Retrieve list of dogs
-        Log.d(TAG, "Getting CurrentUser's Dogs.");
 
-        mDogInfoList = new ArrayList();
-        mSelectedDogInfoList = new ArrayList();
+        mDogInfoList=new ArrayList<>();
         mDogSelected = new HashMap<>();
         mSelectedDogs = new ArrayList();
 
-        // populate dog info list from database
-        CurrentUser.getDogInfoFromDatabase(new DogInfoCallback() {
-            @Override
-            public void onDogInfoRetrieved(DogInfo dogInfo) {
-                mDogInfoList.add(dogInfo);
-                if (mAdapter != null) {
-                    mAdapter.notifyDataSetChanged();
+        if( savedInstanceState !=null && !savedInstanceState.isEmpty()) {
+            ArrayList<String> selected_dogs = savedInstanceState.getStringArrayList("selected_dogs");
+
+            if (selected_dogs.size() > 0) {
+                for (String dog_id : selected_dogs) {
+                    mDogSelected.put(dog_id, true);
+                    mSelectedDogs.add(dog_id);
                 }
-                String dogID = dogInfo.getdogId();
-                mDogSelected.put(dogID, false);
             }
+        }
 
-            @Override
-            public void onFailure(String error) {
-                Log.d(TAG, error);
-            }
-        });
+        // Retrieve list of dogs
+        Log.d(TAG, "Getting CurrentUser's Dogs.");
 
-        Log.d(TAG, " Size = " + mDogInfoList.size());
-        Log.d(TAG, mDogSelected.toString());
-        Log.d(TAG, "Setting contentView: Line 67");
+            // populate dog info list from database
+            CurrentUser.getDogInfoFromDatabase(new DogInfoCallback() {
+                @Override
+                public void onDogInfoRetrieved(DogInfo dogInfo) {
+                    mDogInfoList.add(dogInfo);
+                    if (mAdapter != null) {
+                        mAdapter.notifyDataSetChanged();
+                    }
+                    String dogID = dogInfo.getdogId();
+                    if(!mDogSelected.containsKey(dogID)) {
+                        mDogSelected.put(dogID, false);
+                    }
+
+                }
+
+                @Override
+                public void onFailure(String error) {
+                    Log.d(TAG, error);
+                }
+            });
+
         setContentView(R.layout.multi_select_dog);
 
         mContinueButton = (Button) findViewById(R.id.multi_select_continue_button);
-        mContinueButton.setEnabled(false);
+        if(mSelectedDogs.size()>0){
+            mContinueButton.setEnabled(true);
+        } else {
+            mContinueButton.setEnabled(false);
+        }
         mContinueButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -82,6 +102,7 @@ public class MultiDogSelectionActivity extends AppCompatActivity implements Mult
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
         Log.d(TAG, "Getting MultiselectRecyclerViewAdapter");
+        Log.d(TAG, mDogSelected.toString());
         mAdapter = new MultiselectRecyclerViewAdapter(mDogInfoList, mDogSelected, this);
         LinearLayoutManager manager = new LinearLayoutManager(MultiDogSelectionActivity.this);
         mRecyclerView.setHasFixedSize(true);

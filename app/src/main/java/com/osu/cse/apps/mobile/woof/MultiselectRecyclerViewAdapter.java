@@ -1,6 +1,7 @@
 package com.osu.cse.apps.mobile.woof;
 
 import android.graphics.Color;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,16 +9,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class MultiselectRecyclerViewAdapter extends RecyclerView.Adapter        <MultiselectRecyclerViewAdapter.MyViewHolder> {
+public class MultiselectRecyclerViewAdapter extends RecyclerView.Adapter <MultiselectRecyclerViewAdapter.MyViewHolder> {
 
     private List<DogInfo> mDogInfoList;
-    private Map<String, Boolean> mDogSelected;
-
+    private static Map<String, Boolean> mDogSelected;
     private MultiSelectClick mCallback;
-
     private static final String TAG = "MultiselectRecyclerViewAdaptor";
 
     public MultiselectRecyclerViewAdapter(List<DogInfo> dogInfoList, Map<String, Boolean> dogSelected, MultiSelectClick listener) {
@@ -40,7 +40,7 @@ public class MultiselectRecyclerViewAdapter extends RecyclerView.Adapter        
         Log.d(TAG, "Called onBindViewHolder()");
         final DogInfo dogInfo = mDogInfoList.get(position);
         holder.textView.setText(dogInfo.getdogName());
-
+        Log.d(TAG, mDogSelected.toString());
         // Check if this dog has been selected
         Boolean b = mDogSelected.get(dogInfo.getdogId());
         holder.view.setBackgroundColor(b ? Color.CYAN : Color.WHITE);
@@ -54,6 +54,17 @@ public class MultiselectRecyclerViewAdapter extends RecyclerView.Adapter        
                 mCallback.onClick(mDogSelected);
             }
         });
+    }
+
+    public static ArrayList<String> getSelected(){
+        Log.d(TAG, "getSelected() called");
+        ArrayList<String> list = new ArrayList<>();
+        for(String dogID:mDogSelected.keySet()){
+            if(mDogSelected.get(dogID)){
+                list.add(dogID);
+            }
+        }
+        return list;
     }
 
     @Override

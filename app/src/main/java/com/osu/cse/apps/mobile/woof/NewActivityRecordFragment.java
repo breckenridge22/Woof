@@ -1,5 +1,6 @@
 package com.osu.cse.apps.mobile.woof;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -60,6 +61,7 @@ public class NewActivityRecordFragment extends Fragment implements View.OnClickL
         public void onCreate(Bundle savedInstanceState) {
             Log.d(TAG, "Called onCreate()");
             super.onCreate(savedInstanceState);
+            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             Bundle b = getArguments();
             dogIDList = b.getStringArrayList("DOG_ID_LIST");
             dogActsList = b.getStringArrayList("DOG_ACTS_LIST");
