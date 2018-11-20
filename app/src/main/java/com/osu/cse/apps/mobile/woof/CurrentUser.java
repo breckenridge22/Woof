@@ -4,12 +4,10 @@ package com.osu.cse.apps.mobile.woof;
  * Singleton class for storing basic user information and methods for database queries
  */
 
-import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,6 +27,9 @@ public class CurrentUser {
     private static String sUserId;
     private static DatabaseReference sUserDatabaseRef;
     private static boolean sConnectedToDatabase;
+    private static ValueEventListener sConnectedListener;
+    private static List<DatabaseReference> sSyncedList;
+
     private static boolean sDatabasePersistenceEnabled;
     // Map for activities currently in progress, key is the activity ID for a dog and the value is
     // the activity in progress
@@ -43,7 +44,7 @@ public class CurrentUser {
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
             sUserDatabaseRef = ref.child("users")
                     .child(sUserId);
-            ref.child(".info/connected").addValueEventListener(new ValueEventListener() {
+            sConnectedListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     sConnectedToDatabase = dataSnapshot.getValue(Boolean.class);
@@ -53,8 +54,55 @@ public class CurrentUser {
                 public void onCancelled(@NonNull DatabaseError databaseError) {
                     Log.d(TAG, "Error fetching connection status of user to database");
                 }
-            });
+            };
+            ref.child(".info/connected").addValueEventListener(sConnectedListener);
             mCurrentActivities = new HashMap<>();
+
+            // synchronize all database references relevant to users (i.e., direct user data,
+            // families of which user is a part, and activities for dogs belonging to those
+            // families)
+            sSyncedList = new ArrayList();
+            DatabaseReference userRef = ref.child("users").child(sUserId);
+            userRef.keepSynced(true);
+            sSyncedList.add(userRef);
+            getFamilyIdsFromDatabase(new FamilyIdsCallback() {
+                @Override
+                public void onFamilyIdsRetrieved(List<String> familyIdList) {
+                    for (String familyId : familyIdList) {
+                        DatabaseReference familyRef = FirebaseDatabase.getInstance().getReference()
+                                .child("families").child(familyId);
+                        familyRef.keepSynced(true);
+                        sSyncedList.add(familyRef);
+
+                        getFamilyFromDatabase(familyId, new FamilyCallback() {
+                            @Override
+                            public void onFamilyChange(Family family) {
+                                Map<String, Dog> dogMap = family.getdogs();
+                                if (dogMap == null) {
+                                    return;
+                                }
+                                for (Dog dog : dogMap.values()) {
+                                    String activitiesId = dog.getactivitiesId();
+                                    DatabaseReference activitiesRef = FirebaseDatabase.getInstance()
+                                            .getReference().child("activities").child(activitiesId);
+                                    activitiesRef.keepSynced(true);
+                                    sSyncedList.add(activitiesRef);
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(String error) {
+                                Log.d(TAG, error);
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onError(String errorMessage) {
+                    Log.d(TAG, errorMessage);
+                }
+            });
         }
     }
 
@@ -64,6 +112,17 @@ public class CurrentUser {
     public static void setNull() {
         sUserId = null;
         sUserDatabaseRef = null;
+        mCurrentActivities = null;
+
+        FirebaseDatabase.getInstance().getReference().child(".info/connected")
+                .removeEventListener(sConnectedListener);
+        sConnectedListener = null;
+
+        // remove all synchronized database references
+        for (DatabaseReference ref : sSyncedList) {
+            ref.keepSynced(false);
+        }
+        sSyncedList = null;
     }
 
     public static Map<String, ActivityRecord> getmCurrentActivities() {

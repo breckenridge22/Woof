@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -26,7 +27,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
 
 
-    public static SettingsFragment newInstance() { return new SettingsFragment(); }
+    public static SettingsFragment newInstance() {
+        return new SettingsFragment();
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -50,15 +53,23 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         int i = v.getId();
         Intent intent;
-        switch(i){
+        switch (i) {
             case R.id.update_button:
-                intent = ProfileActivity.newIntent(getActivity());
-                startActivity(intent);
+                if (CurrentUser.isConnectedToDatabase()) {
+                    intent = ProfileActivity.newIntent(getActivity());
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(getActivity(), "Cannot update account while offline", Toast.LENGTH_LONG).show();
+                }
                 break;
             case R.id.delete_button:
-                Log.d(TAG, "Delete Button Pressed");
-                intent = DeleteActivity.newIntent(getActivity());
-                startActivity(intent);
+                if (CurrentUser.isConnectedToDatabase()) {
+                    Log.d(TAG, "Delete Button Pressed");
+                    intent = DeleteActivity.newIntent(getActivity());
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(getActivity(), "Cannot update account while offline", Toast.LENGTH_LONG).show();
+                }
                 break;
         }
     }
