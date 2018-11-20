@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
@@ -43,8 +44,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private EditText mPasswordEditText;
     private EditText mFNameEditText;
     private EditText mLNameEditText;
-    private LinearLayout mReauthLayout;
-    private LinearLayout mUpdateLayout;
+    private ConstraintLayout mReauthLayout;
+    private ConstraintLayout mUpdateLayout;
     private FirebaseUser mUser;
     private User mCurrentUser;
     private static final String TAG = "ProfileFragment";
@@ -134,9 +135,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
-        if (mReauthenticated){
+        if (mReauthenticated) {
             mReauthLayout.setVisibility(View.GONE);
             mUpdateLayout.setVisibility(View.VISIBLE);
         }
@@ -144,14 +145,15 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        super.onSaveInstanceState(savedInstanceState);;
+        super.onSaveInstanceState(savedInstanceState);
+        ;
         Log.i(TAG, "onSaveInstanceState() called");
         savedInstanceState.putBoolean(REAUTHED, mReauthenticated);
     }
 
     // Skeleton from https://firebase.google.com/docs/auth/android/manage-users
     public void reauthenticate() {
-        if(validateSignInForm()) {
+        if (validateSignInForm()) {
             AuthCredential credential = EmailAuthProvider
                     .getCredential(mEmailText.getText().toString(), mPasswordText.getText().toString());
 
@@ -236,8 +238,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                                                     Log.d(TAG, "Failed to change email");
                                                 }
                                             });
-                                        }
-                                        else {
+                                        } else {
                                             Toast.makeText(getActivity(), "Updated Email", Toast.LENGTH_SHORT).show();
                                             Log.d(TAG, "User email address updated.");
                                         }
@@ -294,8 +295,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                                 Log.d(TAG, "Failed to change first name");
                             }
                         });
-                    }
-                    else {
+                    } else {
                         Toast.makeText(getActivity(), "Updated First Name", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -323,8 +323,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                                 Log.d(TAG, "Failed to change last name");
                             }
                         });
-                    }
-                    else {
+                    } else {
                         Toast.makeText(getActivity(), "Updated Last Name", Toast.LENGTH_SHORT).show();
                     }
                 }

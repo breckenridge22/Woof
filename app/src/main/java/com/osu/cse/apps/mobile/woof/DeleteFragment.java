@@ -3,6 +3,7 @@ package com.osu.cse.apps.mobile.woof;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
@@ -41,8 +42,8 @@ public class DeleteFragment extends Fragment implements View.OnClickListener {
     private Button mReauthenticateButton;
     private EditText mEmailText;
     private EditText mPasswordText;
-    private LinearLayout mReauthLayout;
-    private LinearLayout mDeleteLayout;
+    private ConstraintLayout mReauthLayout;
+    private ConstraintLayout mDeleteLayout;
     private static final String TAG = "DeleteFragment";
     private FirebaseUser mUser;
     private int mFamilyCount = 0;
@@ -100,9 +101,9 @@ public class DeleteFragment extends Fragment implements View.OnClickListener {
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
-        if (mReauthenticated){
+        if (mReauthenticated) {
             mReauthLayout.setVisibility(View.GONE);
             mDeleteLayout.setVisibility(View.VISIBLE);
         }
@@ -110,7 +111,8 @@ public class DeleteFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        super.onSaveInstanceState(savedInstanceState);;
+        super.onSaveInstanceState(savedInstanceState);
+        ;
         Log.i(TAG, "onSaveInstanceState() called");
         savedInstanceState.putBoolean(REAUTHED, mReauthenticated);
     }
@@ -274,8 +276,7 @@ public class DeleteFragment extends Fragment implements View.OnClickListener {
                                                     "delete user and family information");
                                         }
                                     });
-                                }
-                                else {
+                                } else {
                                     callback.onUserDeleted();
                                 }
                             }
