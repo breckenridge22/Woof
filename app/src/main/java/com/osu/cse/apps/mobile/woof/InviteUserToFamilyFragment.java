@@ -38,10 +38,13 @@ public class InviteUserToFamilyFragment extends FamilyFragment implements View.O
     private int mUserInvitationTotal;
     private boolean mUserInvitationSent;
 
+    private static final String KEY_USER_EMAIL = "user_email";
+
     private boolean mFindUserButtonClicked;
     private static final String KEY_FIND_USER_BUTTON_CLICKED = "find_user_button_clicked";
     private String mUserEmailOnClick;
     private static final String KEY_USER_EMAIL_ON_CLICK = "user_email_on_click";
+    private boolean mFindUserButtonClickedOnResume;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,6 +52,7 @@ public class InviteUserToFamilyFragment extends FamilyFragment implements View.O
         Log.i(TAG, "onCreate() called");
 
         if (savedInstanceState != null) {
+            mUserEmail = savedInstanceState.getString(KEY_USER_EMAIL, null);
             mFindUserButtonClicked = savedInstanceState.getBoolean(KEY_FIND_USER_BUTTON_CLICKED, false);
             mUserEmailOnClick = savedInstanceState.getString(KEY_USER_EMAIL_ON_CLICK, null);
         }
@@ -61,6 +65,9 @@ public class InviteUserToFamilyFragment extends FamilyFragment implements View.O
         View v = inflater.inflate(R.layout.fragment_invite_user_to_family, container, false);
 
         EditText userEmailEditText = v.findViewById(R.id.user_email_edit_text);
+        if (mUserEmail != null) {
+            userEmailEditText.setText(mUserEmail);
+        }
         userEmailEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -105,7 +112,7 @@ public class InviteUserToFamilyFragment extends FamilyFragment implements View.O
         super.onResume();
         Log.i(TAG, "onResume() called");
         if (mFindUserButtonClicked && mUserEmailOnClick != null) {
-            mUserEmail = mUserEmailOnClick;
+            mFindUserButtonClickedOnResume = true;
             onClick(mFindUserButton);
         }
     }
@@ -116,6 +123,9 @@ public class InviteUserToFamilyFragment extends FamilyFragment implements View.O
         Log.i(TAG, "onSaveInstanceState() called");
         savedInstanceState.putBoolean(KEY_FIND_USER_BUTTON_CLICKED, mFindUserButtonClicked);
         savedInstanceState.putString(KEY_USER_EMAIL_ON_CLICK, mUserEmailOnClick);
+        if (mUserEmail != null) {
+            savedInstanceState.putString(KEY_USER_EMAIL, mUserEmail);
+        }
     }
 
     @Override
@@ -124,9 +134,12 @@ public class InviteUserToFamilyFragment extends FamilyFragment implements View.O
 
             case R.id.find_user_button:
                 Log.d(TAG, "onClick() called");
-                mFindUserButtonClicked = true;
-                mUserEmailOnClick = mUserEmail;
-                CurrentUser.searchDatabaseForUserByEmail(mUserEmail, new UserCallback() {
+                if (!mFindUserButtonClickedOnResume) {
+                    mUserEmailOnClick = mUserEmail;
+                    mFindUserButtonClicked = true;
+                }
+                mFindUserButtonClickedOnResume = false;
+                CurrentUser.searchDatabaseForUserByEmail(mUserEmailOnClick, new UserCallback() {
                     @Override
                     public void onUserRetrieved(User user) {
                         mUserNotFoundTextView.setVisibility(View.INVISIBLE);
