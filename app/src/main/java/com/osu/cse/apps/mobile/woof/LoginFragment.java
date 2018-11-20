@@ -56,6 +56,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     public static FirebaseAuth mAuth;
     DatabaseReference mDatabase;
 
+    private final static String SIGN_UP_BUTTON_CLICKED_ONCE = "sign_up_button_clicked_once";
+
     private final static String OPT_NAME = "name";
 
     /*
@@ -72,6 +74,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         super.onCreate(savedInstanceState);
 
         FirebaseDatabase databaseInstance = FirebaseDatabase.getInstance();
+
+
+
+        if (savedInstanceState != null) {
+            mNewU = savedInstanceState.getBoolean(SIGN_UP_BUTTON_CLICKED_ONCE, true);
+        }
 
         // Ensure that setPersistenceEnabled has not been called before (if called after any other
         // usage of the FirebaseDatabase instance, app will crash).  Otherwise, set database persistence.
@@ -127,6 +135,30 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     public void onDetach() {
         super.onDetach();
         mCallbacks = null;
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        if (!mNewU) {
+            mFNameTextView.setVisibility(View.VISIBLE);
+            mLNameTextView.setVisibility(View.VISIBLE);
+            mFNameEditText.setVisibility(View.VISIBLE);
+            mLNameEditText.setVisibility(View.VISIBLE);
+            mFamilyNameTextView.setVisibility(View.VISIBLE);
+            mFamilyNameEditText.setVisibility(View.VISIBLE);
+            mLoginButton.setVisibility(View.GONE);
+            mCancelButton.setVisibility(View.VISIBLE);
+        }
+    }
+
+
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        Log.i(TAG, "onSaveInstanceState() called");
+        savedInstanceState.putBoolean(SIGN_UP_BUTTON_CLICKED_ONCE, mNewU);
     }
 
     // [START on_start_check_user]
