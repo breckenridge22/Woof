@@ -74,7 +74,7 @@ public class CurrentUser {
                         familyRef.keepSynced(true);
                         sSyncedList.add(familyRef);
 
-                        getFamilyFromDatabase(familyId, new FamilyCallback() {
+                        getFamilyFromDatabaseWithSingleEventListener(familyId, new FamilyCallback() {
                             @Override
                             public void onFamilyChange(Family family) {
                                 Map<String, Dog> dogMap = family.getdogs();
@@ -324,6 +324,23 @@ public class CurrentUser {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("families")
                 .child(familyId);
         ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Family family = dataSnapshot.getValue(Family.class);
+                callback.onFamilyChange(family);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                callback.onFailure("ValueEventListener.onCancelled called");
+            }
+        });
+    }
+
+    public static void getFamilyFromDatabaseWithSingleEventListener(String familyId, final FamilyCallback callback) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("families")
+                .child(familyId);
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Family family = dataSnapshot.getValue(Family.class);
